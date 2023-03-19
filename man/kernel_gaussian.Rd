@@ -25,9 +25,9 @@ Compute Gaussian Kernel Gram matrix
 }
 \examples{
 x <- rnorm(100) |> matrix(25, 4)
-kernel_gaussian(x)
+densityratio:::kernel_gaussian(x)
 y <- rnorm(200) |> matrix(50, 4)
-kernel_gaussian(x, y)
+densityratio:::kernel_gaussian(x, y)
 sigma <- 5
-kernel_gaussian(x, y, sigma)
+densityratio:::kernel_gaussian(x, y, sigma)
 }
