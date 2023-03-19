@@ -7,7 +7,8 @@
 #' @param x A numeric input matrix
 #' @param nr Number of rows of the input matrix
 #' @param nc Number of columns of the input matrix
-#' @export
+NULL
+
 distX <- function(x, nr, nc) {
     .Call(`_densityratio_distX`, x, nr, nc)
 }
@@ -19,7 +20,8 @@ distX <- function(x, nr, nc) {
 #' @param nrx Number of rows of the input matrix x
 #' @param nry Number of rows of the input matrix y
 #' @param nc Number of columns of the input matrices x and y
-#' @export
+NULL
+
 distXY <- function(x, y, nrx, nry, nc) {
     .Call(`_densityratio_distXY`, x, y, nrx, nry, nc)
 }
