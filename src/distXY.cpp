@@ -8,7 +8,7 @@ using namespace Rcpp;
 //' @param nrx Number of rows of the input matrix x
 //' @param nry Number of rows of the input matrix y
 //' @param nc Number of columns of the input matrices x and y
-//' @export
+
 // [[Rcpp::export]]
 
 NumericMatrix distXY(NumericMatrix x, NumericMatrix y, int nrx, int nry, int nc) {
