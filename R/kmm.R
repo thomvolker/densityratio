@@ -4,12 +4,14 @@
 #' @param de Numeric matrix with denominator samples (must have the same
 #' variables as \code{nu})
 #' @param method Character string containing the method used for kernel mean
-#' matching. Currently only \code{method = "unconstrained"} is supported.
+#' matching. Currently, \code{method = "unconstrained"} and
+#' \code{method = "constrained"} are supported.
 #' @param sigma \code{NULL} or a scalar value to determine the bandwidth of the
-#' Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
+#' Gaussian kernel gram matrix. If \code{NULL}, \code{sigma} is the median Euclidean
 #' interpoint distance.
-#' @param lambda Scalar value to determine the regularization imposed on the
-#' Gaussian kernel gram matrix of the denominator samples
+#' @param lambda \code{NULL} or a scalar value to determine the regularization
+#' imposed on the Gaussian kernel gram matrix of the denominator samples. If
+#' \code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.
 #' @importFrom quadprog solve.QP
 #' @export
 #'
@@ -23,7 +25,7 @@
 #' kmm(x, y, sigma = 2, lambda = 2)
 #'
 
-kmm <- function(nu, de, method = "unconstrained", sigma = NULL, lambda = 1) {
+kmm <- function(nu, de, method = "unconstrained", sigma = NULL, lambda = NULL) {
 
   nu <- as.matrix(nu)
   de <- as.matrix(de)
@@ -41,8 +43,12 @@ kmm <- function(nu, de, method = "unconstrained", sigma = NULL, lambda = 1) {
       stop("If provided, sigma must be a scalar")
     }
   }
-  if (!is.numeric(lambda) | length(lambda) > 1) {
-    stop("Only scalar values for lambda are currently accepted")
+  if (!is.null(lambda)) {
+    if (!is.numeric(lambda) | length(lambda) > 1) {
+      stop("Only scalar values for lambda are currently accepted")
+    }
+  } else {
+    lambda <- sqrt(nrow(nu) + nrow(de))
   }
 
   Kdede <- kernel_gaussian(de, sigma = sigma)

@@ -4,7 +4,7 @@
 \alias{kmm}
 \title{Kernel mean matching approach to density ratio estimation}
 \usage{
-kmm(nu, de, method = "unconstrained", sigma = NULL, lambda = 1)
+kmm(nu, de, method = "unconstrained", sigma = NULL, lambda = NULL)
 }
 \arguments{
 \item{nu}{Numeric matrix with numerator samples}
@@ -13,14 +13,16 @@ kmm(nu, de, method = "unconstrained", sigma = NULL, lambda = 1)
 variables as \code{nu})}
 
 \item{method}{Character string containing the method used for kernel mean
-matching. Currently only \code{method = "unconstrained"} is supported.}
+matching. Currently, \code{method = "unconstrained"} and
+\code{method = "constrained"} are supported.}
 
 \item{sigma}{\code{NULL} or a scalar value to determine the bandwidth of the
-Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
+Gaussian kernel gram matrix. If \code{NULL}, \code{sigma} is the median Euclidean
 interpoint distance.}
 
-\item{lambda}{Scalar value to determine the regularization imposed on the
-Gaussian kernel gram matrix of the denominator samples}
+\item{lambda}{\code{NULL} or a scalar value to determine the regularization
+imposed on the Gaussian kernel gram matrix of the denominator samples. If
+\code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.}
 }
 \value{
 \code{kmm} returns \code{rhat_de}, the estimated density ratio for
