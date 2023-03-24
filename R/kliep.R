@@ -6,9 +6,13 @@
 #' @param sigma \code{NULL} or a scalar value to determine the bandwidth of the
 #' Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
 #' interpoint distance.
-#' @param lambda \code{NULL} or a scalar value to determine the regularization
-#' imposed on the Gaussian kernel gram matrix of the denominator samples. If
-#' \code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.
+#' @param maxcenters Maximum number of Gaussian centers in the kernel gram
+#' matrix. Defaults to all numerator samples.
+#' @param centers Option to specify the Gaussian samples manually.
+#' @param eps Learning rate for the optimization procedure (can be a vector)
+#' @param maxit Maximum number of iterations for the optimization scheme.
+#' @param printFlag Whether or not to print the progress of the optimization
+#' scheme.
 #' @export
 #'
 #' @return \code{kliep} returns \code{rhat_de}, the estimated density ratio for
@@ -18,11 +22,11 @@
 #' x <- rnorm(100) |> matrix(100)
 #' y <- rnorm(200, 1, 2) |> matrix(200)
 #' kliep(x, y)
-#' kliep(x, y, sigma = 2, lambda = 2)
+#' kliep(x, y, sigma = 2)
 #'
 
 kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
-                  eps = 0.01, maxiter = 100) {
+                  eps = 0.001, maxit = 100, printFlag = T) {
 
   nu <- as.matrix(nu)
   de <- as.matrix(de)
@@ -52,46 +56,41 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
   }
     Phi <- kernel_gaussian(nu, centers, sigma) |> t()
     phibar <- kernel_gaussian(de, centers, sigma) |> colMeans() |> matrix()
-    t_old <- runif(ncol(Phi))
-    s_old <- mean(log(Phi %*% t_old))
+
+    theta <- rep(1, nrow(Phi))
+    theta <- .impose_constraints(theta, phibar)
+    score <- mean(log(t(Phi) %*% theta))
 
     conv <- FALSE
     iter <- 0
-    while(!conv) {
-      iter <- iter+1
-      cat(paste0("\r Iteration:", iter))
-      t_new <- t_old + eps*t(Phi) %*% (1 / Phi %*% t_old)
-      t_new <- t_new + c(1 - t(phibar)%*%t_new)*phibar/c(t(phibar)%*%phibar)
-      t_new <- pmax(0, t_new)
-      t_new <- t_new / c(t(phibar)%*%t_new)
-      s_new <- mean(log(Phi %*% t_new))
-      if (s_new <= s_old | iter == maxiter) conv <- TRUE
-      #if (sum(abs(t_new - t_old)) < 1e-7 | iter == 100) conv <- TRUE
-      t_old <- t_new
-      s_old <- s_new
+
+    for (e in eps) {
+      conv <- FALSE
+      iter <- 0
+
+      while (!conv) {
+        iter <- iter+1
+        if(printFlag) cat(paste0("\r Iteration: ", iter))
+        t_temp  <- .gradient_ascent(theta, Phi, e)
+        t_new   <- .impose_constraints(t_temp, phibar)
+        s_new   <- mean(log(t(Phi) %*% t_new))
+        if (s_new - score <= 0 | iter == maxit) {
+          conv <- TRUE
+        } else {
+          score <- s_new
+          theta <- t_new
+        }
+      }
     }
-    t_new
+  theta
 }
 
-# N <- 500
-# x <- rnorm(N) |> matrix(N)
-# y <- rnorm(N, 1, 2) |> matrix(N)
-#
-# plot(y, densityratio:::kernel_gaussian(y, x) %*% kliep(x, y, 1.4, 5),
-#      xlim = c(-5, 5), ylim = c(0, 2))
-#
-# mod_out <- densratio::KLIEP(x, y, kernel_num = N)
-# plot(x, mod_out$compute_density_ratio(y))
-# Psi <- kernel_gaussian(x) |> t()
-# psib <- rowMeans(kernel_gaussian(x, y))
-#
-# theta <- runif(ncol(Psi))
-# eps <- 0.01
-# one <- rep(1, 50)
-#
+.gradient_ascent <- function(theta, Phi, eps) {
+  theta + eps * t(Phi) %*% (1 / Phi %*% theta)
+}
 
-# .linear_kliep(Phi, phibar, eps, maxiter) {
-#   theta_old <- rep(1, ncol(Phi))
-#   conv <- FALSE
-#
-# }
+.impose_constraints <- function(theta, phibar) {
+  theta <- theta + phibar * c(1 - crossprod(phibar, theta)) * c(1/crossprod(phibar))
+  theta <- pmax(0, theta)
+  theta %*% (1 / crossprod(phibar, theta))
+}

@@ -10,8 +10,9 @@ kliep(
   sigma = NULL,
   maxcenters = nrow(nu),
   centers = NULL,
-  eps = 0.01,
-  maxiter = 100
+  eps = 0.001,
+  maxit = 100,
+  printFlag = T
 )
 }
 \arguments{
@@ -24,9 +25,17 @@ variables as \code{nu})}
 Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
 interpoint distance.}
 
-\item{lambda}{\code{NULL} or a scalar value to determine the regularization
-imposed on the Gaussian kernel gram matrix of the denominator samples. If
-\code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.}
+\item{maxcenters}{Maximum number of Gaussian centers in the kernel gram
+matrix. Defaults to all numerator samples.}
+
+\item{centers}{Option to specify the Gaussian samples manually.}
+
+\item{eps}{Learning rate for the optimization procedure (can be a vector)}
+
+\item{maxit}{Maximum number of iterations for the optimization scheme.}
+
+\item{printFlag}{Whether or not to print the progress of the optimization
+scheme.}
 }
 \value{
 \code{kliep} returns \code{rhat_de}, the estimated density ratio for
@@ -39,6 +48,6 @@ Kullback-Leibler importance estimation procedure
 x <- rnorm(100) |> matrix(100)
 y <- rnorm(200, 1, 2) |> matrix(200)
 kliep(x, y)
-kliep(x, y, sigma = 2, lambda = 2)
+kliep(x, y, sigma = 2)
 
 }
