@@ -1,5 +1,5 @@
 ## usethis namespace: start
-#' @useDynLib densityratio, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
+#' @useDynLib densityratio, .registration = TRUE
 ## usethis namespace: end
 NULL
