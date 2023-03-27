@@ -56,9 +56,10 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
   }
     Phi <- kernel_gaussian(nu, centers, sigma) |> t()
     phibar <- kernel_gaussian(de, centers, sigma) |> colMeans() |> matrix()
+    phibar_cp_phibar_inv <- phibar / c(crossprod(phibar))
 
     theta <- rep(1, nrow(Phi))
-    theta <- .impose_constraints(theta, phibar)
+    theta <- .impose_constraints(theta, phibar, phibar_cp_phibar_inv)
     score <- mean(log(t(Phi) %*% theta))
 
     conv <- FALSE
@@ -72,7 +73,7 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
         iter <- iter+1
         if(printFlag) cat(paste0("\r Iteration: ", iter))
         t_temp  <- .gradient_ascent(theta, Phi, e)
-        t_new   <- .impose_constraints(t_temp, phibar)
+        t_new   <- .impose_constraints(t_temp, phibar, phibar_cp_phibar_inv)
         s_new   <- mean(log(t(Phi) %*% t_new))
         if (s_new - score <= 0 | iter == maxit) {
           conv <- TRUE
@@ -86,11 +87,11 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
 }
 
 .gradient_ascent <- function(theta, Phi, eps) {
-  theta + eps * t(Phi) %*% (1 / Phi %*% theta)
+  theta + eps * crossprod(Phi, 1 / Phi %*% theta)
 }
 
-.impose_constraints <- function(theta, phibar) {
-  theta <- theta + phibar * c(1 - crossprod(phibar, theta)) * c(1/crossprod(phibar))
+.impose_constraints <- function(theta, phibar, phibar_cp_phibar_inv) {
+  theta <- theta + phibar_cp_phibar_inv * c(1 - crossprod(phibar, theta))
   theta <- pmax(0, theta)
   theta %*% (1 / crossprod(phibar, theta))
 }
