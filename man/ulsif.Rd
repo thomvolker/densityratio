@@ -4,7 +4,14 @@
 \alias{ulsif}
 \title{Unconstrained least-squares importance fitting}
 \usage{
-ulsif(nu, de, sigma = NULL, lambda = NULL, maxcenters = nrow(nu))
+ulsif(
+  nu,
+  de,
+  sigma = NULL,
+  lambda = NULL,
+  maxcenters = nrow(nu),
+  centers = NULL
+)
 }
 \arguments{
 \item{nu}{Numeric matrix with numerator samples}
@@ -19,10 +26,16 @@ interpoint distance.}
 \item{lambda}{\code{NULL} or a scalar value to determine the regularization
 imposed on the Gaussian kernel gram matrix of the denominator samples. If
 \code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.}
+
+\item{maxcenters}{Maximum number of Gaussian centers in the kernel gram
+matrix. Defaults to all numerator samples.}
+
+\item{centers}{Numeric matrix with the same variables as \code{nu} and
+\code{de} that are used as Gaussian centers in the kernel Gram matrix. By
+default, the matrix \code{nu} is used as the matrix with Gaussian centers.}
 }
 \value{
-\code{kmm} returns \code{rhat_de}, the estimated density ratio for
-the denominator samples.
+\code{ulsif} returns \code{rhat}, the estimated density ratio.
 }
 \description{
 Unconstrained least-squares importance fitting
@@ -30,7 +43,7 @@ Unconstrained least-squares importance fitting
 \examples{
 x <- rnorm(100) |> matrix(100)
 y <- rnorm(200, 1, 2) |> matrix(200)
-kmm(x, y)
-kmm(x, y, sigma = 2, lambda = 2)
+ulsif(x, y)
+ulsif(x, y, sigma = 2, lambda = 2)
 
 }
