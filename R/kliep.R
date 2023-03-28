@@ -31,7 +31,12 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
   nu <- as.matrix(nu)
   de <- as.matrix(de)
 
-  if (!is.numeric(de) | !is.numeric(nu) | !ncol(de) == ncol(nu)) {
+  n_nu <- nrow(nu)
+  n_de <- nrow(de)
+  p_nu <- ncol(nu)
+  p_de <- ncol(de)
+
+  if (!is.numeric(de) | !is.numeric(nu) | !p_nu == p_de) {
     stop("Arguments de and nu must be matrices with the same variables")
   }
   if (!is.null(sigma)) {
@@ -43,14 +48,14 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
     stop("maxcenters must be a scalar value indicating how many centers are maximally accepted (for computational reasons)")
   }
   if (is.null(centers)) {
-    if (maxcenters < nrow(nu)) {
-      centers <- nu[sample(nrow(nu), maxcenters), ]
+    if (maxcenters < n_nu) {
+      centers <- nu[sample(n_nu, maxcenters), ]
     } else {
       centers <- nu
     }
   } else {
     centers <- as.matrix(centers)
-    if (!is.numeric(centers) | !ncol(centers)==ncol(nu)) {
+    if (!is.numeric(centers) | !ncol(centers) == p_nu) {
       stop("If centers are provided, they must have the same variables as the numerator samples")
     }
   }
@@ -58,7 +63,7 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
     phibar <- kernel_gaussian(de, centers, sigma) |> colMeans() |> matrix()
     phibar_cp_phibar_inv <- phibar / c(crossprod(phibar))
 
-    theta <- rep(1, nrow(Phi))
+    theta <- rep(1, maxcenters)
     theta <- .impose_constraints(theta, phibar, phibar_cp_phibar_inv)
     score <- mean(log(t(Phi) %*% theta))
 
