@@ -33,10 +33,9 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, maxcenters = nrow(nu),
 
   n_nu <- nrow(nu)
   n_de <- nrow(de)
-  p_nu <- ncol(nu)
-  p_de <- ncol(de)
+  p    <- ncol(nu)
 
-  if (!is.numeric(de) | !is.numeric(nu) | !p_nu == p_de) {
+  if (!is.numeric(de) | !is.numeric(nu) | !p == ncol(de)) {
     stop("Arguments de and nu must be matrices with the same variables")
   }
   if (!is.null(sigma)) {
@@ -63,7 +62,7 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, maxcenters = nrow(nu),
     }
   } else {
     centers <- as.matrix(centers)
-    if (!is.numeric(centers) | !ncol(centers) == p_nu) {
+    if (!is.numeric(centers) | ! p == ncol(centers)) {
       stop("If centers are provided, they must have the same variables as the numerator samples")
     }
   }
@@ -71,8 +70,8 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, maxcenters = nrow(nu),
  phi_nu <- kernel_gaussian(nu, centers, sigma)
  phi_de <- kernel_gaussian(de, centers, sigma)
  Hhat   <- crossprod(phi_de) / n_de
- one    <- diag(1, maxcenters)
- hhat   <- colMeans(phi_de)
+ one    <- diag(1, ncol(Hhat))
+ hhat   <- colMeans(phi_nu)
 
  theta <- solve(Hhat + lambda * one) %*% hhat
  theta
