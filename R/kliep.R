@@ -33,10 +33,9 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
 
   n_nu <- nrow(nu)
   n_de <- nrow(de)
-  p_nu <- ncol(nu)
-  p_de <- ncol(de)
+  p    <- ncol(nu)
 
-  if (!is.numeric(de) | !is.numeric(nu) | !p_nu == p_de) {
+  if (!is.numeric(de) | !is.numeric(nu) | ! p == ncol(de)) {
     stop("Arguments de and nu must be matrices with the same variables")
   }
   if (!is.null(sigma)) {
@@ -55,7 +54,7 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
     }
   } else {
     centers <- as.matrix(centers)
-    if (!is.numeric(centers) | !ncol(centers) == p_nu) {
+    if (!is.numeric(centers) | ! p == ncol(centers)) {
       stop("If centers are provided, they must have the same variables as the numerator samples")
     }
   }
