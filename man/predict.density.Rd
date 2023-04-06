@@ -2,11 +2,11 @@
 % Please edit documentation in R/naive.R
 \name{predict.density}
 \alias{predict.density}
-\title{Predict function for density ratio estimation}
+\title{Predict function for density object}
 \usage{
-\method{predict}{density}(object, newdata, lambda = 1e-09)
+\method{predict}{density}(object, newdata, lambda = 1e-09, log = FALSE)
 }
 \description{
-Predict function for density ratio estimation
+Predict function for density object
 }
 \keyword{internal}

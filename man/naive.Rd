@@ -2,9 +2,9 @@
 % Please edit documentation in R/naive.R
 \name{naive}
 \alias{naive}
-\title{Naive density ratio estimation}
+\title{Naive approach to density ratio estimation}
 \usage{
-naive(nu, de, ...)
+naive(nu, de, n = 2L^11, ...)
 }
 \arguments{
 \item{nu}{Numeric matrix with numerator samples}
@@ -12,8 +12,29 @@ naive(nu, de, ...)
 \item{de}{Numeric matrix with denominator samples (must have the same
 variables as \code{nu})}
 
-\item{...}{arguments passed to [stats::density]}
+\item{n}{the number of equally spaced points at which the density is to be
+estimated. When n > 512, it is rounded up to a power of 2 during the
+calculations (as fft is used) and the final result is interpolated by
+\link[stats:approxfun]{stats::approx}. So it almost always makes sense to specify n as a power of
+two.}
+
+\item{...}{further arguments passed to \link[stats:density]{stats::density}}
+}
+\value{
+\code{naive} returns \code{rhat_de}, the estimated density ratio for
+the denominator samples.
 }
 \description{
-Naive density ratio estimation
+The naive approach creates separate kernel density estimates for
+the numerator and the denominator samples, and then evaluates their
+ratio for the denominator samples. For multivariate data, this
+approach assumes the variables are independent (naive Bayes assumption).
+}
+\examples{
+x <- rnorm(100)
+y <- rnorm(200, 1, 2)
+
+naive(x, y)
+naive(x, y, bw = 2)
+
 }
