@@ -2,8 +2,11 @@
 
 export(kliep)
 export(kmm)
+export(lhss_naive)
 export(ulsif)
 importFrom(Rcpp,sourceCpp)
+importFrom(expm,expm)
+importFrom(pracma,householder)
 importFrom(quadprog,solve.QP)
 importFrom(stats,median)
 useDynLib(densityratio, .registration = TRUE)
