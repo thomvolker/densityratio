@@ -12,7 +12,9 @@ LazyData: true
 RoxygenNote: 7.2.3
 Imports: 
     quadprog,
-    Rcpp
+    Rcpp,
+    pracma,
+    expm
 LinkingTo: 
     Rcpp
 Roxygen: list(markdown = TRUE)

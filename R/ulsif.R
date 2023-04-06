@@ -9,7 +9,7 @@
 #' @param lambda \code{NULL} or a scalar value to determine the regularization
 #' imposed on the Gaussian kernel gram matrix of the denominator samples. If
 #' \code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.
-#' @param maxcenters Maximum number of Gaussian centers in the kernel gram
+#' @param ncenters Maximum number of Gaussian centers in the kernel gram
 #' matrix. Defaults to all numerator samples.
 #' @param centers Numeric matrix with the same variables as \code{nu} and
 #' \code{de} that are used as Gaussian centers in the kernel Gram matrix. By
@@ -19,13 +19,13 @@
 #' @return \code{ulsif} returns \code{rhat}, the estimated density ratio.
 #'
 #' @examples
+#' set.seed(1)
 #' x <- rnorm(100) |> matrix(100)
 #' y <- rnorm(200, 1, 2) |> matrix(200)
 #' ulsif(x, y)
 #' ulsif(x, y, sigma = 2, lambda = 2)
-#'
 
-ulsif <- function(nu, de, sigma = NULL, lambda = NULL, maxcenters = nrow(nu),
+ulsif <- function(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu),
                   centers = NULL) {
 
   nu <- as.matrix(nu)
@@ -51,17 +51,18 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, maxcenters = nrow(nu),
     lambda <- sqrt(n_nu + n_de)
   }
 
-  if (!is.numeric(maxcenters) | length(maxcenters) > 1) {
-    stop("maxcenters must be a scalar value indicating how many centers are maximally accepted (for computational reasons)")
+  if (!is.numeric(ncenters) | length(ncenters) > 1) {
+    stop("ncenters must be a scalar value indicating how many centers are maximally accepted (for computational reasons)")
   }
   if (is.null(centers)) {
-    if (maxcenters < nrow(nu)) {
-      centers <- nu[sample(n_nu, maxcenters), ]
+    if (ncenters < nrow(nu)) {
+      centers <- nu[sample(n_nu, ncenters), ]
     } else {
       centers <- nu
     }
   } else {
     centers <- as.matrix(centers)
+    ncenters <- nrow(centers)
     if (!is.numeric(centers) | ! p == ncol(centers)) {
       stop("If centers are provided, they must have the same variables as the numerator samples")
     }

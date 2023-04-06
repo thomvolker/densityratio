@@ -8,7 +8,7 @@ kliep(
   nu,
   de,
   sigma = NULL,
-  maxcenters = nrow(nu),
+  ncenters = nrow(nu),
   centers = NULL,
   eps = 0.001,
   maxit = 100,
@@ -25,7 +25,7 @@ variables as \code{nu})}
 Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
 interpoint distance.}
 
-\item{maxcenters}{Maximum number of Gaussian centers in the kernel gram
+\item{ncenters}{Maximum number of Gaussian centers in the kernel gram
 matrix. Defaults to all numerator samples.}
 
 \item{centers}{Option to specify the Gaussian samples manually.}
@@ -45,6 +45,7 @@ the denominator samples.
 Kullback-Leibler importance estimation procedure
 }
 \examples{
+set.seed(1)
 x <- rnorm(100) |> matrix(100)
 y <- rnorm(200, 1, 2) |> matrix(200)
 kliep(x, y)
