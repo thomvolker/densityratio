@@ -17,3 +17,4 @@ Imports:
     expm
 LinkingTo: 
     Rcpp
+Roxygen: list(markdown = TRUE)
