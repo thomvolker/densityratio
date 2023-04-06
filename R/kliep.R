@@ -6,7 +6,7 @@
 #' @param sigma \code{NULL} or a scalar value to determine the bandwidth of the
 #' Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
 #' interpoint distance.
-#' @param maxcenters Maximum number of Gaussian centers in the kernel gram
+#' @param ncenters Maximum number of Gaussian centers in the kernel gram
 #' matrix. Defaults to all numerator samples.
 #' @param centers Option to specify the Gaussian samples manually.
 #' @param eps Learning rate for the optimization procedure (can be a vector)
@@ -19,13 +19,14 @@
 #' the denominator samples.
 #'
 #' @examples
+#' set.seed(1)
 #' x <- rnorm(100) |> matrix(100)
 #' y <- rnorm(200, 1, 2) |> matrix(200)
 #' kliep(x, y)
 #' kliep(x, y, sigma = 2)
 #'
 
-kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
+kliep <- function(nu, de, sigma = NULL, ncenters = nrow(nu), centers = NULL,
                   eps = 0.001, maxit = 100, printFlag = T) {
 
   nu <- as.matrix(nu)
@@ -43,17 +44,18 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
       stop("If provided, sigma must be a scalar")
     }
   }
-  if (!is.numeric(maxcenters) | length(maxcenters) > 1) {
-    stop("maxcenters must be a scalar value indicating how many centers are maximally accepted (for computational reasons)")
+  if (!is.numeric(ncenters) | length(ncenters) > 1) {
+    stop("ncenters must be a scalar value indicating how many centers are maximally accepted (for computational reasons)")
   }
   if (is.null(centers)) {
-    if (maxcenters < n_nu) {
-      centers <- nu[sample(n_nu, maxcenters), ]
+    if (ncenters < n_nu) {
+      centers <- nu[sample(n_nu, ncenters), ]
     } else {
       centers <- nu
     }
   } else {
     centers <- as.matrix(centers)
+    ncenters <- nrow(centers)
     if (!is.numeric(centers) | ! p == ncol(centers)) {
       stop("If centers are provided, they must have the same variables as the numerator samples")
     }
@@ -62,7 +64,7 @@ kliep <- function(nu, de, sigma = NULL, maxcenters = nrow(nu), centers = NULL,
     phibar <- kernel_gaussian(de, centers, sigma) |> colMeans() |> matrix()
     phibar_cp_phibar_inv <- phibar / c(crossprod(phibar))
 
-    theta <- rep(1, maxcenters)
+    theta <- rep(1, ncenters)
     theta <- .impose_constraints(theta, phibar, phibar_cp_phibar_inv)
     score <- mean(log(t(Phi) %*% theta))
 
