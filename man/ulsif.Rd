@@ -4,14 +4,7 @@
 \alias{ulsif}
 \title{Unconstrained least-squares importance fitting}
 \usage{
-ulsif(
-  nu,
-  de,
-  sigma = NULL,
-  lambda = NULL,
-  maxcenters = nrow(nu),
-  centers = NULL
-)
+ulsif(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu), centers = NULL)
 }
 \arguments{
 \item{nu}{Numeric matrix with numerator samples}
@@ -27,7 +20,7 @@ interpoint distance.}
 imposed on the Gaussian kernel gram matrix of the denominator samples. If
 \code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.}
 
-\item{maxcenters}{Maximum number of Gaussian centers in the kernel gram
+\item{ncenters}{Maximum number of Gaussian centers in the kernel gram
 matrix. Defaults to all numerator samples.}
 
 \item{centers}{Numeric matrix with the same variables as \code{nu} and
@@ -41,9 +34,9 @@ default, the matrix \code{nu} is used as the matrix with Gaussian centers.}
 Unconstrained least-squares importance fitting
 }
 \examples{
+set.seed(1)
 x <- rnorm(100) |> matrix(100)
 y <- rnorm(200, 1, 2) |> matrix(200)
 ulsif(x, y)
 ulsif(x, y, sigma = 2, lambda = 2)
-
 }
