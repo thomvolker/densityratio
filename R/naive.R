@@ -1,4 +1,4 @@
-#' Predict function for density ratio estimation
+#' Predict function for density object
 #'
 #' @keywords internal
 predict.density <- function(object, newdata, lambda = 1e-9, log = FALSE) {
@@ -15,12 +15,34 @@ predict.density <- function(object, newdata, lambda = 1e-9, log = FALSE) {
   return(res)
 }
 
-#' Naive density ratio estimation
+#' Naive approach to density ratio estimation
+#'
+#' The naive approach creates separate kernel density estimates for
+#' the numerator and the denominator samples, and then evaluates their
+#' ratio for the denominator samples. For multivariate data, this
+#' approach assumes the variables are independent (naive Bayes assumption).
 #'
 #' @param nu Numeric matrix with numerator samples
 #' @param de Numeric matrix with denominator samples (must have the same
-#' variables as \code{nu})
-#' @param ... arguments passed to [stats::density]
+#' variables as `nu`)
+#' @param n the number of equally spaced points at which the density is to be
+#' estimated. When n > 512, it is rounded up to a power of 2 during the
+#' calculations (as fft is used) and the final result is interpolated by
+#' [stats::approx]. So it almost always makes sense to specify n as a power of
+#' two.
+#' @param ... further arguments passed to [stats::density]
+#'
+#' @return `naive` returns `rhat_de`, the estimated density ratio for
+#' the denominator samples.
+#'
+#' @importFrom stats density approx predict
+#'
+#' @examples
+#' x <- rnorm(100)
+#' y <- rnorm(200, 1, 2)
+#'
+#' naive(x, y)
+#' naive(x, y, bw = 2)
 #'
 #' @export
 naive <- function(nu, de, n = 2L^11, ...) {
@@ -28,7 +50,6 @@ naive <- function(nu, de, n = 2L^11, ...) {
   de <- as.matrix(de)
   N <- nrow(nu)
   P <- ncol(nu)
-
 
   # work on log scale
   # log-densities
@@ -47,16 +68,47 @@ naive <- function(nu, de, n = 2L^11, ...) {
   return(exp(ld_nu_de - ld_de_de))
 }
 
-#' Naive density ratio estimation
+#' Naive subspace density ratio estimation
+#'
+#' The naive subspace estimator first creates an m-dimensional representation
+#' of the data using singular value decomposition, and then runs the [naive]
+#' density ratio estimation procedure on the data projected on this subspace.
+#' The SVD is computed using the denominator samples.
 #'
 #' @param nu Numeric matrix with numerator samples
 #' @param de Numeric matrix with denominator samples (must have the same
-#' variables as \code{nu})
+#' variables as `nu`)
 #' @param m The size (in number of features) of the subspace
-#' @param ... arguments passed to [stats::density]
+#' @param n the number of equally spaced points at which the density is to be
+#' estimated. When n > 512, it is rounded up to a power of 2 during the
+#' calculations (as fft is used) and the final result is interpolated by
+#' [stats::approx]. So it almost always makes sense to specify n as a power of
+#' two.
+#' @param ... further arguments passed to [stats::density]
+#'
+#' @examples
+#' set.seed(456)
+#' # create data that differs only on the first variable
+#' N <- 100
+#' P <- 3 # P-1 noise variables
+#' X <- matrix(rnorm(N*P), N)
+#' Y <- cbind(rnorm(N, 1, 2), matrix(rnorm(N*P-N), N))
+#' Y <- Y[order(Y[,1]),] # order so we can make nice line plot
+#'
+#' # plot: true, naive, naive_subspace
+#' plot(Y[,1], dnorm(Y[,1]) / dnorm(Y[,1], 1, 2), type = "l", ylab = "Density ratio")
+#' lines(Y[,1], naive(X, Y), col = "lightblue")
+#' lines(Y[,1], naive_subspace(X, Y, 1), col = "darkorange")
 #'
 #' @export
-naive_subspace <- function(nu, de, m, ...) {
+naive_subspace <- function(nu, de, m, n = 2L^11, ...) {
+  nu <- as.matrix(nu)
+  de <- as.matrix(de)
+  N <- nrow(nu)
+  P <- ncol(nu)
+
+  if (m > P) stop("Subspace size must be smaller than number of variables!")
+
   # first, use svd to compute m-dimensional subspace
   # then, run naive()
   # project de to m-dimensional space

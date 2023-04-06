@@ -2,9 +2,9 @@
 % Please edit documentation in R/naive.R
 \name{naive_subspace}
 \alias{naive_subspace}
-\title{Naive density ratio estimation}
+\title{Naive subspace density ratio estimation}
 \usage{
-naive_subspace(nu, de, m, ...)
+naive_subspace(nu, de, m, n = 2L^11, ...)
 }
 \arguments{
 \item{nu}{Numeric matrix with numerator samples}
@@ -14,8 +14,32 @@ variables as \code{nu})}
 
 \item{m}{The size (in number of features) of the subspace}
 
-\item{...}{arguments passed to [stats::density]}
+\item{n}{the number of equally spaced points at which the density is to be
+estimated. When n > 512, it is rounded up to a power of 2 during the
+calculations (as fft is used) and the final result is interpolated by
+\link[stats:approxfun]{stats::approx}. So it almost always makes sense to specify n as a power of
+two.}
+
+\item{...}{further arguments passed to \link[stats:density]{stats::density}}
 }
 \description{
-Naive density ratio estimation
+The naive subspace estimator first creates an m-dimensional representation
+of the data using singular value decomposition, and then runs the \link{naive}
+density ratio estimation procedure on the data projected on this subspace.
+The SVD is computed using the denominator samples.
+}
+\examples{
+set.seed(456)
+# create data that differs only on the first variable
+N <- 100
+P <- 3 # P-1 noise variables
+X <- matrix(rnorm(N*P), N)
+Y <- cbind(rnorm(N, 1, 2), matrix(rnorm(N*P-N), N))
+Y <- Y[order(Y[,1]),] # order so we can make nice line plot
+
+# plot: true, naive, naive_subspace
+plot(Y[,1], dnorm(Y[,1]) / dnorm(Y[,1], 1, 2), type = "l", ylab = "Density ratio")
+lines(Y[,1], naive(X, Y), col = "lightblue")
+lines(Y[,1], naive_subspace(X, Y, 1), col = "darkorange")
+
 }
