@@ -16,4 +16,5 @@ Imports:
     pracma,
     expm
 LinkingTo: 
-    Rcpp
+    Rcpp,
+    RcppArmadillo

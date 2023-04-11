@@ -5,24 +5,31 @@
 #' observations in the input matrix
 #'
 #' @param x A numeric input matrix
-#' @param nr Number of rows of the input matrix
-#' @param nc Number of columns of the input matrix
 NULL
 
-distX <- function(x, nr, nc) {
-    .Call(`_densityratio_distX`, x, nr, nc)
+distX <- function(X) {
+    .Call(`_densityratio_distX`, X)
 }
 
 #' Create a Gram matrix with squared Euclidean distances between
-#' observations in the input matrix x and the input matrix y
-#' @param x A numeric input matrix
-#' @param y A numeric input matrix with the same variables as x
-#' @param nrx Number of rows of the input matrix x
-#' @param nry Number of rows of the input matrix y
-#' @param nc Number of columns of the input matrices x and y
+#' observations in the input matrix \code{X} and the input matrix \code{Y}
+#' @param X A numeric input matrix
+#' @param Y A numeric input matrix with the same variables as x
 NULL
 
-distXY <- function(x, y, nrx, nry, nc) {
-    .Call(`_densityratio_distXY`, x, y, nrx, nry, nc)
+distXY <- function(X, Y) {
+    .Call(`_densityratio_distXY`, X, Y)
+}
+
+Eucl_Norm <- function(X) {
+    .Call(`_densityratio_Eucl_Norm`, X)
+}
+
+#' Perform QR decomposition of the input matrix \code{X} through householder
+#' transformations, similar to Matlab's QR decomposition.
+#'
+#' @param X A numeric matrix.
+householder_QR <- function(X) {
+    .Call(`_densityratio_householder_QR`, X)
 }
 
