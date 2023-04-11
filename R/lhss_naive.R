@@ -1,7 +1,5 @@
 #' Least-squares heterodistributional subspace search (naive implementation)
 #'
-#' Unconstrained least-squares importance fitting
-#'
 #' @param nu Numeric matrix with numerator samples
 #' @param de Numeric matrix with denominator samples (must have the same
 #' variables as \code{nu})

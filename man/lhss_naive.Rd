@@ -44,7 +44,7 @@ default, the matrix \code{nu} is used as the matrix with Gaussian centers.}
 \code{lhss_naive} returns \code{rhat}, the estimated density ratio.
 }
 \description{
-Unconstrained least-squares importance fitting
+Least-squares heterodistributional subspace search (naive implementation)
 }
 \examples{
 set.seed(1)
