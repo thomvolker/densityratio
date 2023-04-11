@@ -22,12 +22,12 @@
 kernel_gaussian <- function(x, y = NULL, sigma = NULL) {
 
   if(!is.null(y)) {
-    distance <- distXY(x, y, nrow(x), nrow(y), ncol(x))
+    distance <- distXY(x, y)
     if (is.null(sigma)) {
       sigma <- median(distance) |> sqrt()
     }
   } else {
-    dist_vec <- distX(x, nrow(x), ncol(x))
+    dist_vec <- distX(x)
     distance <- matrix(0, nrow(x), nrow(x))
     distance[lower.tri(distance)] <- dist_vec
     distance <- distance + t(distance)

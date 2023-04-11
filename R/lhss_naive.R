@@ -65,7 +65,7 @@ lhss_naive <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
   nu_u  <- nu %*% U
   de_u  <- de %*% U
   ce_u  <- centers %*% U
-  sigma <- distX(nu_u, n_nu, m) |> median() |> sqrt()
+  sigma <- distX(nu_u) |> median() |> sqrt()
 
   phi_nu <- kernel_gaussian(nu_u, ce_u, sigma)
   phi_de <- kernel_gaussian(de_u, ce_u, sigma)
@@ -103,7 +103,7 @@ lhss_naive <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
 
     dPd1 <- matrix(0, p, m)
 
-    sigma <- distX(nu_u, n_nu, m) |> median() |> sqrt()
+    sigma <- distX(nu_u) |> median() |> sqrt()
     Ktemp <- kernel_gaussian(nu_u, ce_u, sigma)
 
 
@@ -149,7 +149,7 @@ lhss_naive <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
     ce_u <- centers %*% U
 
 
-    sigma <- distX(nu_u, n_nu, m) |> median() |> sqrt()
+    sigma <- distX(nu_u) |> median() |> sqrt()
 
     phi_nu <- kernel_gaussian(nu_u, ce_u, sigma)
     phi_de <- kernel_gaussian(de_u, ce_u, sigma)
