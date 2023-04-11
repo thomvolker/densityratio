@@ -6,8 +6,6 @@ using namespace arma;
 //' observations in the input matrix
 //'
 //' @param x A numeric input matrix
-//' @param nr Number of rows of the input matrix
-//' @param nc Number of columns of the input matrix
 
 // [[Rcpp::export]]
 arma::vec distX(arma::mat X) {

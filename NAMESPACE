@@ -2,6 +2,7 @@
 
 export(kliep)
 export(kmm)
+export(lhss)
 export(lhss_naive)
 export(ulsif)
 importFrom(Rcpp,sourceCpp)
