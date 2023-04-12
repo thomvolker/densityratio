@@ -9,7 +9,6 @@ using namespace arma;
 //' @param Y A numeric input matrix with the same variables as x
 
 // [[Rcpp::export]]
-
 arma::mat distXY(arma::mat X, arma::mat Y) {
   double dev, dist;
   int nrx = X.n_rows;
