@@ -26,7 +26,7 @@
 #' N <- 1000
 #' X <- cbind(rnorm(N), rnorm(N, 0, 0.5))
 #' Y <- cbind(rnorm(N), sample(rep(c(-1, 1), times = N/2)) + rnorm(N))
-#' out <- lhss_naive(X, Y, m = 1, ncenters = 100)
+#' out <- lhss(X, Y, m = 1, ncenters = 100)
 
 
 lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
@@ -40,10 +40,8 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
   n_nu <- nrow(nu)
   n_de <- nrow(de)
 
-  U <- matrix(1, p, m)
-  QR <- householder_QR(U)
-  Q <- QR$Q * sign(QR$R[1])
-  U <- Q[ , 1:m, drop = F]
+  U_init <- matrix(1, p, m)
+  U <- .update_UV(U_init, m, p)$U
 
   if (is.null(centers)) {
     if (ncenters < nrow(nu)) {
@@ -62,15 +60,15 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
   nu_u  <- nu %*% U
   de_u  <- de %*% U
   ce_u  <- centers %*% U
-  sigma <- distX(nu_u) |> median() |> sqrt()
+  sigma <- distX(nu_u) |> {\(x) x[lower.tri(x)]}() |> median() |> sqrt()
 
-  phi_nu <- kernel_gaussian(nu_u, ce_u, sigma)
-  phi_de <- kernel_gaussian(de_u, ce_u, sigma)
+  phi_nu <- kernel_gaussian(nu_u, ce_u, sigma)$gram
+  phi_de <- kernel_gaussian(de_u, ce_u, sigma)$gram
   Hhat   <- crossprod(phi_de) / n_de
   hhat   <- colMeans(phi_nu)
 
   eyeH   <- lambda * diag(ncenters)
-  alphat <- solve(Hhat + eyeH) %*% hhat
+  alphat <- solve(Hhat + eyeH, hhat)
   alphah <- pmax(0, alphat)
   PD_opt <- crossprod(hhat, alphah) - 0.5
   U_opt  <- U
@@ -88,25 +86,23 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
     iter <- iter + 1
     cat(paste0("\r Iteration: ", iter))
 
-    QR <- householder_QR(U)
-    Q  <- QR$Q * sign(QR$R[1])
-    U  <- Q[, 1:m, drop = FALSE]
-    V  <- Q[, (m + 1):p, drop = FALSE]
+    UV <- .update_UV(U, m, p)
+    U <- UV$U
+    V <- UV$V
 
     nu_u <- nu %*% U
     de_u <- de %*% U
     ce_u <- centers %*% U
-    h <- rep(0, p)
 
     dPd1 <- matrix(0, p, m)
 
-    sigma <- distX(nu_u) |> median() |> sqrt()
-    Ktemp <- kernel_gaussian(nu_u, ce_u, sigma)
+    sigma <- distX(nu_u) |> {\(x) x[lower.tri(x)]}() |> median() |> sqrt()
+    Ktemp <- kernel_gaussian(nu_u, ce_u, sigma)$gram
 
 
     for (i in 1:ncenters) {
-      temp <- -(nu_u - one_n_nu %*% t(ce_u[i, ])) * (Ktemp[, i] %*% one_m_T)
-      temp1 <- (nu - one_n_nu %*% t(centers[i, ]))
+      temp <- -(nu_u - tcrossprod(one_n_nu, ce_u[i, ])) * (Ktemp[, i] %*% one_m_T)
+      temp1 <- (nu - tcrossprod(one_n_nu, centers[i, ]))
       h <- crossprod(temp, temp1)
 
       dPd1 <- dPd1 + t(h) * alphah[i]
@@ -114,16 +110,16 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
 
     dPd1 <- dPd1 / n_nu / sigma
 
-    Ktemp <- kernel_gaussian(de_u, ce_u, sigma)
+    Ktemp <- kernel_gaussian(de_u, ce_u, sigma)$gram
     dPd2 <- matrix(0, p, m)
 
     for (i in 1:ncenters) {
-      temp11 <- (de_u - one_n_de %*% t(ce_u[i, ])) * (Ktemp[, i] %*% one_m_T)
-      tempx1 <- (de - one_n_de %*% t(centers[i, ]))
+      temp11 <- (de_u - tcrossprod(one_n_de, ce_u[i, ])) * (Ktemp[, i] %*% one_m_T)
+      tempx1 <- (de - tcrossprod(one_n_de, centers[i, ]))
 
       for (j in 1:m) {
         T11 <- temp11[, j] %*% one_n_ce_T * Ktemp
-        dPd2[, j] <- dPd2[, j] - t(tempx1) %*% T11 %*% alphah * alphah[i] * 2
+        dPd2[, j] <- dPd2[, j] - crossprod(tempx1, T11) %*% alphah * alphah[i] * 2
       }
     }
 
@@ -146,17 +142,18 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
     ce_u <- centers %*% U
 
 
-    sigma <- distX(nu_u) |> median() |> sqrt()
+    sigma <- distX(nu_u) |> {\(x) x[lower.tri(x)]}() |> median() |> sqrt()
 
-    phi_nu <- kernel_gaussian(nu_u, ce_u, sigma)
-    phi_de <- kernel_gaussian(de_u, ce_u, sigma)
+    phi_nu <- kernel_gaussian(nu_u, ce_u, sigma)$gram
+    phi_de <- kernel_gaussian(de_u, ce_u, sigma)$gram
     Hhat   <- crossprod(phi_de) / n_de
     hhat   <- colMeans(phi_nu)
 
-    alphat <- solve(Hhat + eyeH) %*% hhat
+    alphat <- solve(Hhat + eyeH, hhat)
     alphah <- pmax(0, alphat)
     PD <- crossprod(hhat, alphah) - 0.5
 
+    # TODO: investigate better stopping criterions (e.g., dynamic stepsize update (i.e., half current M))
     if (PD > PD_opt) {
       U_opt <- U
       alphah_opt <- alphah
@@ -176,4 +173,12 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
        alpha = alphah_opt,
        sigma = sigmatopt,
        PD = PD_opt)
+}
+
+.update_UV <- function(U, m, p) {
+  QR <- qr(U)
+  Q <- qr.Q(QR, complete = TRUE) * sign(qr.R(QR, complete = TRUE)[1])
+  U <- Q[, seq_len(m), drop = FALSE]
+  V <- Q[, seq(m+1, p), drop = FALSE]
+  list(U = U, V = V)
 }
