@@ -35,46 +35,21 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu),
   n_de <- nrow(de)
   p    <- ncol(nu)
 
-  if (!is.numeric(de) | !is.numeric(nu) | !p == ncol(de)) {
-    stop("Arguments de and nu must be matrices with the same variables")
-  }
-  if (!is.null(sigma)) {
-    if (!is.numeric(sigma) | length(sigma) > 1) {
-      stop("If provided, sigma must be a scalar")
-    }
-  }
-  if (!is.null(lambda)) {
-    if (!is.numeric(lambda) | length(lambda) > 1) {
-      stop("Only scalar values for lambda are currently accepted")
-    }
-  } else {
-    lambda <- sqrt(n_nu + n_de) ## Lambda max in regression ||XTY||_\infty (max value of XTY) see hastie, tibs, tibs 2020
-  }
-
-  symmetric <- FALSE
-
-  if (!is.numeric(ncenters) | length(ncenters) > 1) {
-    stop("ncenters must be a scalar value indicating how many centers are maximally accepted (for computational reasons)")
-  }
-  if (is.null(centers)) {
-    if (ncenters < nrow(nu)) {
-      centers <- nu[sample(n_nu, ncenters), ]
-    } else {
-      centers <- nu
-      symmetric <- TRUE
-    }
-  } else {
-    centers <- as.matrix(centers)
-    ncenters <- nrow(centers)
-    if (!is.numeric(centers) | ! p == ncol(centers)) {
-      stop("If centers are provided, they must have the same variables as the numerator samples")
-    }
-  }
+  check.dataform(nu, de)
+  check.sigma(sigma)
+  check.lambda(lambda)
+  centers <- check.centers(nu, centers, ncenters)
+  symmetric <- check.symmetric(centers, ncenters)
 
   phi_nu <- kernel_gaussian(distmat(nu, centers, symmetric), sigma, symmetric)
   phi_de <- kernel_gaussian(distmat(de, centers), sigma)
   Hhat   <- crossprod(phi_de) / n_de
   hhat   <- colMeans(phi_nu)
+
+  if (is.null(lambda)) {
+    lambda <- 1
+    # TODO: Better default, lambda_max in glmnet ||XTY||_\infty (max value of XTY) see hastie, tibs, tibs 2020
+  }
 
   theta <- .ulsif(Hhat, hhat, lambda, parallel, nthreads)
   theta
