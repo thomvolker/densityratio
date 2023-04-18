@@ -26,7 +26,7 @@
 #' ulsif(x, y, sigma = 2, lambda = 2)
 
 ulsif <- function(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu),
-                  centers = NULL) {
+                  centers = NULL, parallel = FALSE, nthreads = NULL) {
 
   nu <- as.matrix(nu)
   de <- as.matrix(de)
@@ -48,8 +48,10 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu),
       stop("Only scalar values for lambda are currently accepted")
     }
   } else {
-    lambda <- sqrt(n_nu + n_de)
+    lambda <- sqrt(n_nu + n_de) ## Lambda max in regression ||XTY||_\infty (max value of XTY) see hastie, tibs, tibs 2020
   }
+
+  symmetric <- FALSE
 
   if (!is.numeric(ncenters) | length(ncenters) > 1) {
     stop("ncenters must be a scalar value indicating how many centers are maximally accepted (for computational reasons)")
@@ -59,6 +61,7 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu),
       centers <- nu[sample(n_nu, ncenters), ]
     } else {
       centers <- nu
+      symmetric <- TRUE
     }
   } else {
     centers <- as.matrix(centers)
@@ -68,12 +71,24 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu),
     }
   }
 
- phi_nu <- kernel_gaussian(nu, centers, sigma)
- phi_de <- kernel_gaussian(de, centers, sigma)
- Hhat   <- crossprod(phi_de) / n_de
- one    <- diag(1, ncol(Hhat))
- hhat   <- colMeans(phi_nu)
+  phi_nu <- kernel_gaussian(distmat(nu, centers, symmetric), sigma, symmetric)
+  phi_de <- kernel_gaussian(distmat(de, centers), sigma)
+  Hhat   <- crossprod(phi_de) / n_de
+  hhat   <- colMeans(phi_nu)
 
- theta <- solve(Hhat + lambda * one) %*% hhat
- theta
+  theta <- .ulsif(Hhat, hhat, lambda, parallel, nthreads)
+  theta
+}
+
+.ulsif <- function(Hhat, hhat, lambda, parallel, nthreads) {
+  if (parallel) {
+    if (!is.null(nthreads)) {
+      stopifnot(is.numeric(nthreads), length(nthreads) == 1)
+    } else {
+      nthreads <- 0
+    }
+  } else {
+    nthreads <- 0
+  }
+  Cpp_ulsif(Hhat, hhat, lambda, parallel, nthreads)
 }

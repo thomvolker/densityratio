@@ -7,3 +7,9 @@ check.dataform <- function(nu, de) {
     stop("nu and de must contain exactly the same set of variables.")
   }
 }
+
+check.sigma <- function(sigma) {
+  if (!(is.null(sigma) | is.numeric(sigma)) | !is.null(dim(sigma))) {
+    stop("sigma must be either NULL, a numeric scalar or a numeric vector")
+  }
+}
