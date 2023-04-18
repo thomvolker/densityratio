@@ -13,3 +13,10 @@ check.sigma <- function(sigma) {
     stop("sigma must be either NULL, a numeric scalar or a numeric vector")
   }
 }
+
+
+check.lambda <- function(lambda) {
+  if (!(is.null(lambda) | is.numeric(lambda)) | !is.null(dim(lambda))) {
+    stop("lambda must be either NULL, a numeric scalar or a numeric vector")
+  }
+}
