@@ -4,7 +4,16 @@
 \alias{ulsif}
 \title{Unconstrained least-squares importance fitting}
 \usage{
-ulsif(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu), centers = NULL)
+ulsif(
+  nu,
+  de,
+  sigma = NULL,
+  lambda = NULL,
+  ncenters = nrow(nu),
+  centers = NULL,
+  parallel = FALSE,
+  nthreads = NULL
+)
 }
 \arguments{
 \item{nu}{Numeric matrix with numerator samples}
