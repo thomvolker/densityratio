@@ -63,10 +63,11 @@ lhss_naive <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
   nu_u  <- nu %*% U
   de_u  <- de %*% U
   ce_u  <- centers %*% U
-  sigma <- distX(nu_u) |> median() |> sqrt()
+  dist_nu_u <- distance(nu_u, ce_u)
+  sigma <- median_distance(dist_nu_u)
 
-  phi_nu <- kernel_gaussian(nu_u, ce_u, sigma)
-  phi_de <- kernel_gaussian(de_u, ce_u, sigma)
+  phi_nu <- kernel_gaussian(dist_nu_u, sigma)
+  phi_de <- kernel_gaussian(distance(de_u, ce_u), sigma)
   Hhat   <- crossprod(phi_de) / n_de
   hhat   <- colMeans(phi_nu)
 
@@ -101,8 +102,10 @@ lhss_naive <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
 
     dPd1 <- matrix(0, p, m)
 
-    sigma <- distX(nu_u) |> median() |> sqrt()
-    Ktemp <- kernel_gaussian(nu_u, ce_u, sigma)
+
+    dist_nu_u <- distance(nu_u, ce_u)
+    sigma <- median_distance(dist_nu_u)
+    Ktemp <- kernel_gaussian(dist_nu_u, sigma)
 
 
     for (i in 1:ncenters) {
@@ -115,7 +118,7 @@ lhss_naive <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
 
     dPd1 <- dPd1 / n_nu / sigma
 
-    Ktemp <- kernel_gaussian(de_u, ce_u, sigma)
+    Ktemp <- kernel_gaussian(distance(de_u, ce_u), sigma)
     dPd2 <- matrix(0, p, m)
 
     for (i in 1:ncenters) {
@@ -146,11 +149,11 @@ lhss_naive <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
     de_u <- de %*% U
     ce_u <- centers %*% U
 
+    dist_nu_u <- distance(nu_u, ce_u)
+    sigma <- median_distance(dist_nu_u)
 
-    sigma <- distX(nu_u) |> median() |> sqrt()
-
-    phi_nu <- kernel_gaussian(nu_u, ce_u, sigma)
-    phi_de <- kernel_gaussian(de_u, ce_u, sigma)
+    phi_nu <- kernel_gaussian(dist_nu_u, sigma)
+    phi_de <- kernel_gaussian(distance(de_u, ce_u), sigma)
     Hhat   <- crossprod(phi_de) / n_de
     hhat   <- colMeans(phi_nu)
 
