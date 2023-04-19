@@ -1,10 +1,8 @@
 #' Compute Gaussian Kernel Gram matrix
 #'
-#' @param x Matrix to compute Gaussian kernel gram matrix with
-#' @param y \code{NULL} or a matrix with the same variables as \code{x}.
-#' If \code{NULL}, the kernel gram matrix of \code{x} with itself is
-#' computed, otherwise, the kernel gram matrix of \code{x} with
-#' \code{y} is computed.
+#' @param distance Numeric distance matrix computed with \code{distance}
+#' @param symmetric Logical indicating whether the distance matrix is symmetric
+#' which can speed up calculations.
 #' @param sigma \code{NULL} or a scalar. If \code{NULL}, sigma is the
 #' median Euclidean interpoint distance.
 #' @return The Gaussian kernel gram matrix \eqn{\bf{K}}.
@@ -12,30 +10,28 @@
 #'
 #' @examples
 #' x <- rnorm(100) |> matrix(25, 4)
-#' densityratio:::kernel_gaussian(x)
+#' densityratio:::distance(x, x, TRUE) |> densityratio:::kernel_gaussian(symmetric = TRUE)
 #' y <- rnorm(200) |> matrix(50, 4)
-#' densityratio:::kernel_gaussian(x, y)
+#' densityratio:::distance(x, y) |> densityratio:::kernel_gaussian()
 #' sigma <- 5
-#' densityratio:::kernel_gaussian(x, y, sigma)
+#' densityratio:::distance(x, y) |> densityratio:::kernel_gaussian(sigma)
 
+kernel_gaussian <- function(distance, sigma = NULL, symmetric = FALSE) {
 
-kernel_gaussian <- function(x, y = NULL, sigma = NULL) {
-
-  if(!is.null(y)) {
-    distance <- distXY(x, y)
-    if (is.null(sigma)) {
-      sigma <- median(distance) |> sqrt()
-    }
-  } else {
-    dist_vec <- distX(x)
-    distance <- matrix(0, nrow(x), nrow(x))
-    distance[lower.tri(distance)] <- dist_vec
-    distance <- distance + t(distance)
-
-    if (is.null(sigma)) {
-      sigma <- median(distance[lower.tri(distance)]) |> sqrt()
-    }
+  if (!is.null(sigma)) {
+    stopifnot(is.numeric(sigma), length(sigma) == 1)
+  }
+  if (is.null(sigma)) {
+    sigma <- median_distance(distance, symmetric = symmetric)
   }
 
-  exp(-distance/(2*sigma^2))
+  exp(-distance / (2 * sigma * sigma))
+}
+
+median_distance <- function(distance, symmetric = FALSE) {
+  if (symmetric) {
+    sqrt(median(distance[lower.tri(distance)]))
+  } else {
+    sqrt(median(distance))
+  }
 }
