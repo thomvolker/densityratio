@@ -37,7 +37,7 @@ check.centers <- function(nu, centers, ncenters) {
       }
     }
   }
-  if (is.null(centers) & (is.null(ncenters))) {
+  if (is.null(centers) & (is.null(ncenters) | ncenters == nrow(nu))) {
     centers <- nu
   }
   if (is.null(centers) & !is.null(ncenters)) {
@@ -52,9 +52,51 @@ check.centers <- function(nu, centers, ncenters) {
 }
 
 check.symmetric <- function(centers, ncenters) {
-  if (is.null(centers) & (is.null(ncenters) | ncenters > nrow(centers))) {
+  if (is.null(centers) & (is.null(ncenters) | ncenters >= nrow(centers))) {
     TRUE
   } else {
     FALSE
   }
+}
+
+check.parallel <- function(parallel, nthreads, sigma, lambda) {
+  if (!is.logical(parallel)) {
+    stop("'parallel' must be either 'TRUE' or 'FALSE'")
+  }
+  if (parallel & length(sigma) == 1 & length(lambda) == 1) {
+    warning("Parallel processing only works for multiple 'sigma' and/or 'lambda' values")
+    parallel <- FALSE
+  }
+  if (is.numeric(nthreads)) {
+    if (parallel & nthreads < 2) {
+      warning("Parallel processing only works for 2 or more threads; parallel processing is disabled.")
+      parallel <- FALSE
+    }
+  }
+
+  parallel
+
+}
+
+check.threads <- function(parallel, nthreads) {
+
+  if (!parallel) {
+    if (!is.null(nthreads)) {
+      warning("Specifying 'nthreads' has no use without setting 'parallel = TRUE'")
+    }
+    nthreads <- 0
+  }
+  else {
+    if(!is.null(nthreads)) {
+      if(!(is.numeric(nthreads) & length(nthreads) == 1)) {
+        stop("If parallel processing is enabled, nthreads must be NULL or a positive integer.")
+      }
+      if(nthreads < 1) {
+        nthreads <- -1
+      }
+    } else {
+      nthreads <- 0
+    }
+  }
+  nthreads
 }
