@@ -60,35 +60,36 @@ kliep <- function(nu, de, sigma = NULL, ncenters = nrow(nu), centers = NULL,
       stop("If centers are provided, they must have the same variables as the numerator samples")
     }
   }
-    Phi <- kernel_gaussian(nu, centers, sigma) |> t()
-    phibar <- kernel_gaussian(de, centers, sigma) |> colMeans() |> matrix()
-    phibar_cp_phibar_inv <- phibar / c(crossprod(phibar))
 
-    theta <- rep(1, ncenters)
-    theta <- .impose_constraints(theta, phibar, phibar_cp_phibar_inv)
-    score <- mean(log(t(Phi) %*% theta))
+  Phi <- kernel_gaussian(distance(nu, centers), sigma) |> t()
+  phibar <- kernel_gaussian(distance(de, centers), sigma) |> colMeans()
+  phibar_cp_phibar_inv <- phibar / c(crossprod(phibar))
 
+  theta <- rep(1, ncenters)
+  theta <- .impose_constraints(theta, phibar, phibar_cp_phibar_inv)
+  score <- mean(log(crossprod(Phi, theta)))
+
+  conv <- FALSE
+  iter <- 0
+
+  for (e in eps) {
     conv <- FALSE
     iter <- 0
 
-    for (e in eps) {
-      conv <- FALSE
-      iter <- 0
-
-      while (!conv) {
-        iter <- iter+1
-        if(printFlag) cat(paste0("\r Iteration: ", iter))
-        t_temp  <- .gradient_ascent(theta, Phi, e)
-        t_new   <- .impose_constraints(t_temp, phibar, phibar_cp_phibar_inv)
-        s_new   <- mean(log(t(Phi) %*% t_new))
-        if (s_new - score <= 0 | iter == maxit) {
-          conv <- TRUE
-        } else {
-          score <- s_new
-          theta <- t_new
-        }
+    while (!conv) {
+      iter <- iter+1
+      if(printFlag) cat(paste0("\r Iteration: ", iter))
+      t_temp  <- .gradient_ascent(theta, Phi, e)
+      t_new   <- .impose_constraints(t_temp, phibar, phibar_cp_phibar_inv)
+      s_new   <- mean(log(crossprod(Phi, t_new)))
+      if (s_new - score <= 0 | iter == maxit) {
+        conv <- TRUE
+      } else {
+        score <- s_new
+        theta <- t_new
       }
     }
+  }
   theta
 }
 

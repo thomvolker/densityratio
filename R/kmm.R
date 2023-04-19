@@ -51,8 +51,8 @@ kmm <- function(nu, de, method = "unconstrained", sigma = NULL, lambda = NULL) {
     lambda <- sqrt(nrow(nu) + nrow(de))
   }
 
-  Kdede <- kernel_gaussian(de, sigma = sigma)
-  Kdenu <- kernel_gaussian(de, nu, sigma = sigma)
+  Kdede <- kernel_gaussian(distance(de, de, TRUE), sigma = sigma, symmetric = TRUE)
+  Kdenu <- kernel_gaussian(distance(de, nu), sigma = sigma)
 
   if (method == "unconstrained") {
     rhat_de <- .kmm_unconstrained(Kdede, Kdenu, lambda)
