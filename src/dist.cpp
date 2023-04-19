@@ -6,10 +6,11 @@ using namespace arma;
 //' Create a Gram matrix with squared Euclidean distances between
 //' observations in the input matrix \code{X} and the input matrix \code{Y}
 //' @param X A numeric input matrix
-//' @param Y A numeric input matrix with the same variables as x
+//' @param Y A numeric input matrix with the same variables as \code{X}
+//' @param symmetric A logical indicating whether X and Y are the same
 
 // [[Rcpp::export]]
-arma::mat distmat(arma::mat X, arma::mat Y, bool symmetric = false) {
+arma::mat distance(arma::mat X, arma::mat Y, bool symmetric = false) {
   double dev, dist;
   int nrx = X.n_rows;
   int nry = Y.n_rows;
