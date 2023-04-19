@@ -14,6 +14,10 @@
 #' @param centers Numeric matrix with the same variables as \code{nu} and
 #' \code{de} that are used as Gaussian centers in the kernel Gram matrix. By
 #' default, the matrix \code{nu} is used as the matrix with Gaussian centers.
+#' @param parallel Logical argument indicating whether the density ratio
+#' parameters should be calculated in parallel for different lambda values.
+#' @param nthreads Scalar value indicating the number of threads to use for
+#' parallel processing.
 #' @export
 #'
 #' @return \code{ulsif} returns \code{rhat}, the estimated density ratio.
@@ -36,13 +40,16 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu),
   p    <- ncol(nu)
 
   check.dataform(nu, de)
+  # TODO: Expand default sigma options (i.e., allow different default options (median distance, (LOO)CV, etc.))
   check.sigma(sigma)
   check.lambda(lambda)
-  centers <- check.centers(nu, centers, ncenters)
+  centers   <- check.centers(nu, centers, ncenters)
   symmetric <- check.symmetric(centers, ncenters)
+  parallel  <- check.parallel(parallel, nthreads, sigma, lambda)
+  nthreads  <- check.threads(parallel, nthreads)
 
-  phi_nu <- kernel_gaussian(distmat(nu, centers, symmetric), sigma, symmetric)
-  phi_de <- kernel_gaussian(distmat(de, centers), sigma)
+  phi_nu <- kernel_gaussian(distance(nu, centers, symmetric), sigma, symmetric)
+  phi_de <- kernel_gaussian(distance(de, centers), sigma)
   Hhat   <- crossprod(phi_de) / n_de
   hhat   <- colMeans(phi_nu)
 
@@ -51,19 +58,6 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu),
     # TODO: Better default, lambda_max in glmnet ||XTY||_\infty (max value of XTY) see hastie, tibs, tibs 2020
   }
 
-  theta <- .ulsif(Hhat, hhat, lambda, parallel, nthreads)
+  theta <- compute_ulsif(Hhat, hhat, lambda, parallel, nthreads)
   theta
-}
-
-.ulsif <- function(Hhat, hhat, lambda, parallel, nthreads) {
-  if (parallel) {
-    if (!is.null(nthreads)) {
-      stopifnot(is.numeric(nthreads), length(nthreads) == 1)
-    } else {
-      nthreads <- 0
-    }
-  } else {
-    nthreads <- 0
-  }
-  Cpp_ulsif(Hhat, hhat, lambda, parallel, nthreads)
 }
