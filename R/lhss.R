@@ -60,15 +60,15 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
   nu_u  <- nu %*% U
   de_u  <- de %*% U
   ce_u  <- centers %*% U
-  sigma <- distX(nu_u) |> {\(x) x[lower.tri(x)]}() |> median() |> sqrt()
+  dist_nu_u <- distance(nu_u, ce_u)
+  sigma <- median_distance(dist_nu_u)
 
-  phi_nu <- kernel_gaussian(nu_u, ce_u, sigma)$gram
-  phi_de <- kernel_gaussian(de_u, ce_u, sigma)$gram
+  phi_nu <- kernel_gaussian(dist_nu_u, sigma)
+  phi_de <- kernel_gaussian(distance(de_u, ce_u), sigma)
   Hhat   <- crossprod(phi_de) / n_de
   hhat   <- colMeans(phi_nu)
 
-  eyeH   <- lambda * diag(ncenters)
-  alphat <- solve(Hhat + eyeH, hhat)
+  alphat <- compute_ulsif(Hhat, hhat, lambda, FALSE, 0)
   alphah <- pmax(0, alphat)
   PD_opt <- crossprod(hhat, alphah) - 0.5
   U_opt  <- U
@@ -96,8 +96,9 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
 
     dPd1 <- matrix(0, p, m)
 
-    sigma <- distX(nu_u) |> {\(x) x[lower.tri(x)]}() |> median() |> sqrt()
-    Ktemp <- kernel_gaussian(nu_u, ce_u, sigma)$gram
+    dist_nu_u <- distance(nu_u, ce_u)
+    sigma <- median_distance(dist_nu_u)
+    Ktemp <- kernel_gaussian(dist_nu_u, sigma)
 
 
     for (i in 1:ncenters) {
@@ -110,7 +111,7 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
 
     dPd1 <- dPd1 / n_nu / sigma
 
-    Ktemp <- kernel_gaussian(de_u, ce_u, sigma)$gram
+    Ktemp <- kernel_gaussian(distance(de_u, ce_u), sigma)
     dPd2 <- matrix(0, p, m)
 
     for (i in 1:ncenters) {
@@ -141,15 +142,15 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
     de_u <- de %*% U
     ce_u <- centers %*% U
 
+    dist_nu_u <- distance(nu_u, ce_u)
+    sigma <- median_distance(dist_nu_u)
 
-    sigma <- distX(nu_u) |> {\(x) x[lower.tri(x)]}() |> median() |> sqrt()
-
-    phi_nu <- kernel_gaussian(nu_u, ce_u, sigma)$gram
-    phi_de <- kernel_gaussian(de_u, ce_u, sigma)$gram
+    phi_nu <- kernel_gaussian(dist_nu_u, sigma)
+    phi_de <- kernel_gaussian(distance(de_u, ce_u), sigma)
     Hhat   <- crossprod(phi_de) / n_de
     hhat   <- colMeans(phi_nu)
 
-    alphat <- solve(Hhat + eyeH, hhat)
+    alphat <- compute_ulsif(Hhat, hhat, lambda, FALSE, 0)
     alphah <- pmax(0, alphat)
     PD <- crossprod(hhat, alphah) - 0.5
 
