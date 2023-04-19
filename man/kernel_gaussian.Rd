@@ -4,18 +4,16 @@
 \alias{kernel_gaussian}
 \title{Compute Gaussian Kernel Gram matrix}
 \usage{
-kernel_gaussian(x, y = NULL, sigma = NULL)
+kernel_gaussian(distance, sigma = NULL, symmetric = FALSE)
 }
 \arguments{
-\item{x}{Matrix to compute Gaussian kernel gram matrix with}
-
-\item{y}{\code{NULL} or a matrix with the same variables as \code{x}.
-If \code{NULL}, the kernel gram matrix of \code{x} with itself is
-computed, otherwise, the kernel gram matrix of \code{x} with
-\code{y} is computed.}
+\item{distance}{Numeric distance matrix computed with \code{distance}}
 
 \item{sigma}{\code{NULL} or a scalar. If \code{NULL}, sigma is the
 median Euclidean interpoint distance.}
+
+\item{symmetric}{Logical indicating whether the distance matrix is symmetric
+which can speed up calculations.}
 }
 \value{
 The Gaussian kernel gram matrix \eqn{\bf{K}}.
@@ -25,9 +23,9 @@ Compute Gaussian Kernel Gram matrix
 }
 \examples{
 x <- rnorm(100) |> matrix(25, 4)
-densityratio:::kernel_gaussian(x)
+densityratio:::distance(x, x, TRUE) |> densityratio:::kernel_gaussian(symmetric = TRUE)
 y <- rnorm(200) |> matrix(50, 4)
-densityratio:::kernel_gaussian(x, y)
+densityratio:::distance(x, y) |> densityratio:::kernel_gaussian()
 sigma <- 5
-densityratio:::kernel_gaussian(x, y, sigma)
+densityratio:::distance(x, y) |> densityratio:::kernel_gaussian(sigma)
 }

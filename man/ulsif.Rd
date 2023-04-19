@@ -35,6 +35,12 @@ matrix. Defaults to all numerator samples.}
 \item{centers}{Numeric matrix with the same variables as \code{nu} and
 \code{de} that are used as Gaussian centers in the kernel Gram matrix. By
 default, the matrix \code{nu} is used as the matrix with Gaussian centers.}
+
+\item{parallel}{Logical argument indicating whether the density ratio
+parameters should be calculated in parallel for different lambda values.}
+
+\item{nthreads}{Scalar value indicating the number of threads to use for
+parallel processing.}
 }
 \value{
 \code{ulsif} returns \code{rhat}, the estimated density ratio.
