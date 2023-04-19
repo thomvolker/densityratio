@@ -11,37 +11,16 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// distX
-arma::vec distX(arma::mat X);
-RcppExport SEXP _densityratio_distX(SEXP XSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(distX(X));
-    return rcpp_result_gen;
-END_RCPP
-}
-// distXY
-arma::mat distXY(arma::mat X, arma::mat Y);
-RcppExport SEXP _densityratio_distXY(SEXP XSEXP, SEXP YSEXP) {
+// distance
+arma::mat distance(arma::mat X, arma::mat Y, bool symmetric);
+RcppExport SEXP _densityratio_distance(SEXP XSEXP, SEXP YSEXP, SEXP symmetricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Y(YSEXP);
-    rcpp_result_gen = Rcpp::wrap(distXY(X, Y));
-    return rcpp_result_gen;
-END_RCPP
-}
-// Eucl_Norm
-double Eucl_Norm(arma::vec X);
-RcppExport SEXP _densityratio_Eucl_Norm(SEXP XSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(Eucl_Norm(X));
+    Rcpp::traits::input_parameter< bool >::type symmetric(symmetricSEXP);
+    rcpp_result_gen = Rcpp::wrap(distance(X, Y, symmetric));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -56,12 +35,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// compute_ulsif
+arma::mat compute_ulsif(arma::mat& Hhat, arma::vec& hhat, arma::vec& lambda, bool parallel, int nthreads);
+RcppExport SEXP _densityratio_compute_ulsif(SEXP HhatSEXP, SEXP hhatSEXP, SEXP lambdaSEXP, SEXP parallelSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type Hhat(HhatSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type hhat(hhatSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< bool >::type parallel(parallelSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_ulsif(Hhat, hhat, lambda, parallel, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_densityratio_distX", (DL_FUNC) &_densityratio_distX, 1},
-    {"_densityratio_distXY", (DL_FUNC) &_densityratio_distXY, 2},
-    {"_densityratio_Eucl_Norm", (DL_FUNC) &_densityratio_Eucl_Norm, 1},
+    {"_densityratio_distance", (DL_FUNC) &_densityratio_distance, 3},
     {"_densityratio_householder_QR", (DL_FUNC) &_densityratio_householder_QR, 1},
+    {"_densityratio_compute_ulsif", (DL_FUNC) &_densityratio_compute_ulsif, 5},
     {NULL, NULL, 0}
 };
 
