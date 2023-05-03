@@ -22,7 +22,23 @@ householder_QR <- function(X) {
     .Call(`_densityratio_householder_QR`, X)
 }
 
-compute_ulsif <- function(Hhat, hhat, lambda, parallel, nthreads) {
-    .Call(`_densityratio_compute_ulsif`, Hhat, hhat, lambda, parallel, nthreads)
+compute_alpha <- function(Hhat, hhat, lambda) {
+    .Call(`_densityratio_compute_alpha`, Hhat, hhat, lambda)
+}
+
+set_threads <- function(nthreads) {
+    .Call(`_densityratio_set_threads`, nthreads)
+}
+
+make_Hhat <- function(dist_de, sigma) {
+    .Call(`_densityratio_make_Hhat`, dist_de, sigma)
+}
+
+make_hhat <- function(dist_nu, sigma) {
+    .Call(`_densityratio_make_hhat`, dist_nu, sigma)
+}
+
+compute_ulsif <- function(dist_nu, dist_de, sigma, lambda, parallel, nthreads) {
+    .Call(`_densityratio_compute_ulsif`, dist_nu, dist_de, sigma, lambda, parallel, nthreads)
 }
 

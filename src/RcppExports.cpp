@@ -35,18 +35,67 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// compute_ulsif
-arma::mat compute_ulsif(arma::mat& Hhat, arma::vec& hhat, arma::vec& lambda, bool parallel, int nthreads);
-RcppExport SEXP _densityratio_compute_ulsif(SEXP HhatSEXP, SEXP hhatSEXP, SEXP lambdaSEXP, SEXP parallelSEXP, SEXP nthreadsSEXP) {
+// compute_alpha
+arma::vec compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double lambda);
+RcppExport SEXP _densityratio_compute_alpha(SEXP HhatSEXP, SEXP hhatSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type Hhat(HhatSEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type hhat(hhatSEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Hhat(HhatSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type hhat(hhatSEXP);
+    Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_alpha(Hhat, hhat, lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// set_threads
+int set_threads(int nthreads);
+RcppExport SEXP _densityratio_set_threads(SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(set_threads(nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// make_Hhat
+arma::mat make_Hhat(arma::mat dist_de, double sigma);
+RcppExport SEXP _densityratio_make_Hhat(SEXP dist_deSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type dist_de(dist_deSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(make_Hhat(dist_de, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// make_hhat
+arma::mat make_hhat(arma::mat dist_nu, double sigma);
+RcppExport SEXP _densityratio_make_hhat(SEXP dist_nuSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type dist_nu(dist_nuSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(make_hhat(dist_nu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// compute_ulsif
+List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::vec lambda, bool parallel, int nthreads);
+RcppExport SEXP _densityratio_compute_ulsif(SEXP dist_nuSEXP, SEXP dist_deSEXP, SEXP sigmaSEXP, SEXP lambdaSEXP, SEXP parallelSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type dist_nu(dist_nuSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type dist_de(dist_deSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< bool >::type parallel(parallelSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_ulsif(Hhat, hhat, lambda, parallel, nthreads));
+    rcpp_result_gen = Rcpp::wrap(compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -54,7 +103,11 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_densityratio_distance", (DL_FUNC) &_densityratio_distance, 3},
     {"_densityratio_householder_QR", (DL_FUNC) &_densityratio_householder_QR, 1},
-    {"_densityratio_compute_ulsif", (DL_FUNC) &_densityratio_compute_ulsif, 5},
+    {"_densityratio_compute_alpha", (DL_FUNC) &_densityratio_compute_alpha, 3},
+    {"_densityratio_set_threads", (DL_FUNC) &_densityratio_set_threads, 1},
+    {"_densityratio_make_Hhat", (DL_FUNC) &_densityratio_make_Hhat, 2},
+    {"_densityratio_make_hhat", (DL_FUNC) &_densityratio_make_hhat, 2},
+    {"_densityratio_compute_ulsif", (DL_FUNC) &_densityratio_compute_ulsif, 6},
     {NULL, NULL, 0}
 };
 
