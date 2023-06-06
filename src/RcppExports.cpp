@@ -24,6 +24,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// kernel_gaussian
+arma::mat kernel_gaussian(arma::mat dist, double sigma);
+RcppExport SEXP _densityratio_kernel_gaussian(SEXP distSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type dist(distSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(kernel_gaussian(dist, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
 // householder_QR
 List householder_QR(arma::mat X);
 RcppExport SEXP _densityratio_householder_QR(SEXP XSEXP) {
@@ -36,14 +48,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // compute_alpha
-arma::vec compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double lambda);
+arma::vec compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double& lambda);
 RcppExport SEXP _densityratio_compute_alpha(SEXP HhatSEXP, SEXP hhatSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type Hhat(HhatSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type hhat(hhatSEXP);
-    Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
     rcpp_result_gen = Rcpp::wrap(compute_alpha(Hhat, hhat, lambda));
     return rcpp_result_gen;
 END_RCPP
@@ -59,33 +71,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// make_Hhat
-arma::mat make_Hhat(arma::mat dist_de, double sigma);
-RcppExport SEXP _densityratio_make_Hhat(SEXP dist_deSEXP, SEXP sigmaSEXP) {
+// compute_ulsif_loocv
+double compute_ulsif_loocv(arma::mat Hhat, const arma::mat& hhat, const double& lambda, const int& nnu, const int& nde, const int& nmin, const int& ncol, const arma::mat& Knu_nmin, const arma::mat& Kde_nmin);
+RcppExport SEXP _densityratio_compute_ulsif_loocv(SEXP HhatSEXP, SEXP hhatSEXP, SEXP lambdaSEXP, SEXP nnuSEXP, SEXP ndeSEXP, SEXP nminSEXP, SEXP ncolSEXP, SEXP Knu_nminSEXP, SEXP Kde_nminSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type dist_de(dist_deSEXP);
-    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(make_Hhat(dist_de, sigma));
-    return rcpp_result_gen;
-END_RCPP
-}
-// make_hhat
-arma::mat make_hhat(arma::mat dist_nu, double sigma);
-RcppExport SEXP _densityratio_make_hhat(SEXP dist_nuSEXP, SEXP sigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type dist_nu(dist_nuSEXP);
-    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(make_hhat(dist_nu, sigma));
+    Rcpp::traits::input_parameter< arma::mat >::type Hhat(HhatSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type hhat(hhatSEXP);
+    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nnu(nnuSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nde(ndeSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nmin(nminSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ncol(ncolSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Knu_nmin(Knu_nminSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kde_nmin(Kde_nminSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_ulsif_loocv(Hhat, hhat, lambda, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin));
     return rcpp_result_gen;
 END_RCPP
 }
 // compute_ulsif
-List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::vec lambda, bool parallel, int nthreads);
-RcppExport SEXP _densityratio_compute_ulsif(SEXP dist_nuSEXP, SEXP dist_deSEXP, SEXP sigmaSEXP, SEXP lambdaSEXP, SEXP parallelSEXP, SEXP nthreadsSEXP) {
+List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::vec lambda, bool parallel, int nthreads, bool progressbar);
+RcppExport SEXP _densityratio_compute_ulsif(SEXP dist_nuSEXP, SEXP dist_deSEXP, SEXP sigmaSEXP, SEXP lambdaSEXP, SEXP parallelSEXP, SEXP nthreadsSEXP, SEXP progressbarSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -95,19 +102,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< bool >::type parallel(parallelSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads));
+    Rcpp::traits::input_parameter< bool >::type progressbar(progressbarSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_densityratio_distance", (DL_FUNC) &_densityratio_distance, 3},
+    {"_densityratio_kernel_gaussian", (DL_FUNC) &_densityratio_kernel_gaussian, 2},
     {"_densityratio_householder_QR", (DL_FUNC) &_densityratio_householder_QR, 1},
     {"_densityratio_compute_alpha", (DL_FUNC) &_densityratio_compute_alpha, 3},
     {"_densityratio_set_threads", (DL_FUNC) &_densityratio_set_threads, 1},
-    {"_densityratio_make_Hhat", (DL_FUNC) &_densityratio_make_Hhat, 2},
-    {"_densityratio_make_hhat", (DL_FUNC) &_densityratio_make_hhat, 2},
-    {"_densityratio_compute_ulsif", (DL_FUNC) &_densityratio_compute_ulsif, 6},
+    {"_densityratio_compute_ulsif_loocv", (DL_FUNC) &_densityratio_compute_ulsif_loocv, 9},
+    {"_densityratio_compute_ulsif", (DL_FUNC) &_densityratio_compute_ulsif, 7},
     {NULL, NULL, 0}
 };
 

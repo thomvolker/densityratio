@@ -12,6 +12,10 @@ distance <- function(X, Y, symmetric = FALSE) {
     .Call(`_densityratio_distance`, X, Y, symmetric)
 }
 
+kernel_gaussian <- function(dist, sigma) {
+    .Call(`_densityratio_kernel_gaussian`, dist, sigma)
+}
+
 #' Perform QR decomposition of the input matrix \code{X} through householder
 #' transformations, similar to Matlab's QR decomposition.
 #'
@@ -30,15 +34,11 @@ set_threads <- function(nthreads) {
     .Call(`_densityratio_set_threads`, nthreads)
 }
 
-make_Hhat <- function(dist_de, sigma) {
-    .Call(`_densityratio_make_Hhat`, dist_de, sigma)
+compute_ulsif_loocv <- function(Hhat, hhat, lambda, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin) {
+    .Call(`_densityratio_compute_ulsif_loocv`, Hhat, hhat, lambda, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin)
 }
 
-make_hhat <- function(dist_nu, sigma) {
-    .Call(`_densityratio_make_hhat`, dist_nu, sigma)
-}
-
-compute_ulsif <- function(dist_nu, dist_de, sigma, lambda, parallel, nthreads) {
-    .Call(`_densityratio_compute_ulsif`, dist_nu, dist_de, sigma, lambda, parallel, nthreads)
+compute_ulsif <- function(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar) {
+    .Call(`_densityratio_compute_ulsif`, dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar)
 }
 
