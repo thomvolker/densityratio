@@ -29,8 +29,10 @@
 #' ulsif(x, y)
 #' ulsif(x, y, sigma = 2, lambda = 2)
 
-ulsif <- function(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu),
-                  centers = NULL, parallel = FALSE, nthreads = NULL) {
+ulsif <- function(nu, de, nsigma = 10, sigma_quantile = NULL, sigma = NULL,
+                  nlambda = 20, lambda = NULL, ncenters = 200,
+                  centers = NULL, parallel = FALSE, nthreads = NULL,
+                  progressbar = TRUE) {
 
   nu <- as.matrix(nu)
   de <- as.matrix(de)
@@ -40,24 +42,32 @@ ulsif <- function(nu, de, sigma = NULL, lambda = NULL, ncenters = nrow(nu),
   p    <- ncol(nu)
 
   check.dataform(nu, de)
-  # TODO: Expand default sigma options (i.e., allow different default options (median distance, (LOO)CV, etc.))
-  check.sigma(sigma)
-  check.lambda(lambda)
   centers   <- check.centers(nu, centers, ncenters)
-  symmetric <- check.symmetric(centers, ncenters)
+  symmetric <- check.symmetric(nu, centers)
   parallel  <- check.parallel(parallel, nthreads, sigma, lambda)
   nthreads  <- check.threads(parallel, nthreads)
 
-  phi_nu <- kernel_gaussian(distance(nu, centers, symmetric), sigma, symmetric)
-  phi_de <- kernel_gaussian(distance(de, centers), sigma)
-  Hhat   <- crossprod(phi_de) / n_de
-  hhat   <- colMeans(phi_nu)
+  dist_nu <- distance(nu, centers, symmetric)
+  dist_de <- distance(de, centers)
 
-  if (is.null(lambda)) {
-    lambda <- 1
-    # TODO: Better default, lambda_max in glmnet ||XTY||_\infty (max value of XTY) see hastie, tibs, tibs 2020
-  }
+  sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
+  lambda <- check.lambda(nlambda, lambda)
 
-  theta <- compute_ulsif(Hhat, hhat, lambda, parallel, nthreads)
-  theta
+  res <- compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar)
+  min_score <- which.min(res$loocv_score) - 1
+  alpha_min <- c(lambda =  min_score %% length(lambda) + 1,
+                 sigma = min_score %/% length(lambda) + 1)
+
+  out <- list(
+    alpha = res$alpha,
+    loocv_score = res$loocv_score,
+    sigma = sigma,
+    lambda = lambda,
+    centers = centers,
+    alpha_min = res$alpha[, alpha_min["lambda"], alpha_min["sigma"]],
+    lambda_min = lambda[alpha_min["lambda"]],
+    sigma_min = sigma[alpha_min["sigma"]]
+  )
+  class(out) <- "dratio"
+  out
 }
