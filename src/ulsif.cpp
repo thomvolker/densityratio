@@ -1,11 +1,16 @@
+//[[Rcpp::depends(RcppArmadillo)]]
+//[[Rcpp::depends(RcppProgress)]]
 #include <RcppArmadillo.h>
 #include <omp.h>
 #include "densityratio.h"
+#include <progress.hpp>
+#include <progress_bar.hpp>
 using namespace Rcpp;
 using namespace arma;
 
+
 //[[Rcpp::export]]
-arma::vec compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double lambda) {
+arma::vec compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double& lambda) {
   Hhat.diag() += lambda;
   arma::vec alpha = arma::solve(Hhat, hhat);
   return alpha;
@@ -17,60 +22,94 @@ int set_threads(int nthreads) {
   if (nthreads == 0) {
     nthreads = max_threads;
   }
-  if (nthreads > max_threads || nthreads == -1) {
+  if (nthreads > max_threads) {
     nthreads = max_threads;
-    std::string warn = "'nthreads' must specify the number of threads to use for parallel processing; it is set to the maximum number of threads available (" + std::to_string(nthreads) + ")";
+    std::string warn = "'nthreads' exceeds the maximum number of threads to use for parallel processing; it is set to the maximum number of threads available (" + std::to_string(nthreads) + ")";
     Rf_warningcall(R_NilValue, warn.c_str());
   }
   return nthreads;
 }
 
 //[[Rcpp::export]]
-arma::mat make_Hhat(arma::mat dist_de, double sigma) {
-  int n_de = dist_de.n_rows;
-  arma::mat phi_de = kernel_gaussian(dist_de, sigma);
-  arma::mat Hhat = phi_de.t() * phi_de / n_de;
-  return Hhat;
+double compute_ulsif_loocv(arma::mat Hhat, const arma::mat& hhat, const double& lambda, const int& nnu, const int& nde, const int& nmin, const int& ncol, const arma::mat& Knu_nmin, const arma::mat& Kde_nmin) {
+  double la = lambda * (nde - 1) / nde;
+
+  arma::vec onen = arma::ones<arma::vec>(nmin);
+  arma::vec oneb = arma::ones<arma::vec>(ncol);
+
+  arma::mat Binv = arma::inv(Hhat + arma::diagmat(oneb * la));
+  arma::mat B0   = repmat(Binv * hhat, 1, nmin);
+  arma::mat B02  = Kde_nmin * Binv;
+  B0 += B02.t() * diagmat(B02 * hhat / (nde - sum(Kde_nmin % B02, 1)));
+
+  arma::mat B1  = (Knu_nmin * Binv).t();
+  arma::vec B12 = sum(Knu_nmin % B02, 1) / (nmin - sum(Kde_nmin % B02, 1));
+  B1 += B02.t() * diagmat(B12);
+
+  arma::mat B2  = (nnu * B0 - B1) * (nde - 1) / (nde * (nnu - 1));
+  B2.elem(find(B2 < 0)).zeros();
+
+  arma::vec wtr = sum(Kde_nmin % B2.t(), 1);
+  arma::vec wte = sum(Knu_nmin % B2.t(), 1);
+
+  return as_scalar(arma::dot(wtr, wtr) / (2*nmin) - mean(wte));
 }
 
 //[[Rcpp::export]]
-arma::mat make_hhat(arma::mat dist_nu, double sigma) {
-  arma::mat phi_nu = kernel_gaussian(dist_nu, sigma);
-  arma::mat hhat = arma::mean(phi_nu, 0);
-  return hhat.t();
-}
+List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::vec lambda, bool parallel, int nthreads, bool progressbar) {
 
-//[[Rcpp::export]]
-List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::vec lambda, bool parallel, int nthreads) {
-
-  arma::vec s = make_sigma(dist_nu, sigma);
-  double si;
-  int nsigma  = s.size();
+  double si, la;
+  bool stopped = false;
+  int nsigma  = sigma.size();
   int nlambda = lambda.size();
-  int nc = dist_nu.n_cols;
+  int nnu = dist_nu.n_rows;
+  int nde = dist_de.n_rows;
+  int nmin = (nnu <= nde) ? nnu : nde;
+  int ncol = dist_nu.n_cols;
   int sig, l;
 
-  arma::mat diagmat = arma::eye<arma::mat>(nc, nc);
-  arma::mat Hhat = arma::zeros<arma::mat>(nc, nc);
-  arma::mat hhat = arma::zeros<arma::mat>(nc);
-  arma::cube alpha(nc, nlambda, nsigma, arma::fill::zeros);
+  arma::vec loocv = arma::zeros<arma::vec>(nsigma*nlambda);
+  arma::mat diagmat = arma::eye<arma::mat>(ncol, ncol);
+  arma::mat phi_nu = arma::zeros<arma::mat>(nnu, ncol);
+  arma::mat phi_de = arma::zeros<arma::mat>(nde, ncol);
+  arma::mat Hhat = arma::zeros<arma::mat>(ncol, ncol);
+  arma::vec Hhat_diag = Hhat.diag();
+  arma::vec hhat = arma::zeros<arma::vec>(ncol);
+  arma::mat Knu = arma::zeros<arma::mat>(nnu, ncol);
+  arma::mat Kde = arma::zeros<arma::mat>(nde, ncol);
+  arma::cube alpha(ncol, nlambda, nsigma, arma::fill::zeros);
 
   if (parallel) {
     nthreads = set_threads(nthreads);
   }
+  Progress p(nsigma * nlambda, progressbar);
+
   for(sig = 0; sig < nsigma; sig++) {
-    si = s[sig];
-    Hhat = make_Hhat(dist_de, si);
-    hhat = make_hhat(dist_nu, si);
-#pragma omp parallel for num_threads(nthreads) if (parallel)
+    si = sigma[sig];
+    Knu = kernel_gaussian(dist_nu, si);
+    Kde = kernel_gaussian(dist_de, si);
+    Hhat = Kde.t() * Kde / nde;
+    hhat = arma::mean(Knu, 0).t();
+#pragma omp parallel for num_threads(nthreads) private(la) if (parallel)
     for(l = 0; l < nlambda; l++) {
-      alpha.slice(sig).col(l) = compute_alpha(Hhat, hhat, lambda(l));
+      if(!Progress::check_abort()) {
+        la = lambda[l];
+        p.increment();
+        alpha.slice(sig).col(l) = compute_alpha(Hhat, hhat, la);
+        loocv(sig * nlambda + l) = compute_ulsif_loocv(Hhat, hhat, la, nnu, nde, nmin, ncol, Knu.rows(0, nmin-1), Kde.rows(0,nmin-1));
+      } else {
+        stopped = true;
+      }
+    }
+    if (stopped) {
+      Rcpp::stop("User terminated execution.");
+      R_FlushConsole();
     }
   }
+
   List out = List::create(
     Named("alpha") = alpha,
-    Named("lambda") = lambda,
-    Named("sigma") = s
+    Named("loocv_score") = loocv
   );
   return out;
 }
