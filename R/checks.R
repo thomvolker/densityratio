@@ -1,4 +1,4 @@
-
+#' @importFrom stats quantile
 check.dataform <- function(nu, de) {
   if (! (is.numeric(nu) & is.numeric(de))) {
     stop("Currently only numeric data is supported.")
@@ -8,7 +8,7 @@ check.dataform <- function(nu, de) {
   }
 }
 
-check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
+check.sigma <- function(nsigma, sigma_quantile, sigma, dist_de) {
 
   # if sigma is specified, ignore 'nsigma' and 'sigma_quantile' and leave sigma as is
   if (!is.null(sigma)) {
@@ -23,7 +23,7 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
       stop("If 'sigma_quantile' is specified, the values must be larger than 0 and smaller than 1.")
     } else {
       p <- sigma_quantile
-      sigma <- quantile(dist_nu, p)
+      sigma <- quantile(dist_de, p)
     }
   }
   # if both sigma and sigma_quantile are not specified, specify the quantiles linearly, based on nsigma
@@ -34,8 +34,12 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
       if (nsigma < 1) {
         stop("'nsigma' must be a positive scalar.")
       }
-      p <- seq(1, nsigma) / (nsigma + 1)
-      sigma <- quantile(dist_nu, p)
+      else if (nsigma == 1) {
+        sigma <- median(dist_de)
+      } else {
+        p <- seq(0.25, 0.75, length.out = nsigma)
+        sigma <- quantile(dist_de, p)
+      }
     }
   }
   sigma
@@ -124,4 +128,80 @@ check.threads <- function(parallel, nthreads) {
     }
   }
   nthreads
+}
+
+check.epsilon <- function(epsilon) {
+  if (!(is.null(epsilon))) {
+    if (!is.numeric(epsilon) | !is.null(dim(epsilon))) {
+      stop("'eps' must be either NULL, a numeric scalar or a numeric vector.")
+    }
+  } else {
+    epsilon <- 10^{3:-3}
+  }
+  epsilon
+}
+
+check.maxit <- function(maxit) {
+  if(maxit < 0) {
+    stop("'maxit' must be a positive scalar")
+  }
+  maxit
+}
+
+check.nfold <- function(cv, nfold, sigma, nnu) {
+
+  if (!cv) {
+    cv_ind <- rep(0, nnu)
+  } else if (cv & is.null(nfold)) {
+    cv_ind <- sample(rep_len(0:4, nnu))
+  } else {
+    if (!is.numeric(nfold) | length(nfold) > 1) {
+      stop("'nfold' must be a positive scalar indicating the number of cross-validation folds.")
+    } else if (nfold < 2 | nfold > nnu) {
+      stop(paste0("'nfold' must be at least 2 and at most the number of numerator samples (", nnu, ")"))
+    } else {
+      if (length(sigma) == 1) {
+        warning("Only a single 'sigma' value is specified, while cross-validation serves to optimize 'sigma'")
+      }
+      cv_ind <- sample(rep_len(0:(nfold-1), nnu))
+    }
+  }
+  cv_ind
+}
+
+check.sigma.predict <- function(object, sigma) {
+  if (sigma == "sigmaopt") {
+    sigma <- object$sigma_opt
+  } else if (sigma == "all") {
+    sigma <- object$sigma
+  } else if (is.numeric(sigma) & is.vector(sigma)) {
+    sigma <- sigma
+  } else {
+    stop("'sigma' must be 'sigmaopt', 'all' or a numeric scalar or vector with values to use as sigma parameter")
+  }
+  sigma
+}
+
+check.lambda.predict <- function(object, lambda) {
+  if (lambda == "lambdaopt") {
+    lambda <- object$lambda_opt
+  } else if (lambda == "all") {
+    lambda <- object$lambda
+  } else if (is.numeric(lambda) & is.vector(lambda)) {
+    lambda <- lambda
+  } else {
+    stop("'lambda' must be 'lambdaopt', 'all' or a numeric scalar or vector with values to use as sigma parameter")
+  }
+  lambda
+}
+
+check.newdata <- function(object, newdata) {
+  if (!is.null(newdata)) {
+    newdata <- as.matrix(newdata)
+    check.dataform(object$nu, newdata)
+  }
+  else {
+    newdata <- object$nu
+  }
+  newdata
 }
