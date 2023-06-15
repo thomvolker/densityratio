@@ -26,8 +26,24 @@ householder_QR <- function(X) {
     .Call(`_densityratio_householder_QR`, X)
 }
 
-compute_alpha <- function(Hhat, hhat, lambda) {
-    .Call(`_densityratio_compute_alpha`, Hhat, hhat, lambda)
+make_Phi <- function(dist_nu, sigma) {
+    .Call(`_densityratio_make_Phi`, dist_nu, sigma)
+}
+
+make_phibar <- function(dist_de, sigma) {
+    .Call(`_densityratio_make_phibar`, dist_de, sigma)
+}
+
+kliep_compute_alpha <- function(Phi, phibar, phibar_corr, epsilon, nepsilon, maxit, progressbar) {
+    .Call(`_densityratio_kliep_compute_alpha`, Phi, phibar, phibar_corr, epsilon, nepsilon, maxit, progressbar)
+}
+
+compute_kliep <- function(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar) {
+    .Call(`_densityratio_compute_kliep`, dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
+}
+
+ulsif_compute_alpha <- function(Hhat, hhat, lambda) {
+    .Call(`_densityratio_ulsif_compute_alpha`, Hhat, hhat, lambda)
 }
 
 set_threads <- function(nthreads) {
