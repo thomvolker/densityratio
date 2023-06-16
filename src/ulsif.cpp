@@ -10,7 +10,7 @@ using namespace arma;
 
 
 //[[Rcpp::export]]
-arma::vec compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double& lambda) {
+arma::vec ulsif_compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double& lambda) {
   Hhat.diag() += lambda;
   arma::vec alpha = arma::solve(Hhat, hhat);
   return alpha;
@@ -92,16 +92,19 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
     hhat = arma::mean(Knu, 0).t();
 #pragma omp parallel for num_threads(nthreads) private(la) if (parallel)
     for(l = 0; l < nlambda; l++) {
-      if(!Progress::check_abort()) {
+      if(Progress::check_abort()) {
+        stopped = true;
+      } else {
         la = lambda[l];
         p.increment();
-        alpha.slice(sig).col(l) = compute_alpha(Hhat, hhat, la);
+        alpha.slice(sig).col(l) = ulsif_compute_alpha(Hhat, hhat, la);
         loocv(sig * nlambda + l) = compute_ulsif_loocv(Hhat, hhat, la, nnu, nde, nmin, ncol, Knu.rows(0, nmin-1), Kde.rows(0,nmin-1));
-      } else {
-        stopped = true;
       }
     }
     if (stopped) {
+      if (progressbar) {
+        Rprintf("\n");
+      }
       Rcpp::stop("User terminated execution.");
       R_FlushConsole();
     }
