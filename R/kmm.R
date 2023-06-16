@@ -1,8 +1,10 @@
 #' Kernel mean matching approach to density ratio estimation
 #'
-#' @param nu Numeric matrix with numerator samples
-#' @param de Numeric matrix with denominator samples (must have the same
-#' variables as \code{nu})
+#' @param df_numerator \code{data.frame} with exclusively numeric variables with
+#' the numerator samples
+#' @param df_denominator \code{data.frame} with exclusively numeric variables
+#' with the denominator samples (must have the same variables as
+#' \code{df_denominator})
 #' @param method Character string containing the method used for kernel mean
 #' matching. Currently, \code{method = "unconstrained"} and
 #' \code{method = "constrained"} are supported.
@@ -25,12 +27,18 @@
 #' kmm(x, y, sigma = 2, lambda = 2)
 #'
 
-kmm <- function(nu, de, method = "unconstrained", sigma = NULL, lambda = NULL) {
+kmm <- function(df_numerator, df_denominator, method = "unconstrained", sigma = NULL, lambda = NULL) {
 
-  nu <- as.matrix(nu)
-  de <- as.matrix(de)
+  cl <- match.call()
+  nu <- as.matrix(df_numerator)
+  de <- as.matrix(df_denominator)
+
+  check.dataform(nu, de)
 
   methods <- c("unconstrained", "constrained")
+
+  # TODO: checks not implemented because currently cross-validation is not an option
+  # in Kernel mean matching. This is something for the future.
 
   if (length(method) > 1 | !method %in% methods) {
     stop(paste("Method must be a single method: constrained or unconstrained"))
@@ -51,8 +59,15 @@ kmm <- function(nu, de, method = "unconstrained", sigma = NULL, lambda = NULL) {
     lambda <- sqrt(nrow(nu) + nrow(de))
   }
 
-  Kdede <- kernel_gaussian(distance(de, de, TRUE), sigma = sigma, symmetric = TRUE)
-  Kdenu <- kernel_gaussian(distance(de, nu), sigma = sigma)
+  distdede <- distance(de, de, TRUE)
+  distdenu <- distance(de, nu)
+  if (is.null(sigma)) {
+    sigma <- median_distance(distdenu)
+  }
+
+
+  Kdede <- kernel_gaussian(distdede, sigma = sigma)
+  Kdenu <- kernel_gaussian(distdenu, sigma = sigma)
 
   if (method == "unconstrained") {
     rhat_de <- .kmm_unconstrained(Kdede, Kdenu, lambda)
@@ -60,7 +75,14 @@ kmm <- function(nu, de, method = "unconstrained", sigma = NULL, lambda = NULL) {
   if (method == "constrained") {
     rhat_de <- .kmm_constrained(Kdede, Kdenu, lambda)
   }
-  list(rhat_de = rhat_de)
+
+  out <- list(rhat_de = rhat_de,
+              sigma = sigma,
+              lambda = lambda,
+              call = cl)
+  class(out) <- "kmm"
+
+  out
 
 }
 
