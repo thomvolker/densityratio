@@ -89,8 +89,7 @@ kmm <- function(df_numerator, df_denominator, method = "unconstrained", sigma = 
 .kmm_unconstrained <- function(Kdede, Kdenu, lambda) {
   nnu <- ncol(Kdenu)
   nde <- nrow(Kdede)
-  one <- rep(1, nnu)
-  nde/nnu * solve(Kdede + lambda*diag(nde)) %*% Kdenu %*% one
+  nde/nnu * solve(Kdede + lambda*diag(nde), Kdenu %*% rep(1, nnu))
 }
 
 .kmm_constrained <- function(Kdede, Kdenu, lambda) {
