@@ -1,26 +1,38 @@
 #' Unconstrained least-squares importance fitting
 #'
-#' @param nu Numeric matrix with numerator samples
-#' @param de Numeric matrix with denominator samples (must have the same
-#' variables as \code{nu})
+#' @param df_numerator \code{data.frame} with exclusively numeric variables with
+#' the numerator samples
+#' @param df_denominator \code{data.frame} with exclusively numeric variables
+#' with the denominator samples (must have the same variables as
+#' \code{df_denominator})
+#' @param nsigma Integer indicating the number of sigma values (bandwidth
+#' parameter of the Gaussian kernel gram matrix) to use in cross-validation.
+#' @param sigma_quantile \code{NULL} or numeric vector with probabilities to
+#' calculate the quantiles of the distance matrix to obtain sigma values. If
+#' \code{NULL}, \code{nsigma} values between \code{0.25} and \code{0.75} are
+#' used.
 #' @param sigma \code{NULL} or a scalar value to determine the bandwidth of the
-#' Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
-#' interpoint distance.
-#' @param lambda \code{NULL} or a scalar value to determine the regularization
-#' imposed on the Gaussian kernel gram matrix of the denominator samples. If
-#' \code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.
+#' Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
+#' \code{0.25} and \code{0.75} are used.
+#' @param nlambda Integer indicating the number of \code{lambda} values
+#' (regularization parameter), by default, \code{lambda} is set to
+#' \code{10^seq(3, -3, length.out = nlambda)}.
+#' @param lambda \code{NULL} or numeric vector indicating the lambda values to
+#' use in cross-validation
 #' @param ncenters Maximum number of Gaussian centers in the kernel gram
 #' matrix. Defaults to all numerator samples.
-#' @param centers Numeric matrix with the same variables as \code{nu} and
-#' \code{de} that are used as Gaussian centers in the kernel Gram matrix. By
-#' default, the matrix \code{nu} is used as the matrix with Gaussian centers.
-#' @param parallel Logical argument indicating whether the density ratio
-#' parameters should be calculated in parallel for different lambda values.
-#' @param nthreads Scalar value indicating the number of threads to use for
-#' parallel processing.
+#' @param centers \code{NULL} or numeric matrix with the same dimensions as the
+#' data, indicating the centers for the Gaussian kernel gram matrix.
+#' @param parallel logical indicating whether to use parallel processing in the
+#' cross-validation scheme.
+#' @param nthreads \code{NULL} or integer indicating the number of threads to
+#' use for parallel processing. If parallel processing is enabled, it defaults
+#' to the number of available threads minus one.
+#' @param progressbar Logical indicating whether or not to display a progressbar.
 #' @export
 #'
-#' @return \code{ulsif} returns \code{rhat}, the estimated density ratio.
+#' @return \code{ulsif}-object, containing all information to calculate the
+#' density ratio using optimal sigma and optimal weights.
 #'
 #' @examples
 #' set.seed(1)
@@ -29,17 +41,14 @@
 #' ulsif(x, y)
 #' ulsif(x, y, sigma = 2, lambda = 2)
 
-ulsif <- function(nu, de, nsigma = 10, sigma_quantile = NULL, sigma = NULL,
+ulsif <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NULL, sigma = NULL,
                   nlambda = 20, lambda = NULL, ncenters = 200,
                   centers = NULL, parallel = FALSE, nthreads = NULL,
                   progressbar = TRUE) {
 
-  nu <- as.matrix(nu)
-  de <- as.matrix(de)
-
-  n_nu <- nrow(nu)
-  n_de <- nrow(de)
-  p    <- ncol(nu)
+  cl <- match.call()
+  nu <- as.matrix(df_numerator)
+  de <- as.matrix(df_denominator)
 
   check.dataform(nu, de)
   centers   <- check.centers(nu, centers, ncenters)
@@ -50,7 +59,7 @@ ulsif <- function(nu, de, nsigma = 10, sigma_quantile = NULL, sigma = NULL,
   dist_nu <- distance(nu, centers, symmetric)
   dist_de <- distance(de, centers)
 
-  sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
+  sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_de)
   lambda <- check.lambda(nlambda, lambda)
 
   res <- compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar)
@@ -59,15 +68,18 @@ ulsif <- function(nu, de, nsigma = 10, sigma_quantile = NULL, sigma = NULL,
                  sigma = min_score %/% length(lambda) + 1)
 
   out <- list(
+    nu = nu,
+    de = de,
     alpha = res$alpha,
-    loocv_score = res$loocv_score,
+    cv_score = res$loocv_score,
     sigma = sigma,
     lambda = lambda,
     centers = centers,
-    alpha_min = res$alpha[, alpha_min["lambda"], alpha_min["sigma"]],
-    lambda_min = lambda[alpha_min["lambda"]],
-    sigma_min = sigma[alpha_min["sigma"]]
+    alpha_opt = res$alpha[, alpha_min["lambda"], alpha_min["sigma"]],
+    lambda_opt = lambda[alpha_min["lambda"]],
+    sigma_opt = sigma[alpha_min["sigma"]],
+    call = cl
   )
-  class(out) <- "dratio"
+  class(out) <- "ulsif"
   out
 }
