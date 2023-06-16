@@ -4,13 +4,21 @@
 \alias{kmm}
 \title{Kernel mean matching approach to density ratio estimation}
 \usage{
-kmm(nu, de, method = "unconstrained", sigma = NULL, lambda = NULL)
+kmm(
+  df_numerator,
+  df_denominator,
+  method = "unconstrained",
+  sigma = NULL,
+  lambda = NULL
+)
 }
 \arguments{
-\item{nu}{Numeric matrix with numerator samples}
+\item{df_numerator}{\code{data.frame} with exclusively numeric variables with
+the numerator samples}
 
-\item{de}{Numeric matrix with denominator samples (must have the same
-variables as \code{nu})}
+\item{df_denominator}{\code{data.frame} with exclusively numeric variables
+with the denominator samples (must have the same variables as
+\code{df_denominator})}
 
 \item{method}{Character string containing the method used for kernel mean
 matching. Currently, \code{method = "unconstrained"} and

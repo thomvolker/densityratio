@@ -5,41 +5,61 @@
 \title{Kullback-Leibler importance estimation procedure}
 \usage{
 kliep(
-  nu,
-  de,
+  df_numerator,
+  df_denominator,
+  nsigma = 10,
+  sigma_quantile = NULL,
   sigma = NULL,
-  ncenters = nrow(nu),
+  ncenters = 200,
   centers = NULL,
-  eps = 0.001,
+  cv = TRUE,
+  nfold = NULL,
+  epsilon = NULL,
   maxit = 100,
-  printFlag = T
+  progressbar = TRUE
 )
 }
 \arguments{
-\item{nu}{Numeric matrix with numerator samples}
+\item{df_numerator}{\code{data.frame} with exclusively numeric variables with
+the numerator samples}
 
-\item{de}{Numeric matrix with denominator samples (must have the same
-variables as \code{nu})}
+\item{df_denominator}{\code{data.frame} with exclusively numeric variables
+with the denominator samples (must have the same variables as
+\code{df_denominator})}
+
+\item{nsigma}{Integer indicating the number of sigma values (bandwidth
+parameter of the Gaussian kernel gram matrix) to use in cross-validation.}
+
+\item{sigma_quantile}{\code{NULL} or numeric vector with probabilities to
+calculate the quantiles of the distance matrix to obtain sigma values. If
+\code{NULL}, \code{nsigma} values between \code{0.25} and \code{0.75} are
+used.}
 
 \item{sigma}{\code{NULL} or a scalar value to determine the bandwidth of the
-Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
-interpoint distance.}
+Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
+\code{0.25} and \code{0.75} are used.}
 
 \item{ncenters}{Maximum number of Gaussian centers in the kernel gram
 matrix. Defaults to all numerator samples.}
 
 \item{centers}{Option to specify the Gaussian samples manually.}
 
-\item{eps}{Learning rate for the optimization procedure (can be a vector)}
+\item{cv}{Logical indicating whether or not to do cross-validation}
+
+\item{nfold}{Number of cross-validation folds used in order to calculate the
+optimal \code{sigma} value (default is 5-fold cv).}
+
+\item{epsilon}{Numeric scalar or vector with the learning rate for the
+gradient-ascent procedure. If a vector, all values are used as the learning
+rate. By default, \code{10^{3:-3}} is used.}
 
 \item{maxit}{Maximum number of iterations for the optimization scheme.}
 
-\item{printFlag}{Whether or not to print the progress of the optimization
-scheme.}
+\item{progressbar}{Logical indicating whether or not to display a progressbar.}
 }
 \value{
-\code{kliep} returns \code{rhat_de}, the estimated density ratio for
-the denominator samples.
+\code{dratio}-object, containing all information to calculate the
+density ratio using optimal sigma and optimal weights.
 }
 \description{
 Kullback-Leibler importance estimation procedure
@@ -49,6 +69,6 @@ set.seed(1)
 x <- rnorm(100) |> matrix(100)
 y <- rnorm(200, 1, 2) |> matrix(200)
 kliep(x, y)
-kliep(x, y, sigma = 2)
+kliep(x, y, nsigma = 20, ncenters = 100, nfold = 20, epsilon = 10^{3:-5}, maxit = 1000)
 
 }
