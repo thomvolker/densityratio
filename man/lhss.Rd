@@ -5,21 +5,23 @@
 \title{Least-squares heterodistributional subspace search}
 \usage{
 lhss(
-  nu,
-  de,
+  df_numerator,
+  df_denominator,
   m = 1,
   sigma = NULL,
   lambda = 1,
-  ncenters = nrow(nu),
+  ncenters = 200,
   centers = NULL,
   maxit = 200
 )
 }
 \arguments{
-\item{nu}{Numeric matrix with numerator samples}
+\item{df_numerator}{\code{data.frame} with exclusively numeric variables with
+the numerator samples}
 
-\item{de}{Numeric matrix with denominator samples (must have the same
-variables as \code{nu})}
+\item{df_denominator}{\code{data.frame} with exclusively numeric variables
+with the denominator samples (must have the same variables as
+\code{df_denominator})}
 
 \item{m}{Scalar indicating the dimensionality of the reduced subspace}
 
