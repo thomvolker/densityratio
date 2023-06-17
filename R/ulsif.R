@@ -68,8 +68,8 @@ ulsif <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NU
                  sigma = min_score %/% length(lambda) + 1)
 
   out <- list(
-    nu = nu,
-    de = de,
+    df_numerator = df_numerator,
+    df_denominator = df_denominator,
     alpha = res$alpha,
     cv_score = res$loocv_score,
     sigma = sigma,
