@@ -1,5 +1,14 @@
+#' Obtain predicted density ratio values from a \code{ulsif} object
+#'
+#' @rdname predict
+#' @param object Object of class \code{ulsif} or \code{kliep}
+#' @return An array with predicted density ratio values from possibly new data,
+#' but otherwise the numerator samples.
+#' @method predict ulsif
+#' @export
 
-predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), lambda = c("lambdaopt", "all")) {
+
+predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), lambda = c("lambdaopt", "all"), ...) {
 
   newsigma  <- check.sigma.predict(object, sigma)
   newlambda <- check.lambda.predict(object, lambda)
@@ -12,14 +21,22 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
 
   for (i in 1:nsigma) {
     K <- distance(newdata, object$centers) |> kernel_gaussian(newsigma[i])
-    for (j in 1:length(lambda)) {
+    for (j in 1:nlambda) {
       dratio[ , j, i] <- K %*% alpha[, j, i]
     }
   }
   dratio
 }
 
-predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all")) {
+#' Obtain predicted density ratio values from a \code{kliep} object
+#'
+#' @rdname predict
+#' @return An array with predicted density ratio values from possibly new data,
+#' but otherwise the numerator samples.
+#' @method predict kliep
+#' @export
+
+predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), ...) {
   newsigma <- check.sigma.predict(object, sigma)
   newdata  <- check.newdata(object, newdata)
 
