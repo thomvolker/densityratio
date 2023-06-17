@@ -1,8 +1,10 @@
 #' Least-squares heterodistributional subspace search
 #'
-#' @param nu Numeric matrix with numerator samples
-#' @param de Numeric matrix with denominator samples (must have the same
-#' variables as \code{nu})
+#' @param df_numerator \code{data.frame} with exclusively numeric variables with
+#' the numerator samples
+#' @param df_denominator \code{data.frame} with exclusively numeric variables
+#' with the denominator samples (must have the same variables as
+#' \code{df_denominator})
 #' @param m Scalar indicating the dimensionality of the reduced subspace
 #' @param sigma \code{NULL} or a scalar value to determine the bandwidth of the
 #' Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
@@ -29,12 +31,13 @@
 #' out <- lhss(X, Y, m = 1, ncenters = 100)
 
 
-lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
-                       ncenters = nrow(nu), centers = NULL, maxit = 200) {
-  # TO DO: Add checks
+lhss <- function(df_numerator, df_denominator, m = 1, sigma = NULL, lambda = 1,
+                 ncenters = 200, centers = NULL, maxit = 200) {
+  # TODO: Add checks
 
-  nu <- as.matrix(nu)
-  de <- as.matrix(de)
+  cl <- match.call()
+  nu <- as.matrix(df_numerator)
+  de <- as.matrix(df_denominator)
 
   p <- ncol(nu)
   n_nu <- nrow(nu)
@@ -61,14 +64,10 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
   de_u  <- de %*% U
   ce_u  <- centers %*% U
   dist_nu_u <- distance(nu_u, ce_u)
+  dist_de_u <- distance(de_u, ce_u)
   sigma <- median_distance(dist_nu_u)
 
-  phi_nu <- kernel_gaussian(dist_nu_u, sigma)
-  phi_de <- kernel_gaussian(distance(de_u, ce_u), sigma)
-  Hhat   <- crossprod(phi_de) / n_de
-  hhat   <- colMeans(phi_nu)
-
-  alphat <- compute_ulsif(Hhat, hhat, lambda, FALSE, 0)
+  alphat <- compute_ulsif(dist_nu_u, dist_de_u, sigma, lambda, FALSE, 0, FALSE)
   alphah <- pmax(0, alphat)
   PD_opt <- crossprod(hhat, alphah) - 0.5
   U_opt  <- U
@@ -173,7 +172,8 @@ lhss <- function(nu, de, m = 1, sigma = NULL, lambda = 1,
   list(U = U_opt,
        alpha = alphah_opt,
        sigma = sigmatopt,
-       PD = PD_opt)
+       PD = PD_opt,
+       call = cl)
 }
 
 .update_UV <- function(U, m, p) {
