@@ -170,27 +170,33 @@ check.nfold <- function(cv, nfold, sigma, nnu) {
 }
 
 check.sigma.predict <- function(object, sigma) {
-  if (sigma == "sigmaopt") {
-    sigma <- object$sigma_opt
-  } else if (sigma == "all") {
-    sigma <- object$sigma
+  if (is.character(sigma)) {
+    sigma <- match.arg(sigma, c("sigmaopt", "all"))
+    if (sigma == "sigmaopt") {
+      sigma <- object$sigma_opt
+    } else if (sigma == "all") {
+      sigma <- object$sigma
+    }
   } else if (is.numeric(sigma) & is.vector(sigma)) {
     sigma <- sigma
   } else {
-    stop("'sigma' must be 'sigmaopt', 'all' or a numeric scalar or vector with values to use as sigma parameter")
+    stop("'sigma' should be one of 'sigmaopt', 'all' or a numeric scalar or vector with values to use as sigma parameter")
   }
   sigma
 }
 
 check.lambda.predict <- function(object, lambda) {
-  if (lambda == "lambdaopt") {
-    lambda <- object$lambda_opt
-  } else if (lambda == "all") {
-    lambda <- object$lambda
+  if (is.character(lambda)) {
+    lambda <- match.arg(lambda, c("lambdaopt", "all"))
+    if (lambda == "lambdaopt") {
+      lambda <- object$lambda_opt
+    } else if (lambda == "all") {
+      lambda <- object$lambda
+    }
   } else if (is.numeric(lambda) & is.vector(lambda)) {
     lambda <- lambda
   } else {
-    stop("'lambda' must be 'lambdaopt', 'all' or a numeric scalar or vector with values to use as sigma parameter")
+    stop("'lambda' should be one of 'lambdaopt', 'all' or a numeric scalar or vector with values to use as lambda parameter")
   }
   lambda
 }
@@ -198,10 +204,10 @@ check.lambda.predict <- function(object, lambda) {
 check.newdata <- function(object, newdata) {
   if (!is.null(newdata)) {
     newdata <- as.matrix(newdata)
-    check.dataform(object$nu, newdata)
+    check.dataform(object$df_numerator, newdata)
   }
   else {
-    newdata <- object$nu
+    newdata <- as.matrix(object$df_numerator)
   }
   newdata
 }
