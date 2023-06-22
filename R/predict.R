@@ -17,7 +17,7 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
   alpha   <- extract.alpha(object, newsigma, newlambda)
   nlambda <- dim(alpha)[2]
   nsigma  <- dim(alpha)[3]
-  dratio  <- array(0, c(nrow(alpha), nlambda, nsigma))
+  dratio  <- array(0, c(nrow(newdata), nlambda, nsigma))
 
   for (i in 1:nsigma) {
     K <- distance(newdata, object$centers) |> kernel_gaussian(newsigma[i])
@@ -42,7 +42,7 @@ predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
 
   alpha <- extract.alpha(object, newsigma, lambda = NULL)
   nsigma <- ncol(alpha)
-  dratio <- matrix(0, nrow(alpha), nsigma)
+  dratio <- matrix(0, nrow(newdata), nsigma)
 
   for (i in 1:nsigma) {
     K <- distance(newdata, object$centers) |> kernel_gaussian(newsigma[i])

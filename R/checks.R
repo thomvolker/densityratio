@@ -204,7 +204,7 @@ check.lambda.predict <- function(object, lambda) {
 check.newdata <- function(object, newdata) {
   if (!is.null(newdata)) {
     newdata <- as.matrix(newdata)
-    check.dataform(object$df_numerator, newdata)
+    check.dataform(as.matrix(object$df_numerator), newdata)
   }
   else {
     newdata <- as.matrix(object$df_numerator)
