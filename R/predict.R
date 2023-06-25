@@ -2,6 +2,15 @@
 #'
 #' @rdname predict
 #' @param object Object of class \code{ulsif} or \code{kliep}
+#' @param newdata Optional \code{matrix} new data set to compute the density
+#' ratio values of.
+#' @param sigma Either one of c("sigmaopt", "all") for the optimal sigma value
+#' or all sigma values used to far, or a scalar or numeric vector with new
+#' sigma values to use.
+#' @param lambda Either one of c("lambdaopt", "all") for the optimal lambda
+#' value or all lambda values used so far, or a scalar or numeric vector with
+#' new lambda values to use.
+#' @param ... further arguments passed to or from other methods.
 #' @return An array with predicted density ratio values from possibly new data,
 #' but otherwise the numerator samples.
 #' @method predict ulsif
@@ -31,8 +40,6 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
 #' Obtain predicted density ratio values from a \code{kliep} object
 #'
 #' @rdname predict
-#' @return An array with predicted density ratio values from possibly new data,
-#' but otherwise the numerator samples.
 #' @method predict kliep
 #' @export
 

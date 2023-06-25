@@ -17,11 +17,21 @@
 }
 \arguments{
 \item{object}{Object of class \code{ulsif} or \code{kliep}}
+
+\item{newdata}{Optional \code{matrix} new data set to compute the density
+ratio values of.}
+
+\item{sigma}{Either one of c("sigmaopt", "all") for the optimal sigma value
+or all sigma values used to far, or a scalar or numeric vector with new
+sigma values to use.}
+
+\item{lambda}{Either one of c("lambdaopt", "all") for the optimal lambda
+value or all lambda values used so far, or a scalar or numeric vector with
+new lambda values to use.}
+
+\item{...}{further arguments passed to or from other methods.}
 }
 \value{
-An array with predicted density ratio values from possibly new data,
-but otherwise the numerator samples.
-
 An array with predicted density ratio values from possibly new data,
 but otherwise the numerator samples.
 }
