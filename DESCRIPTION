@@ -14,7 +14,8 @@ Imports:
     quadprog,
     Rcpp,
     pracma,
-    expm
+    expm,
+    pbapply
 LinkingTo: 
     Rcpp,
     RcppArmadillo,
