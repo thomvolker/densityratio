@@ -2,17 +2,27 @@
 % Please edit documentation in R/print.R
 \name{print.ulsif}
 \alias{print.ulsif}
+\alias{print.summary.ulsif}
 \alias{print.kliep}
 \title{Print a \code{ulsif} object}
 \usage{
-\method{print}{ulsif}(object, digits = max(3L, getOption("digits") - 3L), ...)
+\method{print}{ulsif}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
-\method{print}{kliep}(object, digits = max(3L, getOption("digits") - 3L), ...)
+\method{print}{summary.ulsif}(x, digits = max(3L, getOption("digits") - 3L), ...)
+
+\method{print}{kliep}(x, digits = max(3L, getOption("digits") - 3L), ...)
 }
 \arguments{
-\item{object}{Object of class \code{ulsif} or \code{kliep}}
+\item{x}{Object of class \code{ulsif}, \code{summary.ulsif}, \code{kliep}
+or \code{summary.kliep}.}
+
+\item{digits}{Number of digits to use when printing the output.}
+
+\item{...}{further arguments on how to format the number of digits.}
 }
 \value{
+\code{invisble} The inputted \code{ulsif} object.
+
 \code{NULL}
 
 \code{NULL}
@@ -20,5 +30,7 @@
 \description{
 Print a \code{ulsif} object
 
-Print a \code{ulsif} object
+Print a \code{summary.ulsif} object
+
+Print a \code{kliep} object
 }
