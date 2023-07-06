@@ -75,7 +75,7 @@ extract.alpha <- function(object, sigma, lambda) {
       which_lambda <- which(object$lambda %in% lambda)
       alpha <- object$alpha[ , which_lambda, which_sigma, drop = FALSE]
     } else {
-      alpha <- ulsif(object$numerator, object$denominator, sigma = sigma,
+      alpha <- ulsif(object$df_numerator, object$df_denominator, sigma = sigma,
                      lambda = lambda, centers = object$centers, progressbar = FALSE)$alpha
     }
   }
