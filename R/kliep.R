@@ -55,7 +55,7 @@ kliep <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NU
   dist_nu <- distance(nu, centers, symmetric)
   dist_de <- distance(de, centers)
 
-  sigma   <- check.sigma(nsigma, sigma_quantile, sigma, dist_de)
+  sigma   <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   epsilon <- check.epsilon(epsilon)
   maxit   <- check.maxit(maxit)
   cv_ind  <- check.nfold(cv, nfold, sigma, nnu)

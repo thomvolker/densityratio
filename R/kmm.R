@@ -62,7 +62,7 @@ kmm <- function(df_numerator, df_denominator, method = "unconstrained", sigma = 
   distdede <- distance(de, de, TRUE)
   distdenu <- distance(de, nu)
   if (is.null(sigma)) {
-    sigma <- median_distance(distdenu)
+    sigma <- median_distance(distdede)
   }
 
 

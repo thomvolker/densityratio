@@ -59,7 +59,7 @@ ulsif <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NU
   dist_nu <- distance(nu, centers, symmetric)
   dist_de <- distance(de, centers)
 
-  sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_de)
+  sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   lambda <- check.lambda(nlambda, lambda)
 
   res <- compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar)
