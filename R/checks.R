@@ -8,8 +8,9 @@ check.dataform <- function(nu, de) {
   }
 }
 
-check.sigma <- function(nsigma, sigma_quantile, sigma, dist_de) {
-
+check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
+  # disregard zero-distance observations
+  dist_nu <- dist_nu[dist_nu > 0]
   # if sigma is specified, ignore 'nsigma' and 'sigma_quantile' and leave sigma as is
   if (!is.null(sigma)) {
     if (!is.numeric(sigma) | !is.null(dim(sigma))) {
@@ -23,7 +24,7 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_de) {
       stop("If 'sigma_quantile' is specified, the values must be larger than 0 and smaller than 1.")
     } else {
       p <- sigma_quantile
-      sigma <- quantile(dist_de, p)
+      sigma <- quantile(dist_nu, p) |> sqrt()
     }
   }
   # if both sigma and sigma_quantile are not specified, specify the quantiles linearly, based on nsigma
@@ -35,10 +36,10 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_de) {
         stop("'nsigma' must be a positive scalar.")
       }
       else if (nsigma == 1) {
-        sigma <- median(dist_de)
+        sigma <- median(dist_nu)
       } else {
-        p <- seq(0.25, 0.75, length.out = nsigma)
-        sigma <- quantile(dist_de, p)
+        p <- seq(0.05, 0.95, length.out = nsigma)
+        sigma <- quantile(dist_nu, p) |> sqrt()
       }
     }
   }
