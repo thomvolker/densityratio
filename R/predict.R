@@ -83,4 +83,84 @@ extract.alpha <- function(object, sigma, lambda) {
 }
 
 
+#' Predict function for density object
+#'
+#' @method predict density
+#' @importFrom stats predict
+#'
+#' @keywords internal
+predict.density <- function(object, newdata, lambda = 1e-9, log = FALSE) {
+  if (missing(newdata)) {
+    if (isTRUE(log)) return(log(object$y)) else return(object$y)
+  }
+  if (isTRUE(log)) {
+    res <- approx(object$x, log(object$y), newdata)$y
+    res[is.na(res)] <- log(lambda)
+  } else {
+    res <- approx(object$x, object$y, newdata)$y
+    res[is.na(res)] <- lambda
+  }
+  return(res)
+}
+
+#' Obtain predicted density ratio values from a \code{naivedensityratio} object
+#'
+#' @rdname predict
+#' @method predict naivedensityratio
+#' @importFrom stats approx predict
+#'
+#' @export
+predict.naivedensityratio <- function(object, newdata = NULL, ...) {
+  newdata <- check.newdata(object, newdata)
+  P <- ncol(newdata)
+  N <- nrow(newdata)
+
+  # work on log scale
+  # log-densities
+  ld_nu <- numeric(N)
+  ld_de <- numeric(N)
+
+  # just add log-densities together
+  for (p in 1:P) {
+    ld_nu <- ld_nu + predict(object$density_numerator[[p]], newdata[,p], log = TRUE)
+    ld_de <- ld_de + predict(object$density_denominator[[p]], newdata[,p], log = TRUE)
+  }
+
+  # return the exponent of the log-density difference, i.e., the density ratio
+  return(exp(ld_nu - ld_de))
+}
+
+#' Obtain predicted density ratio values from a \code{naivesubspacedensityratio} object
+#'
+#' @rdname predict
+#' @method predict naivesubspacedensityratio
+#' @importFrom stats approx predict
+#'
+#' @export
+predict.naivesubspacedensityratio <- function(object, newdata = NULL, ...) {
+  newdata <- check.newdata(object, newdata)
+  P <- ncol(newdata)
+  N <- nrow(newdata)
+
+  # project newdata to subspace
+  nd <- as.matrix(newdata)
+  nd_centered <- scale(nd, center = object$center, scale = FALSE)
+  nd_proj <- nd_centered %*% object$projection_matrix
+
+  # work on log scale
+  # log-densities
+  ld_nu <- numeric(N)
+  ld_de <- numeric(N)
+
+  # just add log-densities together
+  for (p in 1:object$subspace_dim) {
+    ld_nu <- ld_nu + predict(object$density_numerator[[p]], nd_proj[,p], log = TRUE)
+    ld_de <- ld_de + predict(object$density_denominator[[p]], nd_proj[,p], log = TRUE)
+  }
+
+  # return the exponent of the log-density difference, i.e., the density ratio
+  return(exp(ld_nu - ld_de))
+}
+
+
 

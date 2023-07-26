@@ -2,27 +2,27 @@
 % Please edit documentation in R/naive.R
 \name{naive}
 \alias{naive}
-\title{Naive approach to density ratio estimation}
+\title{Naive density ratio estimation}
 \usage{
-naive(nu, de, n = 2L^11, ...)
+naive(df_numerator, df_denominator, n = 2L^11, ...)
 }
 \arguments{
-\item{nu}{Numeric matrix with numerator samples}
+\item{df_numerator}{\code{data.frame} with exclusively numeric variables with
+the numerator samples}
 
-\item{de}{Numeric matrix with denominator samples (must have the same
-variables as \code{nu})}
+\item{df_denominator}{\code{data.frame} with exclusively numeric variables
+with the denominator samples (must have the same variables as
+\code{df_denominator})}
 
-\item{n}{the number of equally spaced points at which the density is to be
+\item{n}{\code{integer} the number of equally spaced points at which the density is
 estimated. When n > 512, it is rounded up to a power of 2 during the
 calculations (as fft is used) and the final result is interpolated by
-\link[stats:approxfun]{stats::approx}. So it almost always makes sense to specify n as a power of
-two.}
+\link[stats:approxfun]{stats::approx}. So it makes sense to specify n as a power of two.}
 
 \item{...}{further arguments passed to \link[stats:density]{stats::density}}
 }
 \value{
-\code{naive} returns \code{rhat_de}, the estimated density ratio for
-the denominator samples.
+\code{naivedensityratio} object
 }
 \description{
 The naive approach creates separate kernel density estimates for
@@ -37,4 +37,7 @@ y <- rnorm(200, 1, 2)
 naive(x, y)
 naive(x, y, bw = 2)
 
+}
+\seealso{
+\code{\link[stats:density]{stats::density()}}
 }
