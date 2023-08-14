@@ -24,11 +24,13 @@
 #' @return \code{lhss} returns \code{rhat}, the estimated density ratio.
 #'
 #' @examples
+#' \dontrun{
 #' set.seed(1)
 #' N <- 1000
 #' X <- cbind(rnorm(N), rnorm(N, 0, 0.5))
 #' Y <- cbind(rnorm(N), sample(rep(c(-1, 1), times = N/2)) + rnorm(N))
 #' out <- lhss(X, Y, m = 1, ncenters = 100)
+#' }
 
 
 lhss <- function(df_numerator, df_denominator, m = 1, sigma = NULL, lambda = 1,

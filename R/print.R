@@ -84,3 +84,46 @@ print.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\n")
   invisible(x)
 }
+
+#' Print a \code{naivedensityratio} object
+#'
+#' @rdname print
+#' @return \code{invisble} The inputted \code{naivedensityratio} object.
+#' @method print naivedensityratio
+#' @importFrom utils str
+#' @export
+print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
+  cat("\n")
+  cat("Naive density ratio estimate:\n",
+      "  Number of variables:", length(x$density_denominator), "\n",
+      "  Number of numerator samples:", nrow(x$df_numerator), "\n",
+      "  Number of denominiator samples:", nrow(x$df_denominator), "\n\n")
+
+  cat("Mean density ratio of numerator samples:", format(mean(predict(x)), digits = digits, ...))
+
+  invisible(x)
+}
+
+#' Print a \code{naivesubspacedensityratio} object
+#'
+#' @rdname print
+#' @return \code{invisble} The inputted \code{naivesubspacedensityratio} object.
+#' @method print naivesubspacedensityratio
+#' @importFrom utils str
+#' @export
+print.naivesubspacedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
+  cat("\n")
+  cat("Naive density ratio estimate:\n",
+      "  Number of variables:", length(x$density_denominator), "\n",
+      "  Size of subspace:", x$subspace_dim, "\n",
+      "  Number of numerator samples:", nrow(x$df_numerator), "\n",
+      "  Number of denominiator samples:", nrow(x$df_denominator), "\n\n")
+
+  cat("Mean density ratio of numerator samples:", format(mean(predict(x)), digits = digits, ...))
+
+  invisible(x)
+}
+
+
