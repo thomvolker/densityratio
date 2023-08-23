@@ -8,11 +8,17 @@ lhss(
   df_numerator,
   df_denominator,
   m = 1,
+  nsigma = 10,
+  sigma_quantile = NULL,
   sigma = NULL,
-  lambda = 1,
+  nlambda = 10,
+  lambda = NULL,
   ncenters = 200,
   centers = NULL,
-  maxit = 200
+  maxit = 200,
+  parallel = FALSE,
+  nthreads = NULL,
+  progressbar = TRUE
 )
 }
 \arguments{

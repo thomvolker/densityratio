@@ -19,7 +19,6 @@
 #' default, the matrix \code{nu} is used as the matrix with Gaussian centers.
 #' @param maxit Maximum number of iterations in the updating scheme.
 #' @importFrom expm expm
-#' @export
 #'
 #' @return \code{lhss} returns \code{rhat}, the estimated density ratio.
 #'
@@ -33,46 +32,51 @@
 #' }
 
 
-lhss <- function(df_numerator, df_denominator, m = 1, sigma = NULL, lambda = 1,
-                 ncenters = 200, centers = NULL, maxit = 200) {
+lhss <- function(df_numerator, df_denominator, m = 1, nsigma = 10,
+                 sigma_quantile = NULL, sigma = NULL, nlambda = 10,
+                 lambda = NULL, ncenters = 200, centers = NULL, maxit = 200,
+                 parallel = FALSE, nthreads = NULL, progressbar = TRUE) {
   # TODO: Add checks
 
   cl <- match.call()
   nu <- as.matrix(df_numerator)
   de <- as.matrix(df_denominator)
 
+  check.dataform(nu, de)
+  centers   <- check.centers(nu, centers, ncenters)
+  symmetric <- check.symmetric(nu, centers)
+  parallel  <- check.parallel(parallel, nthreads, sigma, lambda)
+  nthreads  <- check.threads(parallel, nthreads)
+  nsigma    <- check.nsigma.lhss(nsigma, sigma, sigma_quantile)
+  lambda    <- check.lambda(nlambda, lambda)
+
   p <- ncol(nu)
   n_nu <- nrow(nu)
   n_de <- nrow(de)
 
-  U_init <- matrix(1, p, m)
-  U <- .update_UV(U_init, m, p)$U
-
-  if (is.null(centers)) {
-    if (ncenters < nrow(nu)) {
-      centers <- nu[sample(n_nu, ncenters), ]
-    } else {
-      centers <- nu
-    }
-  } else {
-    centers <- as.matrix(centers)
-    ncenters <- nrow(centers)
-    if (!is.numeric(centers) | ! p == ncol(centers)) {
-      stop("If centers are provided, they must have the same variables as the numerator samples")
-    }
-  }
+  U <- make_UV(matrix(1, p, m))[, seq_len(m), drop = FALSE]
+  # old code; kept as backup
+  # U_init <- matrix(1, p, m)
+  # U <- .update_UV(U_init, m, p)$U
 
   nu_u  <- nu %*% U
   de_u  <- de %*% U
   ce_u  <- centers %*% U
   dist_nu_u <- distance(nu_u, ce_u)
   dist_de_u <- distance(de_u, ce_u)
-  sigma <- median_distance(dist_nu_u)
+  sigma <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu_u)
 
-  alphat <- compute_ulsif(dist_nu_u, dist_de_u, sigma, lambda, FALSE, 0, FALSE)
-  alphah <- pmax(0, alphat)
-  PD_opt <- crossprod(hhat, alphah) - 0.5
-  U_opt  <- U
+  ulsif_init <- compute_ulsif(dist_nu_u, dist_de_u, sigma, lambda, FALSE, 0, FALSE)
+  min_score  <- which.min(ulsif_init$loocv_score) - 1
+  alpha_min  <- c(lambda = min_score %% length(lambda) + 1,
+                  sigma  = min_score %/% length(lambda) + 1)
+  alphah <- pmax(0, ulsif_init$alpha[, alpha_min["lambda"], alpha_min["sigma"]])
+
+  sigma_opt <- sigma[alpha_min["sigma"]]
+  alpha_opt <- alphah
+  PD_opt    <- crossprod(hhat, alphah) - 0.5
+  U_opt     <- U
+  score_opt <- min(ulsif_init$loocv_score)
 
   decPDcount <- 0
   conv <- FALSE

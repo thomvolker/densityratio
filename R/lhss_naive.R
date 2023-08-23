@@ -18,7 +18,6 @@
 #' @param maxit Maximum number of iterations in the updating scheme.
 #' @importFrom pracma householder
 #' @importFrom expm expm
-#' @export
 #'
 #' @return \code{lhss_naive} returns \code{rhat}, the estimated density ratio.
 #'
