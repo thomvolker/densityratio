@@ -42,6 +42,14 @@ compute_kliep <- function(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progr
     .Call(`_densityratio_compute_kliep`, dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
 }
 
+make_UV <- function(U) {
+    .Call(`_densityratio_make_UV`, U)
+}
+
+check_sigma_cpp <- function(nsigma, sigma_quantile, sigma, dist) {
+    .Call(`_densityratio_check_sigma_cpp`, nsigma, sigma_quantile, sigma, dist)
+}
+
 ulsif_compute_alpha <- function(Hhat, hhat, lambda) {
     .Call(`_densityratio_ulsif_compute_alpha`, Hhat, hhat, lambda)
 }
