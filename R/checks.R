@@ -20,7 +20,9 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
   # if sigma is not specified, but sigma_quantile is, check the quantiles to be between 0 and 1
   # and ultimately set sigma to the specified quantiles of dist_nu
   else if (!is.null(sigma_quantile)) {
-    if (min(sigma_quantile) <= 0 | max(sigma_quantile) >= 1) {
+    if (!is.numeric(sigma_quantile) | !is.null(dim(sigma_quantile))) {
+      stop("If 'sigma_quantile' is specified it must be a numeric scalar or vector.")
+    } else if (min(sigma_quantile) <= 0 | max(sigma_quantile) >= 1) {
       stop("If 'sigma_quantile' is specified, the values must be larger than 0 and smaller than 1.")
     } else {
       p <- sigma_quantile
@@ -44,6 +46,33 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
     }
   }
   sigma
+}
+
+check.nsigma.lhss <- function(nsigma, sigma, sigma_quantile) {
+  if (!is.null(sigma)) {
+    if (!is.numeric(sigma) | !is.null(dim(sigma))) {
+      stop("If 'sigma' is specified it must be a numeric scalar or vector.")
+    } else {
+      nsigma <- 0
+    }
+  } else if (!is.null(sigma_quantile)) {
+    if (!is.numeric(sigma_quantile) | !is.null(dim(sigma_quantile))) {
+      stop("If 'sigma_quantile' is specified it must be a numeric scalar or vector.")
+    } else if (min(sigma_quantile) <= 0 | max(sigma_quantile) >= 1) {
+      stop("If 'sigma_quantile' is specified, the values must be larger than 0 and smaller than 1.")
+    } else {
+      nsigma <- 0
+    }
+  }  else {
+    if (!is.numeric(nsigma) | length(nsigma) != 1) {
+      stop("If 'sigma_quantile' and 'sigma' are not specified, 'nsigma' must be a scalar value.")
+    } else {
+      if (nsigma < 1) {
+        stop("'nsigma' must be a positive scalar.")
+      }
+    }
+  }
+  nsigma
 }
 
 check.lambda <- function(nlambda, lambda) {
