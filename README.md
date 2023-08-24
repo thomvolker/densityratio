@@ -2,7 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <p align="center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-1-1.png" width="50%" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="50%" style="display: block; margin: auto;" />
 
 </p>
 
