@@ -4,6 +4,6 @@ authors:
 - family-names: "Volker"
   given-names: "Thom Benjamin"
   orcid: "https://orcid.org/0000-0002-2408-7820"c
-title: "densityratio: Direct estimation of the density ratio between two groups of samples."
+title: "densityratio: Distribution comparison through estimation of the density ratio between two groups of samples."
 version: 0.0.1-prealpha
 url: "https://github.com/thomvolker/densityratio"
