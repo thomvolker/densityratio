@@ -6,18 +6,32 @@
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
 #' @param m Scalar indicating the dimensionality of the reduced subspace
+#' @param nsigma Integer indicating the number of sigma values (bandwidth
+#' parameter of the Gaussian kernel gram matrix) to use in cross-validation.
+#' @param sigma_quantile \code{NULL} or numeric vector with probabilities to
+#' calculate the quantiles of the distance matrix to obtain sigma values. If
+#' \code{NULL}, \code{nsigma} values between \code{0.25} and \code{0.75} are
+#' used.
 #' @param sigma \code{NULL} or a scalar value to determine the bandwidth of the
-#' Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
-#' interpoint distance.
-#' @param lambda \code{NULL} or a scalar value to determine the regularization
-#' imposed on the Gaussian kernel gram matrix of the denominator samples. If
-#' \code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.
+#' Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
+#' \code{0.25} and \code{0.75} are used.
+#' @param nlambda Integer indicating the number of \code{lambda} values
+#' (regularization parameter), by default, \code{lambda} is set to
+#' \code{10^seq(3, -3, length.out = nlambda)}.
+#' @param lambda \code{NULL} or numeric vector indicating the lambda values to
+#' use in cross-validation
 #' @param ncenters Maximum number of Gaussian centers in the kernel gram
 #' matrix. Defaults to all numerator samples.
 #' @param centers Numeric matrix with the same variables as \code{nu} and
 #' \code{de} that are used as Gaussian centers in the kernel Gram matrix. By
 #' default, the matrix \code{nu} is used as the matrix with Gaussian centers.
 #' @param maxit Maximum number of iterations in the updating scheme.
+#' @param parallel logical indicating whether to use parallel processing in the
+#' cross-validation scheme.
+#' @param nthreads \code{NULL} or integer indicating the number of threads to
+#' use for parallel processing. If parallel processing is enabled, it defaults
+#' to the number of available threads minus one.
+#' @param progressbar Logical indicating whether or not to display a progressbar.
 #' @importFrom expm expm
 #'
 #' @return \code{lhss} returns \code{rhat}, the estimated density ratio.
