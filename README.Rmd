@@ -4,6 +4,59 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-height: 7
+#| fig-width: 10
+#| fig-dpi: 500
+#| out-width: "50%"
+#| fig-format: svg
+#| fig-align: "center"
+
+library(ggplot2)
+library(patchwork)
+
+dbinorm <- function(x, p, dif) {
+  p * dnorm(x, 0, 1) + (1 - p) * dnorm(x, dif, 1)
+}
+dratio <- function(x, p, dif, mu, sd) {
+  dbinorm(x, p, dif) / dnorm(x, mu, sd)
+}
+
+ggplot() +
+  stat_function(aes(col = "italic(P[n](x))"), 
+                fun = dbinorm, args = list(p = 0.4, dif = 3),
+                size = 1) +
+  stat_function(aes(col = "italic(P[d](x))"), 
+                fun = dnorm, args = list(mean = 3, sd = 2),
+                size = 1) +
+  xlim(-5, 8.6) +
+  theme_classic() +
+  scale_color_manual(name = NULL, 
+                     values = c("navy", "lightblue"), 
+                     labels = scales::parse_format()) +
+  theme(legend.position = c(0.9, 0.9),
+        text = element_text(size = 20)) +
+  xlab(expression(italic(x))) +
+  ylab(NULL) +
+ggplot() +
+  stat_function(aes(col = "frac(italic(P[n](x)), italic(P[d](x)))"), 
+                fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
+                size = 1) +
+  xlim(-5, 8.6) +
+  theme_classic() +
+  scale_color_manual(name = NULL, 
+                     values = c("black"),
+                     labels = scales::parse_format()) +
+  theme(legend.position = c(0.9, 0.9),
+        text = element_text(size = 20)) +
+  xlab(expression(italic(x))) +
+  ylab(NULL)
+```
+
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -15,8 +68,37 @@ knitr::opts_chunk$set(
 
 # densityratio
 
+
+```{css echo=FALSE}
+.column {
+  text-align: center;
+}
+```
+
+:::: {.columns}
+
+::: {.column}
+
+
 <!-- badges: start -->
+```{r}
+#| echo: false
+#| message: false
+usethis::use_lifecycle_badge("experimental")
+usethis::use_github_actions_badge()
+usethis::use_cran_badge()
+```
+
+[![R-CMD-check](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![CRAN status](https://www.r-pkg.org/badges/version/densityratio)](https://CRAN.R-project.org/package=densityratio)
 <!-- badges: end -->
+
+<!-- badges: start -->
+
+:::
+
+::::
 
 The goal of densityratio is to ...
 

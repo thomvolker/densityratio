@@ -1,10 +1,34 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<img src="README_files/figure-gfm/unnamed-chunk-1-1.png" width="50%" style="display: block; margin: auto;" />
+
 # densityratio
 
+<style type="text/css">
+.column {
+  text-align: center;
+}
+</style>
+
+<div class="columns">
+
+<div class="column">
+
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/densityratio)](https://CRAN.R-project.org/package=densityratio)
 <!-- badges: end -->
+
+<!-- badges: start -->
+
+</div>
+
+</div>
 
 The goal of densityratio is to …
 
