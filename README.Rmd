@@ -4,6 +4,8 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<p align="center">
+
 ```{r}
 #| echo: false
 #| message: false
@@ -66,20 +68,13 @@ knitr::opts_chunk$set(
 )
 ```
 
+</p>
+
 # densityratio
 
 
-```{css echo=FALSE}
-.column {
-  text-align: center;
-}
-```
 
-:::: {.columns}
-
-::: {.column}
-
-
+<p align="center">
 <!-- badges: start -->
 ```{r}
 #| echo: false
@@ -96,9 +91,7 @@ usethis::use_cran_badge()
 
 <!-- badges: start -->
 
-:::
-
-::::
+</p>
 
 The goal of densityratio is to ...
 
