@@ -45,7 +45,11 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
       }
     }
   }
-  sigma
+  u <- unique(sigma)
+  if (length(u) < length(sigma)) {
+    warning("There are duplicate values in 'sigma', only the unique values are used.")
+  }
+  u
 }
 
 check.nsigma.lhss <- function(nsigma, sigma, sigma_quantile) {
