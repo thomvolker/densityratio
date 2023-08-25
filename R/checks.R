@@ -6,6 +6,9 @@ check.dataform <- function(nu, de) {
   if (ncol(nu) != ncol(de) | !all.equal(colnames(nu), colnames(de))) {
     stop("nu and de must contain exactly the same set of variables.")
   }
+  if ((sum(is.na(nu)) + sum(is.na(de))) > 0) {
+    stop("Your data has missing values, which cannot yet be handled currently.")
+  }
 }
 
 check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
