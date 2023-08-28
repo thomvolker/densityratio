@@ -79,30 +79,22 @@ knitr::opts_chunk$set(
 
 </p>
 
-# densityratio
-
-
-
 <p align="center">
-<!-- badges: start -->
-```{r}
-#| echo: false
-#| message: false
-usethis::use_lifecycle_badge("experimental")
-usethis::use_github_actions_badge()
-usethis::use_cran_badge()
-```
-
-[![R-CMD-check](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN status](https://www.r-pkg.org/badges/version/densityratio)](https://CRAN.R-project.org/package=densityratio)
-<!-- badges: end -->
-
-<!-- badges: start -->
-
+<span>
+<a href="https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml"><img src="https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml/badge.svg"></img></a>
+<a href="https://lifecycle.r-lib.org/articles/stages.html#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg"></img></a>
+<a href="https://CRAN.R-project.org/package=densityratio"><img src="https://www.r-pkg.org/badges/version/densityratio"></img></a>
+</span>
+<h5 align="center">Density ratio estimation for distribution comparison.</h5>
 </p>
 
-The goal of densityratio is to ...
+# Description
+
+This is an `R`-package for distribution comparison through density ratio estimation. The package provides functionality to estimate the density ratio
+$$
+r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)}
+$$
+directly, without going through density estimation of the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.
 
 ## Installation
 
