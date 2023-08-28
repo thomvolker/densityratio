@@ -18,10 +18,9 @@ Density ratio estimation for distribution comparison.
 
 This is an `R`-package for distribution comparison through density ratio
 estimation. The package provides functionality to estimate the density
-ratio $$
-r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)}
-$$ directly, without going through density estimation of the numerator
-and denominator density separately. Density ratio estimation serves many
+ratio $$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)}$$ directly,
+without going through density estimation of the numerator and
+denominator density separately. Density ratio estimation serves many
 purposes, for example, prediction, outlier detection, change-point
 detection in time-series, importance weighting under domain adaptation
 (i.e., sample selection bias) and evaluation of synthetic data utility.
