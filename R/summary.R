@@ -15,12 +15,11 @@
 #' @method summary ulsif
 #' @importFrom stats predict
 #' @importFrom pbapply pbreplicate
-#' @importFrom parallel detectCores
-#' @importFrom parallel makeCluster
+#' @importFrom parallel detectCores makeCluster stopCluster
 #' @export
 
 
-summary.ulsif <- function(object, test = TRUE, n.perm = 100, parallel = FALSE, cl = NULL, ...) {
+summary.ulsif <- function(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...) {
 
   nu <- as.matrix(object$df_numerator)
   de <- as.matrix(object$df_denominator)
@@ -31,6 +30,7 @@ summary.ulsif <- function(object, test = TRUE, n.perm = 100, parallel = FALSE, c
   if (parallel & is.null(cl)) {
     ncores <- parallel::detectCores() - 1
     cl <- parallel::makeCluster(ncores)
+    on.exit(parallel::stopCluster(cl))
   }
 
   pred_nu <- c(stats::predict(object, newdata = nu))
