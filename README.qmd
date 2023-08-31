@@ -1,5 +1,5 @@
 ---
-output: github_document
+format: gfm
 ---
 
 ```{r, include=FALSE}
@@ -71,9 +71,9 @@ hexSticker::sticker(
 
 ## Overview
 
-This is an `R`-package for distribution comparison through density ratio estimation. The package provides functionality to estimate the density ratio
-$$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)}$$
-directly, without going through density estimation of the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.
+This package provides functionality to directly estimate a density ratio
+$$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$
+without estimating the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.
 
 ```{r}
 #| echo: false
@@ -135,6 +135,13 @@ ggplot() +
 ```
 
 
+### Features
+
+* __Fast__: Computationally intensive code is executed in `C++` using `Rcpp` and `RcppArmadillo`.
+* __Automatic__: Good default hyperparameters that can be optimized in cross-validation (we do recommend understanding those parameters before using `densityratio` in practice).
+* __Complete__: Several density ratio estimation methods, such as unconstrained least-squares importance fitting (`ulsif()`), Kullback-Leibler importance estimation procedure (`kliep()`), ratio of estimated densities (`naive()`), ratio of estimated densities after dimension reduction (`naivesubspace()`), and least-squares heterodistributional subspace search (`lhss()`; experimental).
+* __User-friendly__: Simple user interface, default `predict()`, `print()` and `summary()` functions for all density ratio estimation methods; built-in data sets for quick testing.
+
 
 ## Installation
 
@@ -147,26 +154,44 @@ devtools::install_github("thomvolker/densityratio")
 
 ## Usage
 
-The package contains several functions to estimate the density ratio between the numerator data and the denominator data. 
+The package contains several functions to estimate the density ratio between the numerator data and the denominator data. To illustrate the functionality, we make use of the in-built simulated data sets `numerator_data` and `denominator_data`, that both consist of the same five variables.
+
+### Minimal example
 
 ```{r}
 #| label: example-univ
 library(densityratio)
 
+head(numerator_data)
+
 set.seed(1)
 
-# use unconstrained least-squares importance fitting (ulsif) to estimate the 
-# density ratio
-fit  <- ulsif(numerator_data$x5, 
-              denominator_data$x5, 
-              nsigma = 5, 
-              nlambda = 5)
+fit  <- ulsif(
+  df_numerator = numerator_data$x5, 
+  df_denominator = denominator_data$x5, 
+  nsigma = 5, 
+  nlambda = 5
+)
 
 class(fit)
 ```
 
-The `ulsif`-object contains the (hyper-)parameters used in estimating the density ratio, such as the centers used in constructing the Gaussian kernels (`fit$centers`), the different bandwidth parameters (`fit$sigma`) and the regularization parameters (`fit$lambda`). 
-Using these variables, we can obtain the actual density ratio using `predict()`.
+We can ask for the `summary()` of the estimated density ratio object, that contains the optimal kernel weights (optimized using cross-validation) and a measure of discrepancy between the numerator and denominator densities.
+
+```{r}
+summary(fit)
+```
+
+To formally evaluate whether the numerator and denominator densities differ significantly, you can perform a two-sample homogeneity test as follows.
+
+```{r}
+summary(fit, test = TRUE)
+```
+
+The probability that numerator and denominator samples share a common data generating mechanism is very small.
+
+The `ulsif`-object also contains the (hyper-)parameters used in estimating the density ratio, such as the centers used in constructing the Gaussian kernels (`fit$centers`), the different bandwidth parameters (`fit$sigma`) and the regularization parameters (`fit$lambda`). 
+Using these variables, we can obtain the estimated density ratio using `predict()`.
 
 ```{r}
 #| label: plot-univ
@@ -178,43 +203,41 @@ Using these variables, we can obtain the actual density ratio using `predict()`.
 #| fig-align: "center"
 
 # obtain predictions for the numerator samples
-pred <- predict(fit)
+
+newx5 <- seq(from = -3, to = 6, by = 0.05)
+pred  <- predict(fit, newdata = newx5)
 
 ggplot() +
-  geom_point(aes(x = numerator_data$x5, 
-                 y = pred, 
-                 col = "ulsif estimates")) +
-  stat_function(aes(col = "True density ratio"), 
-                fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
+  geom_point(aes(x = newx5, y = pred, col = "ulsif estimates")) +
+  stat_function(mapping = aes(col = "True density ratio"), 
+                fun = dratio, 
+                args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
                 size = 1) +
   theme_classic() +
   scale_color_manual(name = NULL, values = c("#de0277", "purple")) +
-  theme(legend.position = c(0.9, 0.9),
+  theme(legend.position = c(0.8, 0.9),
         text = element_text(size = 20))
 ```
 
 
-Additionally, it is possible to perform a two-sample homogeneity test for the numerator and denominator samples, which allows to formally evaluate whether the numerator and denominator densities differ significantly from each other.
-
-```{r}
-summary(fit, parallel = TRUE)
-```
-
-As you might have expected, the probability that numerator and denominator samples share a common data generating mechanism is very small.
+### Categorical data
 
 Currently, none of the functions in the `densityratio` package accept non-numeric variables (e.g., having categorical variables will return an error message).
 
 ```{r}
 #| error: true
-ulsif(numerator_data$x1, denominator_data$x2)
+ulsif(
+  df_numerator = numerator_data$x1, 
+  df_denominator = denominator_data$x2
+)
 ```
 
 However, transforming the variables into numeric variables will work, and can give a reasonable estimate of the ratio of proportions in the different data sets (although there is some regularization applied).
 
 ```{r}
 fit_cat <- ulsif(
-  numerator_data$x1 |> as.numeric(),
-  denominator_data$x1 |> as.numeric()
+  df_numerator = numerator_data$x1 |> as.numeric(),
+  df_denominator = denominator_data$x1 |> as.numeric()
 )
 
 aggregate(
@@ -226,16 +249,21 @@ aggregate(
 table(numerator_data$x1) / table(denominator_data$x1)
 ```
 
+### Full data example
+
 After transforming all variables to numeric variables, it is possible to calculate the density ratio over the entire multivariate space of the data.
 
 ```{r}
 fit_all <- ulsif(
-  numerator_data |> lapply(as.numeric) |> data.frame(),
-  denominator_data |> lapply(as.numeric) |> data.frame()
+  df_numerator = numerator_data |> lapply(as.numeric) |> data.frame(),
+  df_denominator = denominator_data |> lapply(as.numeric) |> data.frame()
 )
 
-summary(fit_all, parallel = TRUE, progressbar = TRUE)
+summary(fit_all, test = TRUE, parallel = TRUE)
 ```
+
+
+### Other density ratio estimation functions
 
 Besides `ulsif()`, the package contains several other functions to estimate a density ratio. 
 
@@ -251,25 +279,29 @@ Besides `ulsif()`, the package contains several other functions to estimate a de
 #| out-width: "50%"
 #| fig-format: svg
 #| fig-align: "center"
-fit_naive <- naive(numerator_data$x5, denominator_data$x5)
-fit_kliep <- kliep(numerator_data$x5, denominator_data$x5)
+fit_naive <- naive(
+  df_numerator = numerator_data$x5, 
+  df_denominator = denominator_data$x5
+)
 
-pred_naive <- predict(fit_naive)
-pred_kliep <- predict(fit_kliep)
+fit_kliep <- kliep(
+  df_numerator = numerator_data$x5, 
+  df_denominator = denominator_data$x5
+)
 
-ggplot(data = NULL, aes(x = numerator_data$x5)) +
-  geom_point(aes(y = pred, 
-                 col = "ulsif estimates")) +
-  geom_point(aes(y = pred_naive,
-                 col = "naive estimates")) +
-  geom_point(aes(y = pred_kliep,
-                 col = "kliep estimates")) +
+pred_naive <- predict(fit_naive, newdata = newx5)
+pred_kliep <- predict(fit_kliep, newdata = newx5)
+
+ggplot(data = NULL, aes(x = newx5)) +
+  geom_point(aes(y = pred, col = "ulsif estimates")) +
+  geom_point(aes(y = pred_naive, col = "naive estimates")) +
+  geom_point(aes(y = pred_kliep, col = "kliep estimates")) +
   stat_function(aes(x = NULL, col = "True density ratio"), 
                 fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
                 size = 1) +
   theme_classic() +
   scale_color_manual(name = NULL, values = c("#8400b8", "#510070","#de0277", "purple")) +
-  theme(legend.position = c(0.9, 0.9),
+  theme(legend.position = c(0.8, 0.9),
         text = element_text(size = 20))
 ```
 
@@ -290,6 +322,10 @@ __Books__
 __Papers__
 
 * Density ratio estimation for the evaluation of the utility of synthetic data: Volker, De Wolf and Van Kesteren (2023). [Assessing the utility of synthetic data: A density ratio perspective](https://unece.org/statistics/documents/2023/08/working-documents/assessing-utility-synthetic-data-density-ratio)
+
+## How to cite
+
+
 
 
 
