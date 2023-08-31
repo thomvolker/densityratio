@@ -6,4 +6,5 @@ authors:
   orcid: "https://orcid.org/0000-0002-2408-7820"c
 title: "densityratio: Distribution comparison through estimation of the density ratio between two groups of samples."
 version: 0.0.1-prealpha
+date-released: 2023-08-31
 url: "https://github.com/thomvolker/densityratio"
