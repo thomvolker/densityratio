@@ -15,7 +15,7 @@ kliep(
   cv = TRUE,
   nfold = NULL,
   epsilon = NULL,
-  maxit = 100,
+  maxit = 10000,
   progressbar = TRUE
 )
 }
