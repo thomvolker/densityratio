@@ -54,6 +54,8 @@ print.summary.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), .
                paste(" < .001"),
                paste(" = ", format(x$p_value, digits = 3, ...))),
         "\n\n", sep = "")
+  } else {
+    cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
   }
   invisible(x)
 }
