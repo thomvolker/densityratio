@@ -1,11 +1,15 @@
 #' @importFrom stats quantile
 check.dataform <- function(nu, de) {
+  # Only accept numeric input matrices (vectors/data.frames/tibbles
+  # are converted to matrices by default)
   if (! (is.numeric(nu) & is.numeric(de))) {
     stop("Currently only numeric data is supported.")
   }
+  # check whether the data sets have the same set of variables
   if (ncol(nu) != ncol(de) | !all.equal(colnames(nu), colnames(de))) {
     stop("nu and de must contain exactly the same set of variables.")
   }
+  #
   if ((sum(is.na(nu)) + sum(is.na(de))) > 0) {
     stop("Your data has missing values, which cannot yet be handled currently.")
   }
