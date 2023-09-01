@@ -66,6 +66,7 @@ hexSticker::sticker(
 [![R-CMD-check](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/densityratio)](https://CRAN.R-project.org/package=densityratio)
+[![DOI](https://zenodo.org/badge/613441108.svg)](https://zenodo.org/badge/latestdoi/613441108)
 
 <!-- badges: end -->
 
@@ -74,6 +75,7 @@ hexSticker::sticker(
 This package provides functionality to directly estimate a density ratio
 $$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$
 without estimating the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.
+
 
 ```{r}
 #| echo: false
@@ -193,6 +195,7 @@ The probability that numerator and denominator samples share a common data gener
 The `ulsif`-object also contains the (hyper-)parameters used in estimating the density ratio, such as the centers used in constructing the Gaussian kernels (`fit$centers`), the different bandwidth parameters (`fit$sigma`) and the regularization parameters (`fit$lambda`). 
 Using these variables, we can obtain the estimated density ratio using `predict()`.
 
+
 ```{r}
 #| label: plot-univ
 #| fig-height: 7
@@ -218,7 +221,6 @@ ggplot() +
   theme(legend.position = c(0.8, 0.9),
         text = element_text(size = 20))
 ```
-
 
 ### Categorical data
 
@@ -325,7 +327,7 @@ __Papers__
 
 ## How to cite
 
-
+Volker, T.B. (2023). densityratio: Distribution comparison through density ratio estimation. <https://doi.org/10.5281/zenodo.8307819>
 
 
 
