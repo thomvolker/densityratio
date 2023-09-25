@@ -49,7 +49,13 @@ print.summary.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), .
   #TODO: Check pearson divergence interpretation
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
-    cat("Pr(P(nu)=P(de)) = ", paste(format(x$p_value, digits = 3, ...)), "\n\n", sep = "")
+    cat("Pr(P(nu)=P(de))",
+        ifelse(x$p_value < 0.001,
+               paste(" < .001"),
+               paste(" = ", format(x$p_value, digits = 3, ...))),
+        "\n\n", sep = "")
+  } else {
+    cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
   }
   invisible(x)
 }

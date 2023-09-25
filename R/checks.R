@@ -1,10 +1,17 @@
 #' @importFrom stats quantile
 check.dataform <- function(nu, de) {
+  # Only accept numeric input matrices (vectors/data.frames/tibbles
+  # are converted to matrices by default)
   if (! (is.numeric(nu) & is.numeric(de))) {
     stop("Currently only numeric data is supported.")
   }
+  # check whether the data sets have the same set of variables
   if (ncol(nu) != ncol(de) | !all.equal(colnames(nu), colnames(de))) {
     stop("nu and de must contain exactly the same set of variables.")
+  }
+  #
+  if ((sum(is.na(nu)) + sum(is.na(de))) > 0) {
+    stop("Your data has missing values, which cannot yet be handled currently.")
   }
 }
 
@@ -20,7 +27,9 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
   # if sigma is not specified, but sigma_quantile is, check the quantiles to be between 0 and 1
   # and ultimately set sigma to the specified quantiles of dist_nu
   else if (!is.null(sigma_quantile)) {
-    if (min(sigma_quantile) <= 0 | max(sigma_quantile) >= 1) {
+    if (!is.numeric(sigma_quantile) | !is.null(dim(sigma_quantile))) {
+      stop("If 'sigma_quantile' is specified it must be a numeric scalar or vector.")
+    } else if (min(sigma_quantile) <= 0 | max(sigma_quantile) >= 1) {
       stop("If 'sigma_quantile' is specified, the values must be larger than 0 and smaller than 1.")
     } else {
       p <- sigma_quantile
@@ -43,7 +52,38 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
       }
     }
   }
-  sigma
+  u <- unique(sigma)
+  if (length(u) < length(sigma)) {
+    warning("There are duplicate values in 'sigma', only the unique values are used.\n")
+  }
+  u
+}
+
+check.nsigma.lhss <- function(nsigma, sigma, sigma_quantile) {
+  if (!is.null(sigma)) {
+    if (!is.numeric(sigma) | !is.null(dim(sigma))) {
+      stop("If 'sigma' is specified it must be a numeric scalar or vector.")
+    } else {
+      nsigma <- 0
+    }
+  } else if (!is.null(sigma_quantile)) {
+    if (!is.numeric(sigma_quantile) | !is.null(dim(sigma_quantile))) {
+      stop("If 'sigma_quantile' is specified it must be a numeric scalar or vector.")
+    } else if (min(sigma_quantile) <= 0 | max(sigma_quantile) >= 1) {
+      stop("If 'sigma_quantile' is specified, the values must be larger than 0 and smaller than 1.")
+    } else {
+      nsigma <- 0
+    }
+  }  else {
+    if (!is.numeric(nsigma) | length(nsigma) != 1) {
+      stop("If 'sigma_quantile' and 'sigma' are not specified, 'nsigma' must be a scalar value.")
+    } else {
+      if (nsigma < 1) {
+        stop("'nsigma' must be a positive scalar.")
+      }
+    }
+  }
+  nsigma
 }
 
 check.lambda <- function(nlambda, lambda) {
@@ -72,7 +112,7 @@ check.centers <- function(nu, centers, ncenters) {
       centers <- nu
     } else if (ncenters > nrow(nu)) {
       centers <- nu
-      warning(paste0("The 'ncenters' parameter exceeds the number of numerator records. Since the centers are selected from the numerator samples, 'ncenters' is set to ", nrow(nu), "."))
+      warning(paste0("The 'ncenters' parameter exceeds the number of numerator records. Since the centers are selected from the numerator samples, 'ncenters' is set to ", nrow(nu), ".\n"))
     } else {
       centers <- nu[sample(nrow(nu), ncenters), , drop = FALSE]
     }
@@ -94,12 +134,12 @@ check.parallel <- function(parallel, nthreads, sigma, lambda) {
     stop("'parallel' must be either 'TRUE' or 'FALSE'")
   }
   if (parallel & length(lambda) == 1) {
-    warning("Parallel processing only works for multiple 'lambda' values")
+    warning("Parallel processing only works for multiple 'lambda' values.\n")
     parallel <- FALSE
   }
   if (is.numeric(nthreads)) {
     if (parallel & nthreads < 2) {
-      warning("Parallel processing only works for 2 or more threads; parallel processing is disabled.")
+      warning("Parallel processing only works for 2 or more threads; parallel processing is disabled.\n")
       parallel <- FALSE
     }
   }
@@ -112,7 +152,7 @@ check.threads <- function(parallel, nthreads) {
 
   if (!parallel) {
     if (!is.null(nthreads)) {
-      warning("Specifying 'nthreads' has no use without setting 'parallel = TRUE'")
+      warning("Specifying 'nthreads' has no use without setting 'parallel = TRUE'.\n")
     }
     nthreads <- 0
   } else {
@@ -124,7 +164,7 @@ check.threads <- function(parallel, nthreads) {
       }
       if(nthreads < 1) {
         nthreads <- 1
-        warning("You specified a negative number of threads, 'nthreads' is set to 1.")
+        warning("You specified a negative number of threads, 'nthreads' is set to 1.\n")
       }
     }
   }
@@ -137,7 +177,7 @@ check.epsilon <- function(epsilon) {
       stop("'eps' must be either NULL, a numeric scalar or a numeric vector.")
     }
   } else {
-    epsilon <- 10^{3:-3}
+    epsilon <- 10^{1:-5}
   }
   epsilon
 }
@@ -162,7 +202,7 @@ check.nfold <- function(cv, nfold, sigma, nnu) {
       stop(paste0("'nfold' must be at least 2 and at most the number of numerator samples (", nnu, ")"))
     } else {
       if (length(sigma) == 1) {
-        warning("Only a single 'sigma' value is specified, while cross-validation serves to optimize 'sigma'")
+        warning("Only a single 'sigma' value is specified, while cross-validation serves to optimize 'sigma'.\n")
       }
       cv_ind <- sample(rep_len(0:(nfold-1), nnu))
     }

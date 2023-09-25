@@ -5,7 +5,7 @@
 \title{Extract summary from \code{ulsif} object, including two-sample significance
 test for homogeneity of the numerator and denominator samples}
 \usage{
-\method{summary}{ulsif}(object, test = TRUE, n.perm = 100, parallel = FALSE, cl = NULL, ...)
+\method{summary}{ulsif}(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...)
 }
 \arguments{
 \item{object}{Object of class \code{ulsif} or \code{kliep}}

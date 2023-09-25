@@ -8,11 +8,17 @@ lhss(
   df_numerator,
   df_denominator,
   m = 1,
+  nsigma = 10,
+  sigma_quantile = NULL,
   sigma = NULL,
-  lambda = 1,
+  nlambda = 10,
+  lambda = NULL,
   ncenters = 200,
   centers = NULL,
-  maxit = 200
+  maxit = 200,
+  parallel = FALSE,
+  nthreads = NULL,
+  progressbar = TRUE
 )
 }
 \arguments{
@@ -25,13 +31,24 @@ with the denominator samples (must have the same variables as
 
 \item{m}{Scalar indicating the dimensionality of the reduced subspace}
 
-\item{sigma}{\code{NULL} or a scalar value to determine the bandwidth of the
-Gaussian kernel gram matrix. If \code{NULL}, sigma is the median Euclidean
-interpoint distance.}
+\item{nsigma}{Integer indicating the number of sigma values (bandwidth
+parameter of the Gaussian kernel gram matrix) to use in cross-validation.}
 
-\item{lambda}{\code{NULL} or a scalar value to determine the regularization
-imposed on the Gaussian kernel gram matrix of the denominator samples. If
-\code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.}
+\item{sigma_quantile}{\code{NULL} or numeric vector with probabilities to
+calculate the quantiles of the distance matrix to obtain sigma values. If
+\code{NULL}, \code{nsigma} values between \code{0.25} and \code{0.75} are
+used.}
+
+\item{sigma}{\code{NULL} or a scalar value to determine the bandwidth of the
+Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
+\code{0.25} and \code{0.75} are used.}
+
+\item{nlambda}{Integer indicating the number of \code{lambda} values
+(regularization parameter), by default, \code{lambda} is set to
+\code{10^seq(3, -3, length.out = nlambda)}.}
+
+\item{lambda}{\code{NULL} or numeric vector indicating the lambda values to
+use in cross-validation}
 
 \item{ncenters}{Maximum number of Gaussian centers in the kernel gram
 matrix. Defaults to all numerator samples.}
@@ -41,6 +58,15 @@ matrix. Defaults to all numerator samples.}
 default, the matrix \code{nu} is used as the matrix with Gaussian centers.}
 
 \item{maxit}{Maximum number of iterations in the updating scheme.}
+
+\item{parallel}{logical indicating whether to use parallel processing in the
+cross-validation scheme.}
+
+\item{nthreads}{\code{NULL} or integer indicating the number of threads to
+use for parallel processing. If parallel processing is enabled, it defaults
+to the number of available threads minus one.}
+
+\item{progressbar}{Logical indicating whether or not to display a progressbar.}
 }
 \value{
 \code{lhss} returns \code{rhat}, the estimated density ratio.

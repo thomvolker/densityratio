@@ -105,6 +105,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// make_UV
+arma::mat make_UV(arma::mat U);
+RcppExport SEXP _densityratio_make_UV(SEXP USEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type U(USEXP);
+    rcpp_result_gen = Rcpp::wrap(make_UV(U));
+    return rcpp_result_gen;
+END_RCPP
+}
+// check_sigma_cpp
+arma::vec check_sigma_cpp(int nsigma, Nullable<arma::vec> sigma_quantile, Nullable<arma::vec> sigma, arma::mat dist);
+RcppExport SEXP _densityratio_check_sigma_cpp(SEXP nsigmaSEXP, SEXP sigma_quantileSEXP, SEXP sigmaSEXP, SEXP distSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type nsigma(nsigmaSEXP);
+    Rcpp::traits::input_parameter< Nullable<arma::vec> >::type sigma_quantile(sigma_quantileSEXP);
+    Rcpp::traits::input_parameter< Nullable<arma::vec> >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type dist(distSEXP);
+    rcpp_result_gen = Rcpp::wrap(check_sigma_cpp(nsigma, sigma_quantile, sigma, dist));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ulsif_compute_alpha
 arma::vec ulsif_compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double& lambda);
 RcppExport SEXP _densityratio_ulsif_compute_alpha(SEXP HhatSEXP, SEXP hhatSEXP, SEXP lambdaSEXP) {
@@ -174,6 +199,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_densityratio_make_phibar", (DL_FUNC) &_densityratio_make_phibar, 2},
     {"_densityratio_kliep_compute_alpha", (DL_FUNC) &_densityratio_kliep_compute_alpha, 7},
     {"_densityratio_compute_kliep", (DL_FUNC) &_densityratio_compute_kliep, 7},
+    {"_densityratio_make_UV", (DL_FUNC) &_densityratio_make_UV, 1},
+    {"_densityratio_check_sigma_cpp", (DL_FUNC) &_densityratio_check_sigma_cpp, 4},
     {"_densityratio_ulsif_compute_alpha", (DL_FUNC) &_densityratio_ulsif_compute_alpha, 3},
     {"_densityratio_set_threads", (DL_FUNC) &_densityratio_set_threads, 1},
     {"_densityratio_compute_ulsif_loocv", (DL_FUNC) &_densityratio_compute_ulsif_loocv, 9},

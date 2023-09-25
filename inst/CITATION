@@ -1,0 +1,13 @@
+citHeader("To cite densityratio in publications, please use:")
+
+citEntry(
+  entry    = "Manual",
+  title    = "densityratio: Distribution comparison through density ratio estimation",
+  author   = "Volker, Thom Benjamin",
+  year     = "2023",
+  url      = "https://github.com/thomvolker/densityratio",
+  doi      = "10.5281/zenodo.8307819",
+  textVersion = paste(
+    "Volker, T.B. (2023). densityratio: Distribution comparison through density ratio estimation. <https://doi.org/10.5281/zenodo.8307819>"
+  )
+)

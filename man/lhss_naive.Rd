@@ -47,9 +47,11 @@ default, the matrix \code{nu} is used as the matrix with Gaussian centers.}
 Least-squares heterodistributional subspace search (naive implementation)
 }
 \examples{
+\dontrun{
 set.seed(1)
 N <- 1000
 X <- cbind(rnorm(N), rnorm(N, 0, 0.5))
 Y <- cbind(rnorm(N), sample(rep(c(-1, 1), times = N/2)) + rnorm(N))
 out <- lhss_naive(X, Y, m = 1, ncenters = 100)
+}
 }

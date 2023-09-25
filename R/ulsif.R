@@ -41,8 +41,8 @@
 #' ulsif(x, y)
 #' ulsif(x, y, sigma = 2, lambda = 2)
 
-ulsif <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NULL, sigma = NULL,
-                  nlambda = 20, lambda = NULL, ncenters = 200,
+ulsif <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NULL,
+                  sigma = NULL, nlambda = 20, lambda = NULL, ncenters = 200,
                   centers = NULL, parallel = FALSE, nthreads = NULL,
                   progressbar = TRUE) {
 
