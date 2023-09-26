@@ -44,6 +44,7 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
 #' @export
 
 predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), ...) {
+
   newsigma <- check.sigma.predict(object, sigma)
   newdata  <- check.newdata(object, newdata)
 
