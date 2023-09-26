@@ -63,21 +63,22 @@ ulsif <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NU
   lambda <- check.lambda(nlambda, lambda)
 
   res <- compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar)
-  min_score <- which.min(res$loocv_score) - 1
-  alpha_min <- c(lambda =  min_score %% length(lambda) + 1,
-                 sigma = min_score %/% length(lambda) + 1)
+  loocv_scores <- res$loocv_score
+  colnames(loocv_scores) <- paste0("lambda", 1:length(lambda))
+  rownames(loocv_scores) <- paste0("sigma", 1:length(sigma))
+  min_score <- arrayInd(which.min(res$loocv_score), dim(res$loocv_score))
 
   out <- list(
     df_numerator = df_numerator,
     df_denominator = df_denominator,
     alpha = res$alpha,
-    cv_score = res$loocv_score,
+    cv_score = loocv_scores,
     sigma = sigma,
     lambda = lambda,
     centers = centers,
-    alpha_opt = res$alpha[, alpha_min["lambda"], alpha_min["sigma"]],
-    lambda_opt = lambda[alpha_min["lambda"]],
-    sigma_opt = sigma[alpha_min["sigma"]],
+    alpha_opt = res$alpha[, min_score[2], min_score[1]],
+    lambda_opt = lambda[min_score[2]],
+    sigma_opt = sigma[min_score[1]],
     call = cl
   )
   class(out) <- "ulsif"
