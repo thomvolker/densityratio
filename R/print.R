@@ -46,7 +46,6 @@ print.summary.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), .
       "  Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
   cat("  Optimal kernel weights (loocv):")
   cat(str(x$alpha_opt), "\n")
-  #TODO: Check pearson divergence interpretation
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
@@ -91,6 +90,38 @@ print.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   invisible(x)
 }
 
+#' Print a \code{summary.kliep} object
+#'
+#' @rdname print
+#' @return \code{NULL}
+#' @method print summary.kliep
+#' @importFrom utils str
+#' @export
+
+print.summary.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
+  cat("\n")
+  cat("Kernel Information:\n",
+      "  Kernel type: Gaussian with L2 norm distances\n",
+      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+
+  cat("  Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
+      "  Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
+  cat("  Optimal kernel weights (loocv):")
+  cat(str(x$alpha_opt), "\n")
+  cat("Kullback-Leibler divergence between P(nu) and P(de): ", paste(format(x$UKL, digits = digits, ...)), "\n", sep = "")
+  if (!is.null(x$p_value)) {
+    cat("Pr(P(nu)=P(de))",
+        ifelse(x$p_value < 0.001,
+               paste(" < .001"),
+               paste(" = ", format(x$p_value, digits = 3, ...))),
+        "\n\n", sep = "")
+  } else {
+    cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
+  }
+  invisible(x)
+}
+
 #' Print a \code{naivedensityratio} object
 #'
 #' @rdname print
@@ -121,7 +152,7 @@ print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L
 print.naivesubspacedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
-  cat("Naive density ratio estimate:\n",
+  cat("Naive-subspace density ratio estimate:\n",
       "  Number of variables:", length(x$density_denominator), "\n",
       "  Size of subspace:", x$subspace_dim, "\n",
       "  Number of numerator samples:", nrow(x$df_numerator), "\n",
@@ -132,4 +163,61 @@ print.naivesubspacedensityratio <- function(x, digits = max(3L, getOption("digit
   invisible(x)
 }
 
+#' Print a \code{summary.naivedensityratio} object
+#'
+#' @rdname print
+#' @return \code{NULL}
+#' @method print summary.naivedensityratio
+#' @importFrom utils str
+#' @export
 
+print.summary.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
+  cat("\n")
+  cat("Naive density ratio estimate:\n",
+      "  Number of variables:", length(x$density_denominator), "\n",
+      "  Number of numerator samples:", nrow(x$df_numerator), "\n",
+      "  Number of denominiator samples:", nrow(x$df_denominator), "\n\n")
+  cat(str(x$alpha_opt), "\n")
+  cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
+  if (!is.null(x$p_value)) {
+    cat("Pr(P(nu)=P(de))",
+        ifelse(x$p_value < 0.001,
+               paste(" < .001"),
+               paste(" = ", format(x$p_value, digits = 3, ...))),
+        "\n\n", sep = "")
+  } else {
+    cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
+  }
+  invisible(x)
+}
+
+#' Print a \code{summary.naivesubspacedensityratio} object
+#'
+#' @rdname print
+#' @return \code{NULL}
+#' @method print summary.naivesubspacedensityratio
+#' @importFrom utils str
+#' @export
+
+
+print.summary.naivesubspacedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
+  cat("\n")
+  cat("Naive-subspace density ratio estimate:\n",
+      "  Number of variables:", length(x$density_denominator), "\n",
+      "  Number of numerator samples:", nrow(x$df_numerator), "\n",
+      "  Number of denominiator samples:", nrow(x$df_denominator), "\n\n")
+  cat(str(x$alpha_opt), "\n")
+  cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
+  if (!is.null(x$p_value)) {
+    cat("Pr(P(nu)=P(de))",
+        ifelse(x$p_value < 0.001,
+               paste(" < .001"),
+               paste(" = ", format(x$p_value, digits = 3, ...))),
+        "\n\n", sep = "")
+  } else {
+    cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
+  }
+  invisible(x)
+}
