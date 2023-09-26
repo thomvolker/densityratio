@@ -4,8 +4,11 @@
 \alias{print.ulsif}
 \alias{print.summary.ulsif}
 \alias{print.kliep}
+\alias{print.summary.kliep}
 \alias{print.naivedensityratio}
 \alias{print.naivesubspacedensityratio}
+\alias{print.summary.naivedensityratio}
+\alias{print.summary.naivesubspacedensityratio}
 \title{Print a \code{ulsif} object}
 \usage{
 \method{print}{ulsif}(x, digits = max(3L, getOption("digits") - 3L), ...)
@@ -14,9 +17,15 @@
 
 \method{print}{kliep}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
+\method{print}{summary.kliep}(x, digits = max(3L, getOption("digits") - 3L), ...)
+
 \method{print}{naivedensityratio}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
 \method{print}{naivesubspacedensityratio}(x, digits = max(3L, getOption("digits") - 3L), ...)
+
+\method{print}{summary.naivedensityratio}(x, digits = max(3L, getOption("digits") - 3L), ...)
+
+\method{print}{summary.naivesubspacedensityratio}(x, digits = max(3L, getOption("digits") - 3L), ...)
 }
 \arguments{
 \item{x}{Object of class \code{ulsif}, \code{summary.ulsif}, \code{kliep}
@@ -33,9 +42,15 @@ or \code{summary.kliep}.}
 
 \code{NULL}
 
+\code{NULL}
+
 \code{invisble} The inputted \code{naivedensityratio} object.
 
 \code{invisble} The inputted \code{naivesubspacedensityratio} object.
+
+\code{NULL}
+
+\code{NULL}
 }
 \description{
 Print a \code{ulsif} object
@@ -44,7 +59,13 @@ Print a \code{summary.ulsif} object
 
 Print a \code{kliep} object
 
+Print a \code{summary.kliep} object
+
 Print a \code{naivedensityratio} object
 
 Print a \code{naivesubspacedensityratio} object
+
+Print a \code{summary.naivedensityratio} object
+
+Print a \code{summary.naivesubspacedensityratio} object
 }
