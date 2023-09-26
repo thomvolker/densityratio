@@ -214,7 +214,12 @@ check.sigma.predict <- function(object, sigma) {
   if (is.character(sigma)) {
     sigma <- match.arg(sigma, c("sigmaopt", "all"))
     if (sigma == "sigmaopt") {
-      sigma <- object$sigma_opt
+      if (!is.null(object$sigma_opt)) {
+        sigma <- object$sigma_opt
+      } else {
+        warning("No optimal 'sigma' is defined, all 'sigma' values are used instead.")
+        sigma <- object$sigma
+      }
     } else if (sigma == "all") {
       sigma <- object$sigma
     }
