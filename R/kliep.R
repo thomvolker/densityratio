@@ -40,7 +40,7 @@
 
 kliep <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NULL, sigma = NULL,
                   ncenters = 200, centers = NULL, cv = TRUE, nfold = NULL,
-                  epsilon = NULL, maxit = 10000, progressbar = TRUE) {
+                  epsilon = NULL, maxit = 1000, progressbar = TRUE) {
 
   cl <- match.call()
   nu <- as.matrix(df_numerator)
@@ -61,6 +61,7 @@ kliep <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NU
   cv_ind  <- check.nfold(cv, nfold, sigma, nnu)
 
   out <- compute_kliep(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
+  rownames(out$cv_score) <- paste0("sigma", 1:length(sigma))
 
 
   out <- list(

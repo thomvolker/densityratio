@@ -25,10 +25,43 @@ permute <- function(object, ...) {
 permute.ulsif <- function(object, stacked, nnu, nde) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
   r <- stats::update(
-    object,
+    object = object,
     df_numerator = stacked[ind, ],
     df_denominator = stacked[!ind, ],
     progressbar = FALSE
   )
+  1/(2 * nnu) * sum(c(stats::predict(r, newdata = stacked[ind, ]))) - 1/nde * sum(c(stats::predict(r, newdata = stacked[!ind, ]))) + 1/2
+}
+
+permute.kliep <- function(object, stacked, nnu, nde) {
+  ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
+  r <- stats::update(
+    object = object,
+    df_numerator = stacked[ind, ],
+    df_denominator = stacked[!ind, ],
+    progressbar = FALSE
+  )
+  mean(log(pmax(sqrt(.Machine$double.eps), c(stats::predict(r, newdata = stacked[ind, ])))))
+}
+
+permute.naivedensityratio <- function(object, stacked, nnu, nde) {
+  ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
+  r <- stats::update(
+    object = object,
+    df_numerator = stacked[ind, ],
+    df_denominator = stacked[!ind, ],
+  )
+
+  1/(2 * nnu) * sum(c(stats::predict(r, newdata = stacked[ind, ]))) - 1/nde * sum(c(stats::predict(r, newdata = stacked[!ind, ]))) + 1/2
+}
+
+permute.naivesubspacedensityratio <- function(object, stacked, nnu, nde) {
+  ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
+  r <- stats::update(
+    object = object,
+    df_numerator = stacked[ind, ],
+    df_denominator = stacked[!ind, ],
+  )
+
   1/(2 * nnu) * sum(c(stats::predict(r, newdata = stacked[ind, ]))) - 1/nde * sum(c(stats::predict(r, newdata = stacked[!ind, ]))) + 1/2
 }

@@ -2,10 +2,19 @@
 % Please edit documentation in R/summary.R
 \name{summary.ulsif}
 \alias{summary.ulsif}
+\alias{summary.kliep}
+\alias{summary.naivedensityratio}
+\alias{summary.naivesubspacedensityratio}
 \title{Extract summary from \code{ulsif} object, including two-sample significance
 test for homogeneity of the numerator and denominator samples}
 \usage{
 \method{summary}{ulsif}(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...)
+
+\method{summary}{kliep}(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...)
+
+\method{summary}{naivedensityratio}(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...)
+
+\method{summary}{naivesubspacedensityratio}(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...)
 }
 \arguments{
 \item{object}{Object of class \code{ulsif} or \code{kliep}}
@@ -25,8 +34,24 @@ minus 1.}
 }
 \value{
 Summary of the fitted density ratio model
+
+Summary of the fitted density ratio model
+
+Summary of the fitted density ratio model
+
+Summary of the fitted density ratio model
 }
 \description{
 Extract summary from \code{ulsif} object, including two-sample significance
 test for homogeneity of the numerator and denominator samples
+
+Extract summary from \code{kliep} object, including two-sample significance
+test for homogeneity of the numerator and denominator samples
+
+Extract summary from \code{naivedensityratio} object, including two-sample
+significance test for homogeneity of the numerator and denominator samples
+
+Extract summary from \code{naivesubspacedensityratio} object, including
+two-sample significance test for homogeneity of the numerator and
+denominator samples
 }

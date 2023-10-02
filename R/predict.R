@@ -44,6 +44,7 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
 #' @export
 
 predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), ...) {
+
   newsigma <- check.sigma.predict(object, sigma)
   newdata  <- check.newdata(object, newdata)
 
@@ -106,11 +107,12 @@ predict.density <- function(object, newdata, lambda = 1e-9, log = FALSE) {
 #' Obtain predicted density ratio values from a \code{naivedensityratio} object
 #'
 #' @rdname predict
+#' @param log Logical, whether to return log-density ratio predictions.
 #' @method predict naivedensityratio
 #' @importFrom stats approx predict
 #'
 #' @export
-predict.naivedensityratio <- function(object, newdata = NULL, ...) {
+predict.naivedensityratio <- function(object, newdata = NULL, log = FALSE, ...) {
   newdata <- check.newdata(object, newdata)
   P <- ncol(newdata)
   N <- nrow(newdata)
@@ -126,20 +128,28 @@ predict.naivedensityratio <- function(object, newdata = NULL, ...) {
     ld_de <- ld_de + predict(object$density_denominator[[p]], newdata[,p], log = TRUE)
   }
 
-  # return the exponent of the log-density difference, i.e., the density ratio
-  return(exp(ld_nu - ld_de))
+  # return log-density difference (or its exponent, i.e., the density ratio)
+  ld_dif <- ld_nu - ld_de
+  if (log)  {
+    res <- ld_dif
+  } else {
+    res <- exp(ld_dif)
+  }
+  res
 }
 
 #' Obtain predicted density ratio values from a \code{naivesubspacedensityratio} object
 #'
 #' @rdname predict
+#' @param log Logical, whether to return log-density ratio predictions.
 #' @method predict naivesubspacedensityratio
 #' @importFrom stats approx predict
 #'
 #' @export
-predict.naivesubspacedensityratio <- function(object, newdata = NULL, ...) {
+predict.naivesubspacedensityratio <- function(object, newdata = NULL, log = FALSE, ...) {
+
   newdata <- check.newdata(object, newdata)
-  P <- ncol(newdata)
+
   N <- nrow(newdata)
 
   # project newdata to subspace
@@ -158,8 +168,14 @@ predict.naivesubspacedensityratio <- function(object, newdata = NULL, ...) {
     ld_de <- ld_de + predict(object$density_denominator[[p]], nd_proj[,p], log = TRUE)
   }
 
-  # return the exponent of the log-density difference, i.e., the density ratio
-  return(exp(ld_nu - ld_de))
+  # return log-density difference (or its exponent, i.e., the density ratio)
+  ld_dif <- ld_nu - ld_de
+  if (log)  {
+    res <- ld_dif
+  } else {
+    res <- exp(ld_dif)
+  }
+  res
 }
 
 

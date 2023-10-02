@@ -17,9 +17,9 @@
 
 \method{predict}{kliep}(object, newdata = NULL, sigma = c("sigmaopt", "all"), ...)
 
-\method{predict}{naivedensityratio}(object, newdata = NULL, ...)
+\method{predict}{naivedensityratio}(object, newdata = NULL, log = FALSE, ...)
 
-\method{predict}{naivesubspacedensityratio}(object, newdata = NULL, ...)
+\method{predict}{naivesubspacedensityratio}(object, newdata = NULL, log = FALSE, ...)
 }
 \arguments{
 \item{object}{Object of class \code{ulsif} or \code{kliep}}
@@ -36,6 +36,8 @@ value or all lambda values used so far, or a scalar or numeric vector with
 new lambda values to use.}
 
 \item{...}{further arguments passed to or from other methods.}
+
+\item{log}{Logical, whether to return log-density ratio predictions.}
 }
 \value{
 An array with predicted density ratio values from possibly new data,

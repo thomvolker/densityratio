@@ -89,7 +89,6 @@ List compute_kliep(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
 
 
   for (int s = 0; s < nsigma; s++) {
-    p.increment();
     sig = sigma[s];
     Phi = make_Phi(dist_nu, sig);
     phibar = make_phibar(dist_de, sig);
@@ -98,9 +97,12 @@ List compute_kliep(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
     if (sum(cv_ind) > 1) {
       int nfold = max(cv_ind) + 1;
       for (int i = 0; i < nfold; i++) {
+        p.increment();
         alpha_tmp = kliep_compute_alpha(Phi.cols(find(cv_ind != i)), phibar, phibar_corr, epsilon, nepsilon, maxit, progressbar);
         cv_score(s) += mean(log(Phi.cols(find(cv_ind == i)).t() * alpha_tmp));
       }
+    } else {
+      p.increment();
     }
     alpha.col(s) = kliep_compute_alpha(Phi, phibar, phibar_corr, epsilon, nepsilon, maxit, progressbar);
   }

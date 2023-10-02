@@ -68,8 +68,7 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
   int ncol = dist_nu.n_cols;
   int sig, l;
 
-  arma::vec loocv = arma::zeros<arma::vec>(nsigma*nlambda);
-  arma::vec PD = arma::zeros<arma::vec>(nsigma*nlambda);
+  arma::mat loocv = arma::zeros<arma::mat>(nsigma, nlambda);
   arma::mat diagmat = arma::eye<arma::mat>(ncol, ncol);
   arma::mat phi_nu = arma::zeros<arma::mat>(nnu, ncol);
   arma::mat phi_de = arma::zeros<arma::mat>(nde, ncol);
@@ -101,8 +100,7 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
         p.increment();
         current_alpha =  ulsif_compute_alpha(Hhat, hhat, la);
         alpha.slice(sig).col(l) = current_alpha;
-        loocv(sig * nlambda + l) = compute_ulsif_loocv(Hhat, hhat, la, nnu, nde, nmin, ncol, Knu.rows(0, nmin-1), Kde.rows(0,nmin-1));
-        PD(sig * nlambda + l) = dot(hhat, current_alpha) - 0.5;
+        loocv(sig, l) = compute_ulsif_loocv(Hhat, hhat, la, nnu, nde, nmin, ncol, Knu.rows(0, nmin-1), Kde.rows(0,nmin-1));
       }
     }
     if (stopped) {
@@ -116,8 +114,7 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
 
   List out = List::create(
     Named("alpha") = alpha,
-    Named("loocv_score") = loocv,
-    Named("PD") = PD
+    Named("loocv_score") = loocv
   );
   return out;
 }
