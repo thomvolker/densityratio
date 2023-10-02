@@ -1,9 +1,10 @@
 
 plot.ulsif <- function(object, sample = "both") {
 
-  data <- rbind(object$df_numerator, object$df_denominator, make.row.names = TRUE)
+  data <- rbind(object$df_numerator, object$df_denominator)
   data$dr <- predict(object, newdata = data)
 
+  data$sample <- NA
   data$sample[1:nrow(object$df_numerator)] <- "Numerator"
   data$sample[(nrow(object$df_numerator) + 1):nrow(data)] <- "Denominator"
 
@@ -43,6 +44,7 @@ plot_univariate <- function(object, vars, sample = "both") {
   data <- rbind(object$df_numerator, object$df_denominator)
   data$dr <- predict(object, newdata = data)
 
+  data$sample <- NA
   data$sample[1:nrow(object$df_numerator)] <- "Numerator"
   data$sample[(nrow(object$df_numerator) + 1):nrow(data)] <- "Denominator"
 
@@ -87,6 +89,7 @@ plot_bivariate <- function(object, vars, sample = "both") {
   data <- rbind(object$df_numerator, object$df_denominator)
   data$dr <- predict(object, newdata = data)
 
+  data$sample <- NA
   data$sample[1:nrow(object$df_numerator)] <- "Numerator"
   data$sample[(nrow(object$df_numerator) + 1):nrow(data)] <- "Denominator"
 
