@@ -1,30 +1,35 @@
 
-plot.ulsif <- function(object, sample = "both") {
+plot.ulsif <- function(object, sample = "both", logscale = FALSE) {
 
   data <- rbind(object$df_numerator, object$df_denominator)
+
+  if("dr" %in% names(data) | "sample" %in% names(data)) {
+    stop("Variables in your dataframe cannot have name 'dr' or 'sample'. Please rename your variable(s)")
+  }
+
   data$dr <- predict(object, newdata = data)
 
-  data$sample <- NA
-  data$sample[1:nrow(object$df_numerator)] <- "Numerator"
-  data$sample[(nrow(object$df_numerator) + 1):nrow(data)] <- "Denominator"
+  if(logscale){
+  data$dr <- log(data$dr)
+  }
 
-  if(sample == "numerator"){
-    data <- data %>% filter(sample == "Numerator")
-  }
-  if(sample == "denominator"){
-    data <- data %>% filter(sample == "Denominator")
-  }
-  if(sample == "both"){
-    data <- data
+  obsclass <- rep(c("numerator", "denominator"),
+                  c(nrow(object$df_numerator), nrow(object$df_denominator)))
+
+  data$sample <- obsclass
+
+  obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
+
+  if (obsselect != "both") {
+    data <- filter(data, obsclass == obsselect)
   }
 
   plot <-
     ggplot(data, aes(x = dr)) +
     geom_histogram(aes(fill = sample), alpha = .75,
                    color = "black",
-                   position = "identity",
-                   bins = max(data$dr)) +
-    scale_x_continuous(breaks = seq(round(min(data$dr), 0),round(max(data$dr), 0))) +
+                   position = position_dodge2(preserve = "single",
+                                              padding = 0.2)) +
     scale_fill_manual(values = c("firebrick", "steelblue")) +
     theme_bw()  +
     labs(
@@ -42,20 +47,20 @@ plot_univariate <- function(object, vars, sample = "both") {
 
   # Data handling
   data <- rbind(object$df_numerator, object$df_denominator)
+
+  if("dr" %in% names(data)) {
+    stop("Variables in your dataframe cannot have name 'dr'. Please rename your variable")
+  }
+
   data$dr <- predict(object, newdata = data)
 
-  data$sample <- NA
-  data$sample[1:nrow(object$df_numerator)] <- "Numerator"
-  data$sample[(nrow(object$df_numerator) + 1):nrow(data)] <- "Denominator"
+  obsclass <- rep(c("numerator", "denominator"),
+                  c(nrow(object$df_numerator), nrow(object$df_denominator)))
 
-  if(sample == "numerator"){
-    data <- data %>% filter(sample == "Numerator")
-  }
-  if(sample == "denominator"){
-    data <- data %>% filter(sample == "Denominator")
-  }
-  if(sample == "both"){
-    data <- data
+  obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
+
+  if (obsselect != "both") {
+    data <- filter(data, obsclass == obsselect)
   }
 
 
@@ -84,29 +89,30 @@ plot_univariate <- function(object, vars, sample = "both") {
   return(plots)
 }
 
-plot_bivariate <- function(object, vars, sample = "both") {
+plot_bivariate <- function(object, vars, sample = "both", show.samples = FALSE) {
 
   data <- rbind(object$df_numerator, object$df_denominator)
+
+  if("dr" %in% names(data) | "sample" %in% names(data)) {
+    stop("Variables in your dataframe cannot have name 'dr' or 'sample'. Please rename your variable(s)")
+  }
+
   data$dr <- predict(object, newdata = data)
 
-  data$sample <- NA
-  data$sample[1:nrow(object$df_numerator)] <- "Numerator"
-  data$sample[(nrow(object$df_numerator) + 1):nrow(data)] <- "Denominator"
+  obsclass <- rep(c("numerator", "denominator"),
+                  c(nrow(object$df_numerator), nrow(object$df_denominator)))
 
-  if(sample == "numerator"){
-    data <- data %>% filter(sample == "Numerator")
-  }
-  if(sample == "denominator"){
-    data <- data %>% filter(sample == "Denominator")
-  }
-  if(sample == "both"){
-    data <- data
-  }
+  data$sample <- obsclass
 
+  obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
+
+  if (obsselect != "both") {
+    data <- filter(data, obsclass == obsselect)
+  }
 
   plot <-
     ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
-    geom_point(aes(col = dr, shape = sample)) +
+    geom_point(aes(col = dr, shape = if (show.samples) sample else NULL)) +
     scale_colour_viridis_c(option = "B", name ="Density ratio") +
     theme_bw() +
     labs(title = "Density ratio estimates for combinations of values",
