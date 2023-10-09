@@ -1,11 +1,11 @@
 
-plot.ulsif <- function(object, sample = "both", logscale = FALSE) {
+plot.histogram <- function(object, sample = "both", logscale = FALSE) {
+
+  check.object.type(object)
 
   data <- rbind(object$df_numerator, object$df_denominator)
 
-  if("dr" %in% names(data) | "sample" %in% names(data)) {
-    stop("Variables in your dataframe cannot have name 'dr' or 'sample'. Please rename your variable(s)")
-  }
+  check.overriden.names(data)
 
   data$dr <- predict(object, newdata = data)
 
@@ -42,15 +42,25 @@ plot.ulsif <- function(object, sample = "both", logscale = FALSE) {
   return(plot)
 }
 
+plot.ulsif <- function(object, sample = "both", logscale = FALSE) {
+  plot.histogram(object, sample = "both", logscale = FALSE)
+}
+
+plot.kliep <- function(object, sample = "both", logscale = FALSE) {
+  plot.histogram(object, sample = "both", logscale = FALSE)
+}
+
+
 
 plot_univariate <- function(object, vars, sample = "both") {
+
+  check.object.type(object)
 
   # Data handling
   data <- rbind(object$df_numerator, object$df_denominator)
 
-  if("dr" %in% names(data)) {
-    stop("Variables in your dataframe cannot have name 'dr'. Please rename your variable")
-  }
+  check.overriden.names(data)
+  check.var.names(vars)
 
   data$dr <- predict(object, newdata = data)
 
@@ -91,13 +101,13 @@ plot_univariate <- function(object, vars, sample = "both") {
 
 plot_bivariate <- function(object, vars, sample = "both", show.samples = FALSE) {
 
+  check.object.type(object)
+
   data <- rbind(object$df_numerator, object$df_denominator)
 
-  if("dr" %in% names(data) | "sample" %in% names(data)) {
-    stop("Variables in your dataframe cannot have name 'dr' or 'sample'. Please rename your variable(s)")
-  }
+  check.overriden.names(data)
+  check.var.names(vars)
 
-  data$dr <- predict(object, newdata = data)
 
   obsclass <- rep(c("numerator", "denominator"),
                   c(nrow(object$df_numerator), nrow(object$df_denominator)))

@@ -257,3 +257,21 @@ check.newdata <- function(object, newdata) {
   }
   newdata
 }
+
+check.var.names <- function(vars){
+  if(!all(vars %in% names(data))) {
+  stop("Indicate variable (s) are not present in object. Check variable names are correct")
+  }
+}
+
+check.overriden.names <- function(data){
+  if("dr" %in% names(data) | "sample" %in% names(data)) {
+    stop("Variables in your dataframe cannot have name 'dr' or 'sample'. Please rename your variable(s)")
+  }
+}
+
+check.object.type <- function(object) {
+  if(!any(c("ulsif", "kliep") == attr(output, "class"))) {
+    stop("Objects should be of class 'ulsif' or 'kliep'")
+  }
+}
