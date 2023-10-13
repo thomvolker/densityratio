@@ -69,11 +69,7 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
   int sig, l;
 
   arma::mat loocv = arma::zeros<arma::mat>(nsigma, nlambda);
-  arma::mat diagmat = arma::eye<arma::mat>(ncol, ncol);
-  arma::mat phi_nu = arma::zeros<arma::mat>(nnu, ncol);
-  arma::mat phi_de = arma::zeros<arma::mat>(nde, ncol);
   arma::mat Hhat = arma::zeros<arma::mat>(ncol, ncol);
-  arma::vec Hhat_diag = Hhat.diag();
   arma::vec hhat = arma::zeros<arma::vec>(ncol);
   arma::mat Knu = arma::zeros<arma::mat>(nnu, ncol);
   arma::mat Kde = arma::zeros<arma::mat>(nde, ncol);
