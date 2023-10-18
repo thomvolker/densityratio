@@ -1,10 +1,13 @@
 //[[Rcpp::depends(RcppArmadillo)]]
 //[[Rcpp::depends(RcppProgress)]]
 #include <RcppArmadillo.h>
-#include <omp.h>
 #include "densityratio.h"
 #include <progress.hpp>
 #include <progress_bar.hpp>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 using namespace Rcpp;
 using namespace arma;
 
@@ -18,7 +21,11 @@ arma::vec ulsif_compute_alpha(arma::mat Hhat, const arma::vec& hhat, const doubl
 
 //[[Rcpp::export]]
 int set_threads(int nthreads) {
+  #ifdef _OPENMP
   int max_threads = omp_get_max_threads();
+  #else
+  int max_threads = 1;
+  #endif
   if (nthreads == 0) {
     nthreads = max_threads;
   }
@@ -76,9 +83,11 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
   arma::vec current_alpha = arma::zeros<arma::vec>(ncol);
   arma::cube alpha(ncol, nlambda, nsigma, arma::fill::zeros);
 
+  #ifdef _OPENMP
   if (parallel) {
     nthreads = set_threads(nthreads);
   }
+  #endif
   Progress p(nsigma * nlambda, progressbar);
 
   for(sig = 0; sig < nsigma; sig++) {
@@ -87,7 +96,9 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
     Kde = kernel_gaussian(dist_de, si);
     Hhat = Kde.t() * Kde / nde;
     hhat = arma::mean(Knu, 0).t();
-#pragma omp parallel for num_threads(nthreads) private(la) if (parallel)
+  #ifdef _OPENMP
+  #pragma omp parallel for num_threads(nthreads) private(la) if (parallel)
+  #endif
     for(l = 0; l < nlambda; l++) {
       if(Progress::check_abort()) {
         stopped = true;

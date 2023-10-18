@@ -1,7 +1,7 @@
 //[[Rcpp::depends(RcppArmadillo)]]
 //[[Rcpp::depends(RcppProgress)]]
 #include <RcppArmadillo.h>
-#include <omp.h>
+//#include <omp.h>
 #include "densityratio.h"
 #include <progress.hpp>
 #include <progress_bar.hpp>
