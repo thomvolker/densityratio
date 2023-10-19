@@ -81,7 +81,7 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
   arma::mat Knu = arma::zeros<arma::mat>(nnu, ncol);
   arma::mat Kde = arma::zeros<arma::mat>(nde, ncol);
   arma::vec current_alpha = arma::zeros<arma::vec>(ncol);
-  arma::cube alpha(ncol, nlambda, nsigma, arma::fill::zeros);
+  arma::cube alpha(ncol, nsigma, nlambda, arma::fill::zeros);
 
   #ifdef _OPENMP
   if (parallel) {
@@ -111,7 +111,7 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
         la = lambda[l];
         p.increment();
         current_alpha =  ulsif_compute_alpha(Hhat, hhat, la);
-        alpha.slice(sig).col(l) = current_alpha;
+        alpha.slice(l).col(sig) = current_alpha;
         loocv(sig, l) = compute_ulsif_loocv(Hhat, hhat, la, nnu, nde, nmin, ncol, Knu.rows(0, nmin-1), Kde.rows(0,nmin-1));
       }
     }
