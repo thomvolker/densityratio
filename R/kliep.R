@@ -60,22 +60,23 @@ kliep <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NU
   maxit   <- check.maxit(maxit)
   cv_ind  <- check.nfold(cv, nfold, sigma, nnu)
 
-  out <- compute_kliep(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
-  rownames(out$cv_score) <- paste0("sigma", 1:length(sigma))
+  res <- compute_kliep(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
+  rownames(res$cv_score) <- names(sigma) <- paste0("sigma", 1:length(sigma))
+  dimnames(res$alpha) <- list(NULL, names(sigma))
 
 
   out <- list(
     df_numerator = df_numerator,
     df_denominator = df_denominator,
-    alpha = out$alpha,
-    cv_score = switch(cv, out$cv_score, NULL),
+    alpha = res$alpha,
+    cv_score = switch(cv, res$cv_score, NULL),
     sigma = sigma,
     centers = centers,
     nfold = switch(cv, max(cv_ind) + 1, NULL),
     epsilon = epsilon,
     maxit = maxit,
-    alpha_opt = switch(cv, out$alpha[, which.max(out$cv_score), drop = FALSE], NULL),
-    sigma_opt = switch(cv, sigma[which.max(out$cv_score)], NULL),
+    alpha_opt = switch(cv, res$alpha[, which.max(res$cv_score), drop = FALSE], NULL),
+    sigma_opt = switch(cv, sigma[which.max(res$cv_score)], NULL),
     call = cl
   )
   class(out) <- "kliep"
