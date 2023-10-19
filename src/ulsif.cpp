@@ -87,6 +87,11 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
   if (parallel) {
     nthreads = set_threads(nthreads);
   }
+  #else
+  if (parallel) {
+    std::string warn = "OpenMP is not available, parallel processing is disabled.";
+    Rf_warningcall(R_NilValue, warn.c_str());
+  }
   #endif
   Progress p(nsigma * nlambda, progressbar);
 
