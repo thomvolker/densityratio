@@ -76,7 +76,6 @@ This package provides functionality to directly estimate a density ratio
 $$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$
 without estimating the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.
 
-
 ```{r}
 #| echo: false
 #| message: false

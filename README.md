@@ -28,7 +28,7 @@ over the entire multivariate space of the data. Subsequently, the
 density ratio values can be used to summarize the dissimilarity between
 the two distributions in a discrepancy measure.
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" style="width:50.0%"
+<img src="man/figures/README-unnamed-chunk-3-1.svg" style="width:50.0%"
 data-fig-align="center" />
 
 ### Features
@@ -166,7 +166,7 @@ ggplot() +
         text = element_text(size = 20))
 ```
 
-<img src="man/figures/README-plot-univ-1.png" style="width:50.0%"
+<img src="man/figures/README-plot-univ-1.svg" style="width:50.0%"
 data-fig-align="center" />
 
 ### Categorical data
@@ -276,7 +276,7 @@ ggplot(data = NULL, aes(x = newx5)) +
         text = element_text(size = 20))
 ```
 
-<img src="man/figures/README-plot-methods-1.png" style="width:50.0%"
+<img src="man/figures/README-plot-methods-1.svg" style="width:50.0%"
 data-fig-align="center" />
 
 Although all methods perform reasonable and approximate the true density
