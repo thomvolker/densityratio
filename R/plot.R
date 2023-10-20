@@ -1,11 +1,10 @@
-
 plot.histogram <- function(object, sample = "both", logscale = FALSE) {
 
   check.object.type(object)
 
   data <- rbind(object$df_numerator, object$df_denominator)
 
-  check.overriden.names(data)
+  check.overriden.names(vars)
 
   data$dr <- predict(object, newdata = data)
 
@@ -42,16 +41,46 @@ plot.histogram <- function(object, sample = "both", logscale = FALSE) {
   return(plot)
 }
 
+#' Title
+#'
+#' @param object
+#' @param sample
+#' @param logscale
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plot.ulsif <- function(object, sample = "both", logscale = FALSE) {
-  plot.histogram(object, sample = "both", logscale = FALSE)
+  plot.histogram(object, sample = sample, logscale = logscale)
 }
 
+#' Title
+#'
+#' @param object
+#' @param sample
+#' @param logscale
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plot.kliep <- function(object, sample = "both", logscale = FALSE) {
-  plot.histogram(object, sample = "both", logscale = FALSE)
+  plot.histogram(object, sample = sample, logscale = logscale)
 }
 
 
 
+#' Title
+#'
+#' @param object
+#' @param vars
+#' @param sample
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plot_univariate <- function(object, vars, sample = "both") {
 
   check.object.type(object)
@@ -60,7 +89,7 @@ plot_univariate <- function(object, vars, sample = "both") {
   data <- rbind(object$df_numerator, object$df_denominator)
 
   check.overriden.names(data)
-  check.var.names(vars)
+  check.var.names(vars, data)
 
   data$dr <- predict(object, newdata = data)
 
@@ -99,15 +128,30 @@ plot_univariate <- function(object, vars, sample = "both") {
   return(plots)
 }
 
-plot_bivariate <- function(object, vars, sample = "both", show.samples = FALSE) {
+#' Title
+#'
+#' @param object
+#' @param vars
+#' @param sample
+#' @param show.samples
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = TRUE) {
 
   check.object.type(object)
 
   data <- rbind(object$df_numerator, object$df_denominator)
 
   check.overriden.names(data)
-  check.var.names(vars)
 
+  vars <- c(var.x, var.y)
+
+  check.var.names(vars, data)
+
+  data$dr <- predict(object, newdata = data)
 
   obsclass <- rep(c("numerator", "denominator"),
                   c(nrow(object$df_numerator), nrow(object$df_denominator)))
@@ -120,14 +164,31 @@ plot_bivariate <- function(object, vars, sample = "both", show.samples = FALSE) 
     data <- filter(data, obsclass == obsselect)
   }
 
+  plots <- list()
+
+  var_combinations <- expand.grid(var.x, var.y)
+  var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
+  var_combinations <- var_combinations %>% filter(Var1 != Var2)
+  var_combinations <- as.matrix(var_combinations)
+
+  # helper function to plot two variables
+  plot_twovariables <- function(data, vars, showsamples = show.samples){
   plot <-
     ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
-    geom_point(aes(col = dr, shape = if (show.samples) sample else NULL)) +
+    geom_point(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
+               alpha = 0.5) +
+    scale_fill_viridis_c(option = "B", name ="Density ratio") +
     scale_colour_viridis_c(option = "B", name ="Density ratio") +
     theme_bw() +
     labs(title = "Density ratio estimates for combinations of values",
          shape = "Sample") +
-    scale_shape_manual(values = c(16, 3))
+    scale_shape_manual(values = c(21, 24))
 
   return(plot)
+  }
+
+  for(i in 1:nrow(var_combinations)){
+    plots[[i]] <- plot_twovariables(data = data, vars = var_combinations[i,])
+  }
+  return(plots)
 }
