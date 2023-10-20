@@ -258,9 +258,9 @@ check.newdata <- function(object, newdata) {
   newdata
 }
 
-check.var.names <- function(vars){
+check.var.names <- function(vars, data){
   if(!all(vars %in% names(data))) {
-  stop("Indicate variable (s) are not present in object. Check variable names are correct")
+  stop("Indicated variable (s) are not present in object. Check variable names are correct")
   }
 }
 
@@ -271,7 +271,7 @@ check.overriden.names <- function(data){
 }
 
 check.object.type <- function(object) {
-  if(!any(c("ulsif", "kliep") == attr(output, "class"))) {
+  if(all(c("ulsif", "kliep") != attr(output, "class"))) {
     stop("Objects should be of class 'ulsif' or 'kliep'")
   }
 }
