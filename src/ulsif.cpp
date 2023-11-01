@@ -73,7 +73,7 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
   int nde = dist_de.n_rows;
   int nmin = (nnu <= nde) ? nnu : nde;
   int ncol = dist_nu.n_cols;
-  int sig, l;
+  int sig;
 
   arma::mat loocv = arma::zeros<arma::mat>(nsigma, nlambda);
   arma::mat Hhat = arma::zeros<arma::mat>(ncol, ncol);
@@ -102,9 +102,9 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
     Hhat = Kde.t() * Kde / nde;
     hhat = arma::mean(Knu, 0).t();
   #ifdef _OPENMP
-  #pragma omp parallel for num_threads(nthreads) private(la) if (parallel)
+  #pragma omp parallel for num_threads(nthreads) private(la, current_alpha) if (parallel)
   #endif
-    for(l = 0; l < nlambda; l++) {
+    for(int l = 0; l < nlambda; l++) {
       if(Progress::check_abort()) {
         stopped = true;
       } else {
