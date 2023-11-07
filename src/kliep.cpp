@@ -30,6 +30,8 @@ arma::vec kliep_compute_alpha(const arma::mat& Phi, const arma::vec& phibar, con
 
   arma::vec alpha = arma::ones<arma::vec>(Phi.n_rows);
   arma::vec alpha_new = arma::ones<arma::vec>(Phi.n_rows);
+  arma::vec Phi_t_alpha = arma::zeros<arma::vec>(Phi.n_cols);
+  arma::vec Phi_t_alpha_new = arma::zeros<arma::vec>(Phi.n_cols);
 
   alpha += phibar_corr * as_scalar(1 - arma::dot(phibar, alpha));
   alpha.elem(find(alpha < 0)).zeros();
@@ -46,11 +48,15 @@ arma::vec kliep_compute_alpha(const arma::mat& Phi, const arma::vec& phibar, con
     } else {
       while(!conv) {
         iter++;
-        alpha_new = alpha + (e * Phi) * (1 / (Phi.t() * alpha));
+        Phi_t_alpha = Phi.t() * alpha;
+        Phi_t_alpha.replace(0, sqrt(datum::eps));
+        alpha_new = alpha + (e * Phi) * (1 / (Phi_t_alpha));
         alpha_new += phibar_corr * as_scalar(1 - arma::dot(phibar, alpha_new));
         alpha_new.elem(find(alpha_new < 0)).zeros();
         alpha_new /= dot(phibar, alpha_new);
-        s_new = mean(log(Phi.t() * alpha_new));
+        Phi_t_alpha_new = Phi.t() * alpha_new;
+        Phi_t_alpha_new.replace(0, sqrt(datum::eps));
+        s_new = mean(log((Phi_t_alpha_new)));
         if (s_new <= score || iter == maxit) {
           conv = true;
         } else {
@@ -111,4 +117,5 @@ List compute_kliep(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
   );
   return out;
 }
+
 
