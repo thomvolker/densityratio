@@ -52,6 +52,7 @@ print.summary.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), .
         ifelse(x$p_value < 0.001,
                paste(" < .001"),
                paste(" = ", format(x$p_value, digits = 3, ...))),
+        "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
         "\n\n", sep = "")
   } else {
     cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
@@ -115,6 +116,7 @@ print.summary.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), .
         ifelse(x$p_value < 0.001,
                paste(" < .001"),
                paste(" = ", format(x$p_value, digits = 3, ...))),
+        "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
         "\n\n", sep = "")
   } else {
     cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
