@@ -11,7 +11,7 @@ check.dataform <- function(nu, de) {
   }
   #
   if ((sum(is.na(nu)) + sum(is.na(de))) > 0) {
-    stop("Your data has missing values, which cannot yet be handled currently.")
+    stop("Your data has missing values, which cannot yet be handled.")
   }
 }
 
