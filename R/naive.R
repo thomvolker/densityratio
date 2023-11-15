@@ -34,8 +34,6 @@ naive <- function(df_numerator, df_denominator, n = 2L^11, ...) {
   cl <- match.call()
   nu <- as.matrix(df_numerator)
   de <- as.matrix(df_denominator)
-  n_nu <- nrow(nu)
-  n_de <- nrow(de)
   P <- ncol(nu)
   check.dataform(nu, de)
 
