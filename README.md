@@ -136,6 +136,7 @@ summary(fit, test = TRUE)
 #>  
 #> Pearson divergence between P(nu) and P(de): 0.2925
 #> Pr(P(nu)=P(de)) < .001
+#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
 
 The probability that numerator and denominator samples share a common
@@ -199,9 +200,9 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.3748725
-#> 2                 B        1.3554649
-#> 3                 C        0.6299005
+#> 1                 A        1.3585735
+#> 2                 B        1.3698165
+#> 3                 C        0.6285726
 
 
 table(numerator_data$x1) / table(denominator_data$x1)
@@ -230,12 +231,13 @@ summary(fit_all, test = TRUE, parallel = TRUE)
 #> Kernel Information:
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
-#>   Optimal sigma: 1.459182
+#>   Optimal sigma: 1.474584
 #>   Optimal lambda: 0.3359818
-#>   Optimal kernel weights (loocv): num [1:200] -0.0314 0.1168 0.0739 0.0966 0.0212 ...
+#>   Optimal kernel weights (loocv): num [1:200] -0.02004 -0.00362 0.10225 0.03995 0.03609 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.5015
+#> Pearson divergence between P(nu) and P(de): 0.5093
 #> Pr(P(nu)=P(de)) < .001
+#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
 
 ### Other density ratio estimation functions
@@ -250,6 +252,8 @@ estimate a density ratio.
   <!-- * `kmm()` estimates the density ratio for the denominator sample points only through kernel mean matching.  -->
 
 ``` r
+set.seed(1)
+
 fit_naive <- naive(
   df_numerator = numerator_data$x5, 
   df_denominator = denominator_data$x5
@@ -257,7 +261,8 @@ fit_naive <- naive(
 
 fit_kliep <- kliep(
   df_numerator = numerator_data$x5, 
-  df_denominator = denominator_data$x5
+  df_denominator = denominator_data$x5,
+  maxit = 10000
 )
 
 pred_naive <- predict(fit_naive, newdata = newx5)
@@ -271,7 +276,7 @@ ggplot(data = NULL, aes(x = newx5)) +
                 fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
                 size = 1) +
   theme_classic() +
-  scale_color_manual(name = NULL, values = c("#8400b8", "#510070","#de0277", "purple")) +
+  scale_color_manual(name = NULL, values = c("pink", "#512970","#de0277", "purple")) +
   theme(legend.position = c(0.8, 0.9),
         text = element_text(size = 20))
 ```
@@ -279,9 +284,9 @@ ggplot(data = NULL, aes(x = newx5)) +
 <img src="man/figures/README-plot-methods-1.svg" style="width:50.0%"
 data-fig-align="center" />
 
-Although all methods perform reasonable and approximate the true density
-ratio relatively well, `ulsif()` comes closes to the true density ratio
-function in this example.
+The figure directly shows that `ulsif()` and `kliep()` come rather close
+to the true density ratio function in this example, and outperform the
+`naive()` solution.
 
 ## Contributions
 
