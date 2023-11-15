@@ -15,7 +15,7 @@ kliep(
   cv = TRUE,
   nfold = NULL,
   epsilon = NULL,
-  maxit = 1000,
+  maxit = 2000,
   progressbar = TRUE
 )
 }
@@ -51,14 +51,14 @@ optimal \code{sigma} value (default is 5-fold cv).}
 
 \item{epsilon}{Numeric scalar or vector with the learning rate for the
 gradient-ascent procedure. If a vector, all values are used as the learning
-rate. By default, \code{10^{3:-3}} is used.}
+rate. By default, \code{10^{1:-5}} is used.}
 
 \item{maxit}{Maximum number of iterations for the optimization scheme.}
 
 \item{progressbar}{Logical indicating whether or not to display a progressbar.}
 }
 \value{
-\code{dratio}-object, containing all information to calculate the
+\code{kliep}-object, containing all information to calculate the
 density ratio using optimal sigma and optimal weights.
 }
 \description{

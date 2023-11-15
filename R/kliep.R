@@ -22,12 +22,12 @@
 #' optimal \code{sigma} value (default is 5-fold cv).
 #' @param epsilon Numeric scalar or vector with the learning rate for the
 #' gradient-ascent procedure. If a vector, all values are used as the learning
-#' rate. By default, \code{10^{3:-3}} is used.
+#' rate. By default, \code{10^{1:-5}} is used.
 #' @param maxit Maximum number of iterations for the optimization scheme.
 #' @param progressbar Logical indicating whether or not to display a progressbar.
 #' @export
 #'
-#' @return \code{dratio}-object, containing all information to calculate the
+#' @return \code{kliep}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal weights.
 #'
 #' @examples
