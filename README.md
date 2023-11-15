@@ -8,8 +8,8 @@
 [![R-CMD-check](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/densityratio.png)](https://CRAN.R-project.org/package=densityratio)
+[![densityratio status
+badge](https://thomvolker.r-universe.dev/badges/densityratio.png)](https://thomvolker.r-universe.dev/densityratio)
 [![DOI](https://zenodo.org/badge/613441108.svg)](https://zenodo.org/badge/latestdoi/613441108)
 
 <!-- badges: end -->
@@ -51,11 +51,10 @@ data-fig-align="center" />
 ## Installation
 
 You can install the development version of `densityratio` from
-[GitHub](https://github.com/) with:
+[R-universe](https://r-universe.dev/search/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("thomvolker/densityratio")
+install.packages('densityratio', repos = 'https://thomvolker.r-universe.dev')
 ```
 
 ## Usage
@@ -70,6 +69,7 @@ five variables.
 
 ``` r
 library(densityratio)
+#> Warning: package 'densityratio' was built under R version 4.3.2
 
 head(numerator_data)
 #> # A tibble: 6 × 5

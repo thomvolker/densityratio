@@ -65,7 +65,7 @@ hexSticker::sticker(
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN status](https://www.r-pkg.org/badges/version/densityratio)](https://CRAN.R-project.org/package=densityratio)
+[![densityratio status badge](https://thomvolker.r-universe.dev/badges/densityratio)](https://thomvolker.r-universe.dev/densityratio)
 [![DOI](https://zenodo.org/badge/613441108.svg)](https://zenodo.org/badge/latestdoi/613441108)
 
 <!-- badges: end -->
@@ -146,11 +146,10 @@ ggplot() +
 
 ## Installation
 
-You can install the development version of `densityratio` from [GitHub](https://github.com/) with:
+You can install the development version of `densityratio` from [R-universe](https://r-universe.dev/search/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("thomvolker/densityratio")
+install.packages('densityratio', repos = 'https://thomvolker.r-universe.dev')
 ```
 
 ## Usage
