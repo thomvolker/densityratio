@@ -247,6 +247,20 @@ check.lambda.predict <- function(object, lambda) {
   lambda
 }
 
+check.subspace <- function(m, P) {
+  if(is.null(m)) {
+    m <- floor(sqrt(P))
+  } else {
+    if(!is.numeric(m)) {
+      stop("The dimension of the subspace 'm' must be 'NULL' or an integer value.")
+    } else {
+      if (m %% 1 != 0) stop("The dimension of the subspace 'm' must be 'NULL' or an integer value.")
+      if (m > P) stop("The dimension of the subspace 'm' must be smaller than the number of variables.")
+    }
+  }
+  m
+}
+
 check.newdata <- function(object, newdata) {
   if (!is.null(newdata)) {
     newdata <- as.matrix(newdata)
