@@ -51,7 +51,7 @@ permute.kliep <- function(object, stacked, nnu, nde) {
   mean(log(pmax(sqrt(.Machine$double.eps), pred_nu)))
 }
 
-permute.naivedensityratio <- function(object, stacked, nnu, nde) {
+permute.naivedensityratio <- function(object, stacked, nnu, nde, min_pred, max_pred) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
   r <- stats::update(
     object = object,
@@ -62,10 +62,10 @@ permute.naivedensityratio <- function(object, stacked, nnu, nde) {
   pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE]))
   pred_de <- c(stats::predict(r, newdata = stacked[!ind, , drop = FALSE]))
 
-  1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  (mean(pmin(max_pred, pmax(min_pred, pred_nu))) - mean(pmin(max_pred, pmax(min_pred, pred_de))))^2
 }
 
-permute.naivesubspacedensityratio <- function(object, stacked, nnu, nde) {
+permute.naivesubspacedensityratio <- function(object, stacked, nnu, nde, min_pred, max_pred) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
   r <- stats::update(
     object = object,
@@ -76,5 +76,5 @@ permute.naivesubspacedensityratio <- function(object, stacked, nnu, nde) {
   pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE]))
   pred_de <- c(stats::predict(r, newdata = stacked[!ind, , drop = FALSE]))
 
-  1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  (mean(pmin(max_pred, pmax(min_pred, pred_nu))) - mean(pmin(max_pred, pmax(min_pred, pred_de))))^2
 }
