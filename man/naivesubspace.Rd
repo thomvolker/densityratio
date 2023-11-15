@@ -4,13 +4,7 @@
 \alias{naivesubspace}
 \title{Naive subspace density ratio estimation}
 \usage{
-naivesubspace(
-  df_numerator,
-  df_denominator,
-  m = floor(sqrt(ncol(df_numerator))),
-  n = 2L^11,
-  ...
-)
+naivesubspace(df_numerator, df_denominator, m = NULL, n = 2L^11, ...)
 }
 \arguments{
 \item{df_numerator}{\code{data.frame} with exclusively numeric variables with
