@@ -44,15 +44,13 @@
 #' lines(df_new[,1], predict(dr_subspace, df_new), col = "darkorange")
 #'
 #' @export
-naivesubspace <- function(df_numerator, df_denominator, m = floor(sqrt(ncol(df_numerator))), n = 2L^11, ...) {
+naivesubspace <- function(df_numerator, df_denominator, m = NULL, n = 2L^11, ...) {
   cl <- match.call()
   nu <- as.matrix(df_numerator)
   de <- as.matrix(df_denominator)
-  N <- nrow(nu)
-  P <- ncol(nu)
   check.dataform(nu, de)
 
-  if (m > P) stop("Subspace size must be smaller than number of variables!")
+  m <- check.subspace(m, ncol(nu))
 
   # first, use svd to compute m-dimensional subspace
   de_centered <- scale(de, scale = FALSE)
