@@ -40,7 +40,7 @@
 
 kliep <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NULL, sigma = NULL,
                   ncenters = 200, centers = NULL, cv = TRUE, nfold = NULL,
-                  epsilon = NULL, maxit = 1000, progressbar = TRUE) {
+                  epsilon = NULL, maxit = 2000, progressbar = TRUE) {
 
   cl <- match.call()
   nu <- as.matrix(df_numerator)
