@@ -1,11 +1,27 @@
 Package: densityratio
 Type: Package
-Title: Density ratio estimation of two distributions
-Version: 0.1.0
+Title: Distribution comparison through density ratio estimation
+Version: 0.1.1
 Author: Thom Benjamin Volker
 Maintainer: Thom Benjamin Volker <thombenjaminvolker@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: This package provides functionality to directly estimate the ratio 
+  of two probability distributions from samples from these distributions without 
+  estimating the densities separately. Density ratio estimation serves many 
+  purposes, for example, prediction, outlier detection, change-point detection 
+  in time-series, importance weighting under domain adaptation (i.e., sample 
+  selection bias) and evaluation of synthetic data utility. The rationale behind 
+  these use-cases is that differences between two data distributions can be 
+  captured in the ratio their density ratio, which is estimated over the entire 
+  multivariate space of the data.
+    Computationally intensive code is executed in `C++` using `Rcpp` and 
+  `RcppArmadillo`. The package provides good default hyperparameters that can be 
+  optimized in cross-validation (we do recommend understanding those parameters 
+  before using `densityratio` in practice). Multiple density ratio estimation 
+  methods are implemented, such as unconstrained least-squares importance 
+  fitting (`ulsif()`), Kullback-Leibler importance estimation procedure 
+  (`kliep()`), ratio of estimated densities (`naive()`), ratio of estimated 
+  densities after dimension reduction (`naivesubspace()`), and least-squares 
+  heterodistributional subspace search (`lhss()`; experimental).
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
