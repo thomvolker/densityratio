@@ -85,7 +85,7 @@ plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NUL
 #' @export
 #'
 #' @examples
-plot_univariate <- function(object, vars, sample = "both") {
+plot_univariate <- function(object, vars, sample = "both", logscale = TRUE) {
 
   check.object.type(object)
 
@@ -106,6 +106,18 @@ plot_univariate <- function(object, vars, sample = "both") {
     data <- filter(data, obsclass == obsselect)
   }
 
+  if (logscale) {
+    if(any(data$dr < 0)){
+      warning("Negative estimated density ratios converted to 10e-8 before applying logarithmic transformation")
+      data$dr[data$dr < 0] <- 10e-8
+    }
+
+    data$dr <- log(data$dr)
+    y_lab <- "Log(Density Ratio)"
+
+  } else {
+    y_lab <- "Density Ratio"
+  }
 
   plots <- list()
 
@@ -114,11 +126,13 @@ plot_univariate <- function(object, vars, sample = "both") {
       ggplot(data, aes(x = .data[[var]], y = dr )) +
       geom_point(aes(col = dr, shape = sample)) +
       theme_bw() +
-      labs(y = "Density ratio") +
       labs(title = "Scatter plot of individual values and density ratio",
-           shape = "Sample") +
+           shape = "Sample",
+           y = y_lab) +
+      geom_hline(yintercept = 0, linetype = "dashed")+
       scale_colour_viridis_c(option = "B", name ="Density ratio")  +
-      scale_shape_manual(values = c(16, 3))
+      scale_shape_manual(values = c(16, 3))  +
+      scale_y_continuous(breaks = c(-15,-10,-5,0,1,2,3,4, 8))
 
 
     return(plot)
@@ -128,7 +142,6 @@ plot_univariate <- function(object, vars, sample = "both") {
   for(var in vars){
     plots[[var]] <- plot_onevariable(var)
   }
-
   return(plots)
 }
 
@@ -143,7 +156,7 @@ plot_univariate <- function(object, vars, sample = "both") {
 #' @export
 #'
 #' @examples
-plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = TRUE) {
+plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = TRUE, output = "assembled") {
 
   check.object.type(object)
 
@@ -194,5 +207,11 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   for(i in 1:nrow(var_combinations)){
     plots[[i]] <- plot_twovariables(data = data, vars = var_combinations[i,])
   }
+
+  if(output == "assembled"){
+  plots_assembly <- patchwork::wrap_plots(plots, guides = "collect")
+  return(plots_assembly)
+  } else {
   return(plots)
+  }
 }
