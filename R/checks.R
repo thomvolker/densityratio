@@ -271,7 +271,7 @@ check.overriden.names <- function(data){
 }
 
 check.object.type <- function(object) {
-  if(all(c("ulsif", "kliep") != attr(output, "class"))) {
+  if(all(c("ulsif", "kliep") != attr(object, "class"))) {
     stop("Objects should be of class 'ulsif' or 'kliep'")
   }
 }
