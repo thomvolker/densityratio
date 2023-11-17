@@ -1,4 +1,4 @@
-plot.histogram <- function(object, sample = "both", logscale = FALSE) {
+plot.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
 
   check.object.type(object)
 
@@ -9,7 +9,9 @@ plot.histogram <- function(object, sample = "both", logscale = FALSE) {
   data$dr <- predict(object, newdata = data)
 
   if(logscale){
+  data$dr[data$dr < 0] <- 10e-8
   data$dr <- log(data$dr)
+  warning("Negative estimated density ratios converted to 10e-0.8 before applying logarithmic transformation")
   }
 
   obsclass <- rep(c("numerator", "denominator"),
@@ -25,8 +27,10 @@ plot.histogram <- function(object, sample = "both", logscale = FALSE) {
 
   plot <-
     ggplot(data, aes(x = dr)) +
-    geom_histogram(aes(fill = sample), alpha = .75,
+    geom_histogram(aes(fill = sample),
+                   alpha = .75,
                    color = "black",
+                   binwidth = if (!is.null(binwidth)) binwidth else NULL,
                    position = position_dodge2(preserve = "single",
                                               padding = 0.2)) +
     scale_fill_manual(values = c("firebrick", "steelblue")) +
@@ -51,8 +55,8 @@ plot.histogram <- function(object, sample = "both", logscale = FALSE) {
 #' @export
 #'
 #' @examples
-plot.ulsif <- function(object, sample = "both", logscale = FALSE) {
-  plot.histogram(object, sample = sample, logscale = logscale)
+plot.ulsif <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
+  plot.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth)
 }
 
 #' Title
@@ -65,8 +69,8 @@ plot.ulsif <- function(object, sample = "both", logscale = FALSE) {
 #' @export
 #'
 #' @examples
-plot.kliep <- function(object, sample = "both", logscale = FALSE) {
-  plot.histogram(object, sample = sample, logscale = logscale)
+plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
+  plot.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth)
 }
 
 
