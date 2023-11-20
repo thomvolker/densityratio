@@ -167,7 +167,6 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   vars <- c(var.x, var.y)
 
   check.var.names(vars, data)
-
   data$dr <- predict(object, newdata = data)
 
   obsclass <- rep(c("numerator", "denominator"),
@@ -190,7 +189,7 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
 
   # helper function to plot two variables
   plot_twovariables <- function(data, vars, showsamples = show.samples){
-  plot <-
+    plot <-
     ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
     geom_point(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
                alpha = 0.5) +
@@ -209,9 +208,78 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   }
 
   if(output == "assembled"){
-  plots_assembly <- patchwork::wrap_plots(plots, guides = "collect")
+  plots_assembly <- patchwork::wrap_plots(plots, guides = "collect", byrow = TRUE,ncol = length(var.x), nrow = length(var.y)) & labs(title = NULL)
+  plots_assembly <- plots_assembly + plot_annotation(title = "Density ratio estimates for combinations of values")
   return(plots_assembly)
   } else {
   return(plots)
+  }
+}
+
+plot_bivariate_heatmap <- function(object, var.x,var.y, sample = "both", show.samples = TRUE, output = "assembled") {
+
+  check.object.type(object)
+
+  data <- rbind(object$df_numerator, object$df_denominator)
+
+  check.overriden.names(data)
+
+  vars <- c(var.x, var.y)
+
+  check.var.names(vars, data)
+  data$dr <- predict(object, newdata = data)
+
+  obsclass <- rep(c("numerator", "denominator"),
+                  c(nrow(object$df_numerator), nrow(object$df_denominator)))
+
+  data$sample <- obsclass
+
+  obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
+
+  if (obsselect != "both") {
+    data <- filter(data, obsclass == obsselect)
+  }
+
+  plots <- list()
+
+  var_combinations <- expand.grid(var.x, var.y)
+  var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
+  var_combinations <- var_combinations %>% filter(Var1 != Var2)
+  var_combinations <- as.matrix(var_combinations)
+
+  # helper function to plot two variables
+  plot_twovariables <- function(data, vars, showsamples = show.samples){
+
+    grid_var1 <- seq(min(data[[vars[1]]]), max(data[[vars[1]]]))
+    grid_var2 <- seq(min(data[[vars[2]]]), max(data[[vars[2]]]))
+
+    grid_data <- expand.grid(grid_var1, grid_var2)
+
+    grid_data$dr <- predict(object, newdata = grid_data)
+
+
+    ggplot(grid_data, mapping = aes(x = .grid_data[[vars[1]]], y = .grid_data[[vars[2]]])) +
+      geom_point(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
+                 alpha = 0.5) +
+      scale_fill_viridis_c(option = "B", name ="Density ratio") +
+      scale_colour_viridis_c(option = "B", name ="Density ratio") +
+      theme_bw() +
+      labs(title = "Density ratio estimates for combinations of values",
+           shape = "Sample") +
+      scale_shape_manual(values = c(21, 24))
+
+    return(plot)
+  }
+
+  for(i in 1:nrow(var_combinations)){
+    plots[[i]] <- plot_twovariables(data = data, vars = var_combinations[i,])
+  }
+
+  if(output == "assembled"){
+    plots_assembly <- patchwork::wrap_plots(plots, guides = "collect", byrow = TRUE,ncol = length(var.x), nrow = length(var.y))  & labs(title = NULL)
+    plots_assembly <- plots_assembly + plot_annotation(title = "Density ratio estimates for combinations of values")
+    return(plots_assembly)
+  } else {
+    return(plots)
   }
 }
