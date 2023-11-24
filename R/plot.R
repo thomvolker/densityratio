@@ -182,10 +182,31 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
 
   plots <- list()
 
+
+
   var_combinations <- expand.grid(var.x, var.y)
   var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
   var_combinations <- var_combinations %>% filter(Var1 != Var2)
   var_combinations <- as.matrix(var_combinations)
+
+  # Write function to remove duplicate rows
+  remove_duplicate_rows <- function(data_matrix) {
+    # Convert matrix to data frame
+    data_frame <- as.data.frame(data_matrix)
+
+    # Sort elements within each row
+    sorted_data_frame <- t(apply(data_frame, 1, function(row) sort(row)))
+
+    # Convert back to matrix
+    sorted_matrix <- as.matrix(sorted_data_frame)
+
+    # Remove duplicate rows
+    unique_matrix <- unique(sorted_matrix)
+
+    return(unique_matrix)
+  }
+
+  var_combinations <- remove_duplicate_rows(var_combinations)
 
   # helper function to plot two variables
   plot_twovariables <- function(data, vars, showsamples = show.samples){
@@ -247,32 +268,46 @@ plot_bivariate_heatmap <- function(object, var.x,var.y, sample = "both", show.sa
   var_combinations <- var_combinations %>% filter(Var1 != Var2)
   var_combinations <- as.matrix(var_combinations)
 
+
   # helper function to plot two variables
-  plot_twovariables <- function(data, vars, showsamples = show.samples){
+  plot_twovariables <- function(object, data, vars, showsamples = show.samples){
 
     grid_var1 <- seq(min(data[[vars[1]]]), max(data[[vars[1]]]))
     grid_var2 <- seq(min(data[[vars[2]]]), max(data[[vars[2]]]))
 
     grid_data <- expand.grid(grid_var1, grid_var2)
 
+    colnames(grid_data) <- c(vars[[1]], vars[[2]])
+    #browser()
+    # Identify variables in data that are not in vars
+    other_vars <- setdiff(names(data), vars)
+
+    # Assign the mean value of each other variable to the corresponding variable in grid_data
+    for (var in other_vars) {
+      grid_data[[var]] <- mean(data[[var]])
+    }
+
+    grid_data <- as.data.frame(grid_data)
+
+    grid_data <- grid_data[, names(data)] # reorder names
+
+
     grid_data$dr <- predict(object, newdata = grid_data)
 
-
-    ggplot(grid_data, mapping = aes(x = .grid_data[[vars[1]]], y = .grid_data[[vars[2]]])) +
-      geom_point(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
-                 alpha = 0.5) +
+    plot <-
+      ggplot(grid_data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
+      geom_raster(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
+                  alpha = 0.5) +
       scale_fill_viridis_c(option = "B", name ="Density ratio") +
       scale_colour_viridis_c(option = "B", name ="Density ratio") +
       theme_bw() +
       labs(title = "Density ratio estimates for combinations of values",
            shape = "Sample") +
       scale_shape_manual(values = c(21, 24))
-
     return(plot)
   }
-
-  for(i in 1:nrow(var_combinations)){
-    plots[[i]] <- plot_twovariables(data = data, vars = var_combinations[i,])
+  for (i in 1:nrow(var_combinations)) {
+    plots[[i]] <- plot_twovariables(object = object, data = data, vars = as.character(var_combinations[i,]))
   }
 
   if(output == "assembled"){
