@@ -44,6 +44,9 @@ summary.ulsif <- function(object, test = FALSE, n.perm = 100, parallel = FALSE, 
       simplify = TRUE,
       cl = cl
     )
+    rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
+    recPE <- 1/(2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
+      1/nnu * sum(c(stats::predict(rec, newdata = nu))) + 1/2
   }
 
   out <- list(
@@ -54,8 +57,9 @@ summary.ulsif <- function(object, test = FALSE, n.perm = 100, parallel = FALSE, 
     dr = data.frame(dr = c(pred_nu, pred_de),
                     group = factor(c(rep(c("nu", "de"), c(nnu, nde))))),
     PE = obsPE,
+    PErec = switch(test, recPE, NULL),
     refPE = switch(test, distPE, NULL),
-    p_value = switch(test, mean(distPE > obsPE), NULL),
+    p_value = switch(test, min(1, 2 * mean(distPE > max(obsPE, recPE))), NULL),
     call = object$call
   )
   class(out) <- "summary.ulsif"
@@ -99,6 +103,8 @@ summary.kliep <- function(object, test = FALSE, n.perm = 100, parallel = FALSE, 
       simplify = TRUE,
       cl = cl
     )
+    rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
+    recUKL <- mean(log(pmax(sqrt(.Machine$double.eps), c(stats::predict(rec, newdata = de)))))
   }
 
   out <- list(
@@ -108,8 +114,9 @@ summary.kliep <- function(object, test = FALSE, n.perm = 100, parallel = FALSE, 
     dr = data.frame(dr = c(pred_nu, pred_de),
                     group = factor(rep(c("nu", "de"), c(nnu, nde)))),
     UKL = obsUKL,
+    UKLrec = switch(test, recUKL, NULL),
     refUKL = switch(test, distUKL, NULL),
-    p_value = switch(test, mean(distUKL > obsUKL), NULL),
+    p_value = switch(test, min(1, 2 * mean(distUKL > max(obsUKL, recUKL))), NULL),
     call = object$call
   )
   class(out) <- "summary.kliep"
@@ -131,9 +138,11 @@ summary.naivedensityratio <- function(object, test = FALSE, n.perm = 100, parall
 
   nu <- as.matrix(object$df_numerator)
   de <- as.matrix(object$df_denominator)
+
   stacked <- rbind(nu, de)
-  nnu <- nrow(nu)
-  nde <- nrow(de)
+
+  n_nu <- nrow(nu)
+  n_de <- nrow(de)
 
   if (parallel & is.null(cl)) {
     ncores <- parallel::detectCores() - 1
@@ -144,25 +153,27 @@ summary.naivedensityratio <- function(object, test = FALSE, n.perm = 100, parall
   pred_nu <- c(stats::predict(object, newdata = nu))
   pred_de <- c(stats::predict(object, newdata = de))
 
-  obsPE  <- 1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  min_pred <- log(sqrt(.Machine$double.eps))
+  max_pred <- -min_pred
+  SALDRD   <- (mean(pmin(max_pred, pmax(min_pred, pred_nu))) - mean(pmin(max_pred, pmax(min_pred, pred_de))))^2
+
   if (test) {
-    distPE <- pbapply::pbreplicate(
+    distSALDRD <- pbapply::pbreplicate(
       n.perm,
-      permute(object, stacked = stacked, nnu = nnu, nde = nde),
+      permute(object, stacked = stacked, nnu = n_nu, nde = n_de, min_pred = min_pred, max_pred = max_pred),
       simplify = TRUE,
       cl = cl
     )
   }
 
   out <- list(
-    alpha_opt  = object$alpha_opt,
-    sigma_opt  = object$sigma_opt,
-    centers    = object$centers,
+    n = c(n_nu = n_nu, n_de = n_de),
+    nvars = ncol(nu),
     dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
-    PE = obsPE,
-    refPE = switch(test, distPE, NULL),
-    p_value = switch(test, mean(distPE > obsPE), NULL),
+                    group = factor(rep(c("nu", "de"), c(n_nu, n_de)))),
+    SALDRD = SALDRD,
+    refSALDRD = switch(test, distSALDRD, NULL),
+    p_value = switch(test, mean(distSALDRD > SALDRD), NULL),
     call = object$call
   )
   class(out) <- "summary.naivedensityratio"
@@ -185,9 +196,11 @@ summary.naivesubspacedensityratio <- function(object, test = FALSE, n.perm = 100
 
   nu <- as.matrix(object$df_numerator)
   de <- as.matrix(object$df_denominator)
+
   stacked <- rbind(nu, de)
-  nnu <- nrow(nu)
-  nde <- nrow(de)
+
+  n_nu <- nrow(nu)
+  n_de <- nrow(de)
 
   if (parallel & is.null(cl)) {
     ncores <- parallel::detectCores() - 1
@@ -198,25 +211,28 @@ summary.naivesubspacedensityratio <- function(object, test = FALSE, n.perm = 100
   pred_nu <- c(stats::predict(object, newdata = nu))
   pred_de <- c(stats::predict(object, newdata = de))
 
-  obsPE  <- 1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  min_pred <- log(sqrt(.Machine$double.eps))
+  max_pred <- -min_pred
+  SALDRD   <- (mean(pmin(max_pred, pmax(min_pred, pred_nu))) - mean(pmin(max_pred, pmax(min_pred, pred_de))))^2
+
   if (test) {
-    distPE <- pbapply::pbreplicate(
+    distSALDRD <- pbapply::pbreplicate(
       n.perm,
-      permute(object, stacked = stacked, nnu = nnu, nde = nde),
+      permute(object, stacked = stacked, nnu = n_nu, nde = n_de, min_pred = min_pred, max_pred = max_pred),
       simplify = TRUE,
       cl = cl
     )
   }
 
   out <- list(
-    alpha_opt  = object$alpha_opt,
-    sigma_opt  = object$sigma_opt,
-    centers    = object$centers,
+    n = c(n_nu = n_nu, n_de = n_de),
+    nvars = ncol(nu),
+    subspace_dim = object$m,
     dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
-    PE = obsPE,
-    refPE = switch(test, distPE, NULL),
-    p_value = switch(test, mean(distPE > obsPE), NULL),
+                    group = factor(rep(c("nu", "de"), c(n_nu, n_de)))),
+    SALDRD = SALDRD,
+    refSALDRD = switch(test, distSALDRD, NULL),
+    p_value = switch(test, mean(distSALDRD > SALDRD), NULL),
     call = object$call
   )
   class(out) <- "summary.naivesubspacedensityratio"

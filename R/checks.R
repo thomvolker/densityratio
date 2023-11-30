@@ -11,7 +11,7 @@ check.dataform <- function(nu, de) {
   }
   #
   if ((sum(is.na(nu)) + sum(is.na(de))) > 0) {
-    stop("Your data has missing values, which cannot yet be handled currently.")
+    stop("Your data has missing values, which cannot yet be handled.")
   }
 }
 
@@ -245,6 +245,20 @@ check.lambda.predict <- function(object, lambda) {
     stop("'lambda' should be one of 'lambdaopt', 'all' or a numeric scalar or vector with values to use as lambda parameter")
   }
   lambda
+}
+
+check.subspace <- function(m, P) {
+  if(is.null(m)) {
+    m <- floor(sqrt(P))
+  } else {
+    if(!is.numeric(m)) {
+      stop("The dimension of the subspace 'm' must be 'NULL' or an integer value.")
+    } else {
+      if (m %% 1 != 0) stop("The dimension of the subspace 'm' must be 'NULL' or an integer value.")
+      if (m > P) stop("The dimension of the subspace 'm' must be smaller than the number of variables.")
+    }
+  }
+  m
 }
 
 check.newdata <- function(object, newdata) {

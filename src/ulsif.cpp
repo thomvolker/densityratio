@@ -1,10 +1,13 @@
 //[[Rcpp::depends(RcppArmadillo)]]
 //[[Rcpp::depends(RcppProgress)]]
 #include <RcppArmadillo.h>
-#include <omp.h>
 #include "densityratio.h"
 #include <progress.hpp>
 #include <progress_bar.hpp>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 using namespace Rcpp;
 using namespace arma;
 
@@ -18,7 +21,11 @@ arma::vec ulsif_compute_alpha(arma::mat Hhat, const arma::vec& hhat, const doubl
 
 //[[Rcpp::export]]
 int set_threads(int nthreads) {
+  #ifdef _OPENMP
   int max_threads = omp_get_max_threads();
+  #else
+  int max_threads = 1;
+  #endif
   if (nthreads == 0) {
     nthreads = max_threads;
   }
@@ -66,23 +73,26 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
   int nde = dist_de.n_rows;
   int nmin = (nnu <= nde) ? nnu : nde;
   int ncol = dist_nu.n_cols;
-  int sig, l;
+  int sig;
 
   arma::mat loocv = arma::zeros<arma::mat>(nsigma, nlambda);
-  arma::mat diagmat = arma::eye<arma::mat>(ncol, ncol);
-  arma::mat phi_nu = arma::zeros<arma::mat>(nnu, ncol);
-  arma::mat phi_de = arma::zeros<arma::mat>(nde, ncol);
   arma::mat Hhat = arma::zeros<arma::mat>(ncol, ncol);
-  arma::vec Hhat_diag = Hhat.diag();
   arma::vec hhat = arma::zeros<arma::vec>(ncol);
   arma::mat Knu = arma::zeros<arma::mat>(nnu, ncol);
   arma::mat Kde = arma::zeros<arma::mat>(nde, ncol);
   arma::vec current_alpha = arma::zeros<arma::vec>(ncol);
-  arma::cube alpha(ncol, nlambda, nsigma, arma::fill::zeros);
+  arma::cube alpha(ncol, nsigma, nlambda, arma::fill::zeros);
 
+  #ifdef _OPENMP
   if (parallel) {
     nthreads = set_threads(nthreads);
   }
+  #else
+  if (parallel) {
+    std::string warn = "OpenMP is not available, parallel processing is disabled.";
+    Rf_warningcall(R_NilValue, warn.c_str());
+  }
+  #endif
   Progress p(nsigma * nlambda, progressbar);
 
   for(sig = 0; sig < nsigma; sig++) {
@@ -91,15 +101,17 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
     Kde = kernel_gaussian(dist_de, si);
     Hhat = Kde.t() * Kde / nde;
     hhat = arma::mean(Knu, 0).t();
-#pragma omp parallel for num_threads(nthreads) private(la) if (parallel)
-    for(l = 0; l < nlambda; l++) {
+  #ifdef _OPENMP
+  #pragma omp parallel for num_threads(nthreads) private(la, current_alpha) if (parallel)
+  #endif
+    for(int l = 0; l < nlambda; l++) {
       if(Progress::check_abort()) {
         stopped = true;
       } else {
         la = lambda[l];
         p.increment();
         current_alpha =  ulsif_compute_alpha(Hhat, hhat, la);
-        alpha.slice(sig).col(l) = current_alpha;
+        alpha.slice(l).col(sig) = current_alpha;
         loocv(sig, l) = compute_ulsif_loocv(Hhat, hhat, la, nnu, nde, nmin, ncol, Knu.rows(0, nmin-1), Kde.rows(0,nmin-1));
       }
     }

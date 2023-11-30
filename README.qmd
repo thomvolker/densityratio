@@ -65,7 +65,7 @@ hexSticker::sticker(
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN status](https://www.r-pkg.org/badges/version/densityratio)](https://CRAN.R-project.org/package=densityratio)
+[![densityratio status badge](https://thomvolker.r-universe.dev/badges/densityratio)](https://thomvolker.r-universe.dev/densityratio)
 [![DOI](https://zenodo.org/badge/613441108.svg)](https://zenodo.org/badge/latestdoi/613441108)
 
 <!-- badges: end -->
@@ -75,7 +75,6 @@ hexSticker::sticker(
 This package provides functionality to directly estimate a density ratio
 $$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$
 without estimating the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.
-
 
 ```{r}
 #| echo: false
@@ -147,11 +146,10 @@ ggplot() +
 
 ## Installation
 
-You can install the development version of `densityratio` from [GitHub](https://github.com/) with:
+You can install the development version of `densityratio` from [R-universe](https://r-universe.dev/search/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("thomvolker/densityratio")
+install.packages('densityratio', repos = 'https://thomvolker.r-universe.dev')
 ```
 
 ## Usage
@@ -281,6 +279,9 @@ Besides `ulsif()`, the package contains several other functions to estimate a de
 #| out-width: "50%"
 #| fig-format: svg
 #| fig-align: "center"
+
+set.seed(1)
+
 fit_naive <- naive(
   df_numerator = numerator_data$x5, 
   df_denominator = denominator_data$x5
@@ -288,7 +289,8 @@ fit_naive <- naive(
 
 fit_kliep <- kliep(
   df_numerator = numerator_data$x5, 
-  df_denominator = denominator_data$x5
+  df_denominator = denominator_data$x5,
+  maxit = 10000
 )
 
 pred_naive <- predict(fit_naive, newdata = newx5)
@@ -302,12 +304,12 @@ ggplot(data = NULL, aes(x = newx5)) +
                 fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
                 size = 1) +
   theme_classic() +
-  scale_color_manual(name = NULL, values = c("#8400b8", "#510070","#de0277", "purple")) +
+  scale_color_manual(name = NULL, values = c("pink", "#512970","#de0277", "purple")) +
   theme(legend.position = c(0.8, 0.9),
         text = element_text(size = 20))
 ```
 
-Although all methods perform reasonable and approximate the true density ratio relatively well, `ulsif()` comes closes to the true density ratio function in this example. 
+The figure directly shows that `ulsif()` and `kliep()` come rather close to the true density ratio function in this example, and outperform the `naive()` solution. 
 
 ## Contributions
 

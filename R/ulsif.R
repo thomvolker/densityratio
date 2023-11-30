@@ -64,8 +64,9 @@ ulsif <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NU
 
   res <- compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar)
   loocv_scores <- res$loocv_score
-  colnames(loocv_scores) <- paste0("lambda", 1:length(lambda))
-  rownames(loocv_scores) <- paste0("sigma", 1:length(sigma))
+  colnames(loocv_scores) <- names(lambda) <- paste0("lambda", 1:length(lambda))
+  rownames(loocv_scores) <- names(sigma)  <- paste0("sigma", 1:length(sigma))
+  dimnames(res$alpha)    <- list(NULL, names(sigma), names(lambda))
   min_score <- arrayInd(which.min(res$loocv_score), dim(res$loocv_score))
 
   out <- list(
@@ -76,7 +77,7 @@ ulsif <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NU
     sigma = sigma,
     lambda = lambda,
     centers = centers,
-    alpha_opt = res$alpha[, min_score[2], min_score[1]],
+    alpha_opt = res$alpha[, min_score[1], min_score[2]],
     lambda_opt = lambda[min_score[2]],
     sigma_opt = sigma[min_score[1]],
     call = cl

@@ -52,6 +52,7 @@ print.summary.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), .
         ifelse(x$p_value < 0.001,
                paste(" < .001"),
                paste(" = ", format(x$p_value, digits = 3, ...))),
+        "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
         "\n\n", sep = "")
   } else {
     cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
@@ -115,6 +116,7 @@ print.summary.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), .
         ifelse(x$p_value < 0.001,
                paste(" < .001"),
                paste(" = ", format(x$p_value, digits = 3, ...))),
+        "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
         "\n\n", sep = "")
   } else {
     cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
@@ -132,12 +134,14 @@ print.summary.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), .
 print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
-  cat("Naive density ratio estimate:\n",
-      "  Number of variables:", length(x$density_denominator), "\n",
-      "  Number of numerator samples:", nrow(x$df_numerator), "\n",
-      "  Number of denominiator samples:", nrow(x$df_denominator), "\n\n")
-
-  cat("Mean density ratio of numerator samples:", format(mean(predict(x)), digits = digits, ...))
+  cat("Naive density ratio\n",
+      "  Number of variables: ", ncol(as.matrix(x$df_numerator)), "\n",
+      "  Number of numerator samples: ", nrow(as.matrix(x$df_numerator)), "\n",
+      "  Number of denominator samples: ", nrow(as.matrix(x$df_denominator)), "\n", sep = "")
+  cat("  Numerator density:")
+  cat(str(stats::predict(x, newdata = x$df_numerator)))
+  cat("  Denominator density:")
+  cat(str(stats::predict(x, newdata = x$df_denominator)), "\n")
 
   invisible(x)
 }
@@ -152,13 +156,15 @@ print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L
 print.naivesubspacedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
-  cat("Naive-subspace density ratio estimate:\n",
-      "  Number of variables:", length(x$density_denominator), "\n",
-      "  Size of subspace:", x$subspace_dim, "\n",
-      "  Number of numerator samples:", nrow(x$df_numerator), "\n",
-      "  Number of denominiator samples:", nrow(x$df_denominator), "\n\n")
-
-  cat("Mean density ratio of numerator samples:", format(mean(predict(x)), digits = digits, ...))
+  cat("Naive-subspace density ratio\n",
+      "  Number of variables: ", ncol(as.matrix(x$df_numerator)), "\n",
+      "  Size of subspace: ", x$subspace_dim, "\n",
+      "  Number of numerator samples: ", nrow(as.matrix(x$df_numerator)), "\n",
+      "  Number of denominator samples: ", nrow(as.matrix(x$df_denominator)), "\n", sep="")
+  cat("  Numerator density:")
+  cat(str(stats::predict(x, newdata = x$df_numerator)))
+  cat("  Denominator density:")
+  cat(str(stats::predict(x, newdata = x$df_denominator)), "\n\n")
 
   invisible(x)
 }
@@ -175,11 +181,16 @@ print.summary.naivedensityratio <- function(x, digits = max(3L, getOption("digit
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Naive density ratio estimate:\n",
-      "  Number of variables:", length(x$density_denominator), "\n",
-      "  Number of numerator samples:", nrow(x$df_numerator), "\n",
-      "  Number of denominiator samples:", nrow(x$df_denominator), "\n\n")
-  cat(str(x$alpha_opt), "\n")
-  cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
+      "  Number of variables: ", x$nvars, "\n",
+      "  Number of numerator samples: ", x$n[1], "\n",
+      "  Number of denominator samples: ", x$n[2], "\n", sep="")
+  cat("  Density ratio for numerator samples:")
+  cat(str(x$dr$dr[1:x$n[1]]))
+  cat("  Density ratio for denominator samples:")
+  cat(str(x$dr$dr[(x$n[1]+1):(x$n[1]+x$n[2])]), "\n\n")
+
+  cat("Squared average log density ratio difference for numerator and denominator samples (SALDRD): ",
+      paste(format(x$SALDRD, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
         ifelse(x$p_value < 0.001,
@@ -204,12 +215,18 @@ print.summary.naivedensityratio <- function(x, digits = max(3L, getOption("digit
 print.summary.naivesubspacedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
-  cat("Naive-subspace density ratio estimate:\n",
-      "  Number of variables:", length(x$density_denominator), "\n",
-      "  Number of numerator samples:", nrow(x$df_numerator), "\n",
-      "  Number of denominiator samples:", nrow(x$df_denominator), "\n\n")
-  cat(str(x$alpha_opt), "\n")
-  cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
+  cat("Naive-subspace density ratio\n",
+      "  Number of variables: ", x$nvars, "\n",
+      "  Dimension of subspace: ", x$subspace_dim, "\n",
+      "  Number of numerator samples: ", x$n[1], "\n",
+      "  Number of denominiator samples: ", x$n[2], "\n", sep="")
+  cat("  Density ratio for numerator samples:")
+  cat(str(x$dr$dr[1:x$n[1]]))
+  cat("  Density ratio for denominator samples:")
+  cat(str(x$dr$dr[(x$n[1]+1):(x$n[1]+x$n[2])]), "\n\n")
+
+  cat("Squared average log density ratio difference for numerator and denominator samples (SALDRD): ",
+      paste(format(x$SALDRD, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
         ifelse(x$p_value < 0.001,
@@ -217,7 +234,7 @@ print.summary.naivesubspacedensityratio <- function(x, digits = max(3L, getOptio
                paste(" = ", format(x$p_value, digits = 3, ...))),
         "\n\n", sep = "")
   } else {
-    cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
+    cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n", sep="")
   }
   invisible(x)
 }

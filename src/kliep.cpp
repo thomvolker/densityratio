@@ -1,7 +1,7 @@
 //[[Rcpp::depends(RcppArmadillo)]]
 //[[Rcpp::depends(RcppProgress)]]
 #include <RcppArmadillo.h>
-#include <omp.h>
+//#include <omp.h>
 #include "densityratio.h"
 #include <progress.hpp>
 #include <progress_bar.hpp>
@@ -30,6 +30,8 @@ arma::vec kliep_compute_alpha(const arma::mat& Phi, const arma::vec& phibar, con
 
   arma::vec alpha = arma::ones<arma::vec>(Phi.n_rows);
   arma::vec alpha_new = arma::ones<arma::vec>(Phi.n_rows);
+  arma::vec Phi_t_alpha = arma::zeros<arma::vec>(Phi.n_cols);
+  arma::vec Phi_t_alpha_new = arma::zeros<arma::vec>(Phi.n_cols);
 
   alpha += phibar_corr * as_scalar(1 - arma::dot(phibar, alpha));
   alpha.elem(find(alpha < 0)).zeros();
@@ -46,11 +48,15 @@ arma::vec kliep_compute_alpha(const arma::mat& Phi, const arma::vec& phibar, con
     } else {
       while(!conv) {
         iter++;
-        alpha_new = alpha + (e * Phi) * (1 / (Phi.t() * alpha));
+        Phi_t_alpha = Phi.t() * alpha;
+        Phi_t_alpha.replace(0, sqrt(datum::eps));
+        alpha_new = alpha + (e * Phi) * (1 / (Phi_t_alpha));
         alpha_new += phibar_corr * as_scalar(1 - arma::dot(phibar, alpha_new));
         alpha_new.elem(find(alpha_new < 0)).zeros();
         alpha_new /= dot(phibar, alpha_new);
-        s_new = mean(log(Phi.t() * alpha_new));
+        Phi_t_alpha_new = Phi.t() * alpha_new;
+        Phi_t_alpha_new.replace(0, sqrt(datum::eps));
+        s_new = mean(log((Phi_t_alpha_new)));
         if (s_new <= score || iter == maxit) {
           conv = true;
         } else {
@@ -77,8 +83,8 @@ List compute_kliep(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
   int nsigma = sigma.size();
   int nepsilon = epsilon.size();
   double sig;
-
-  Progress p(nsigma, progressbar);
+  int nfold = max(cv_ind) + 1;
+  Progress p(nsigma*nfold, progressbar);
 
   arma::mat alpha = arma::ones<arma::mat>(dim, nsigma);
   arma::mat Phi = arma::zeros<arma::mat>(dim, dim);
@@ -94,8 +100,7 @@ List compute_kliep(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
     phibar = make_phibar(dist_de, sig);
     phibar_corr = phibar / arma::dot(phibar, phibar);
 
-    if (sum(cv_ind) > 1) {
-      int nfold = max(cv_ind) + 1;
+    if (nfold > 1) {
       for (int i = 0; i < nfold; i++) {
         p.increment();
         alpha_tmp = kliep_compute_alpha(Phi.cols(find(cv_ind != i)), phibar, phibar_corr, epsilon, nepsilon, maxit, progressbar);
@@ -112,4 +117,5 @@ List compute_kliep(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
   );
   return out;
 }
+
 
