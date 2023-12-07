@@ -5,6 +5,8 @@
 #' @param df_denominator \code{data.frame} with exclusively numeric variables
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
+#' @param intercept \code{logical} Indicating whether to include an intercept
+#' term in the model. Defaults to \code{TRUE}.
 #' @param nsigma Integer indicating the number of sigma values (bandwidth
 #' parameter of the Gaussian kernel gram matrix) to use in cross-validation.
 #' @param sigma_quantile \code{NULL} or numeric vector with probabilities to
@@ -41,10 +43,10 @@
 #' ulsif(x, y)
 #' ulsif(x, y, sigma = 2, lambda = 2)
 
-ulsif <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NULL,
-                  sigma = NULL, nlambda = 20, lambda = NULL, ncenters = 200,
-                  centers = NULL, parallel = FALSE, nthreads = NULL,
-                  progressbar = TRUE) {
+ulsif <- function(df_numerator, df_denominator, intercept = TRUE, nsigma = 10,
+                  sigma_quantile = NULL, sigma = NULL, nlambda = 20,
+                  lambda = NULL, ncenters = 200, centers = NULL,
+                  parallel = FALSE, nthreads = NULL, progressbar = TRUE) {
 
   cl <- match.call()
   nu <- as.matrix(df_numerator)
@@ -55,9 +57,14 @@ ulsif <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NU
   symmetric <- check.symmetric(nu, centers)
   parallel  <- check.parallel(parallel, nthreads, sigma, lambda)
   nthreads  <- check.threads(parallel, nthreads)
+  intercept <- check.intercept(intercept)
 
   dist_nu <- distance(nu, centers, symmetric)
   dist_de <- distance(de, centers)
+  if (intercept) {
+    dist_nu <- cbind(0, dist_nu)
+    dist_de <- cbind(0, dist_de)
+  }
 
   sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   lambda <- check.lambda(nlambda, lambda)

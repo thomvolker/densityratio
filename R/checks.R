@@ -120,6 +120,13 @@ check.centers <- function(nu, centers, ncenters) {
   centers
 }
 
+check.intercept <- function(intercept) {
+  if (!is.logical(intercept)) {
+    stop("'intercept' must be either 'TRUE' or 'FALSE'")
+  }
+  intercept
+}
+
 check.symmetric <- function(nu, centers) {
   if(isTRUE(all.equal(nu, centers))) {
     symmetric <- TRUE
