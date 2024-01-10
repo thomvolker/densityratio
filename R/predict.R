@@ -23,13 +23,18 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
   newlambda <- check.lambda.predict(object, lambda)
   newdata <- check.newdata(object, newdata)
 
-  alpha   <- extract.alpha(object, newsigma, newlambda)
-  nsigma  <- dim(alpha)[2]
-  nlambda <- dim(alpha)[3]
-  dratio  <- array(0, c(nrow(newdata), nlambda, nsigma))
+  alpha     <- extract.alpha(object, newsigma, newlambda)
+  nsigma    <- length(newsigma)
+  nlambda   <- length(newlambda)
+  dratio    <- array(0, c(nrow(newdata), nlambda, nsigma))
+  intercept <- nrow(object$alpha) > nrow(object$centers)
 
   for (i in 1:nsigma) {
-    K <- distance(newdata, object$centers) |> kernel_gaussian(newsigma[i])
+    if (intercept) {
+      K <- cbind(0, distance(newdata, object$centers)) |> kernel_gaussian(newsigma[i])
+    } else {
+      K <- distance(newdata, object$centers) |> kernel_gaussian(newsigma[i])
+    }
     for (j in 1:nlambda) {
       dratio[ , i, j] <- K %*% alpha[, i, j]
     }
