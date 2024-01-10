@@ -1,4 +1,4 @@
-plot.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
+dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
 
   check.object.type(object)
 
@@ -9,9 +9,10 @@ plot.histogram <- function(object, sample = "both", logscale = FALSE, binwidth =
   data$dr <- predict(object, newdata = data)
 
   if(logscale){
-  data$dr[data$dr < 0] <- 10e-8
+  data$dr[data$dr < 0] <- 10e-6
   data$dr <- log(data$dr)
-  warning("Negative estimated density ratios converted to 10e-0.8 before applying logarithmic transformation")
+  warning("Negative estimated density ratios converted to 10e-0.6 before applying logarithmic transformation",
+          .call = FALSE)
   }
 
   obsclass <- rep(c("numerator", "denominator"),
@@ -56,7 +57,7 @@ plot.histogram <- function(object, sample = "both", logscale = FALSE, binwidth =
 #'
 #' @examples
 plot.ulsif <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
-  plot.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth)
+  dr.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth)
 }
 
 #' Title
@@ -70,7 +71,7 @@ plot.ulsif <- function(object, sample = "both", logscale = FALSE, binwidth = NUL
 #'
 #' @examples
 plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
-  plot.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth)
+  dr.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth)
 }
 
 
@@ -108,8 +109,9 @@ plot_univariate <- function(object, vars, sample = "both", logscale = TRUE) {
 
   if (logscale) {
     if(any(data$dr < 0)){
-      warning("Negative estimated density ratios converted to 10e-8 before applying logarithmic transformation")
-      data$dr[data$dr < 0] <- 10e-8
+      data$dr[data$dr < 0] <- 10e-6
+      warning("Negative estimated density ratios converted to 10e-6 before applying logarithmic transformation",
+              .call = FALSE)
     }
 
     data$dr <- log(data$dr)
