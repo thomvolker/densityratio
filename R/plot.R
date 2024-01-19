@@ -92,61 +92,76 @@ plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NUL
 #' @examples
 plot_univariate <- function(object, vars, sample = "both", logscale = TRUE) {
 
+  # Check object type
   check.object.type(object)
 
-  # Data handling
+  # Create data object
   data <- rbind(object$df_numerator, object$df_denominator)
 
+  # Check names in data and variable names
   check.overriden.names(data)
   check.var.names(vars, data)
 
+  # Estimate density ratio
   data$dr <- predict(object, newdata = data)
 
+  # Create a sample index variable (denominator or numerator)
   obsclass <- rep(c("numerator", "denominator"),
                   c(nrow(object$df_numerator), nrow(object$df_denominator)))
 
+  # Create a object selection variable (both, numerator, denominator)
   obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
 
   if (obsselect != "both") {
     data <- filter(data, obsclass == obsselect)
   }
 
+
   if (logscale) {
+
     if(any(data$dr < 0)){
+      # Convert negative predicted density ratios to 10e-6, so log can be computed
       data$dr[data$dr < 0] <- 10e-6
       warning("Negative estimated density ratios converted to 10e-6 before applying logarithmic transformation",
               call. = FALSE)
-    }
+      }
 
     data$dr <- log(data$dr)
+
+    # Assign correct y and legend labels
     y_lab <- "Log(Density Ratio)"
+    colour_name <- "Log (Density ratio)"
 
   } else {
     y_lab <- "Density Ratio"
+    colour_name <- "Density ratio"
   }
 
+  # Create list storage for plots object (for iteration)
   plots <- list()
 
-  plot_onevariable <- function(var, shape = "sample"){
+  # Write the function to make one plot, for one variable
+  one_plot <- function(var, shape = "sample"){
     plot <-
-      ggplot(data, aes(x = .data[[var]], y = dr )) +
+      ggplot(data, aes(x = .data[[var]], y = dr)) +
       geom_point(aes(col = dr, shape = sample)) +
       theme_bw() +
       labs(title = "Scatter plot of individual values and density ratio",
            shape = "Sample",
            y = y_lab) +
       geom_hline(yintercept = 0, linetype = "dashed")+
-      scale_colour_viridis_c(option = "B", name ="Density ratio")  +
+      scale_colour_viridis_c(option = "B", name = colour_name)  +
       scale_shape_manual(values = c(16, 3))  +
-      scale_y_continuous(breaks = c(-15,-10,-5,0,1,2,3,4, 8))
-
+      scale_y_continuous(breaks = seq(
+                                  from = floor(min(data$dr)),
+                                  to = ceiling(max(data$dr))))
 
     return(plot)
   }
 
 
   for(var in vars){
-    plots[[var]] <- plot_onevariable(var)
+    plots[[var]] <- one_plot(var)
   }
   return(plots)
 }
