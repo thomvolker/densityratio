@@ -179,57 +179,48 @@ plot_univariate <- function(object, vars, sample = "both", logscale = TRUE) {
 #' @examples
 plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = TRUE, output = "assembled") {
 
+  # Check object type
   check.object.type(object)
 
+  # Create data object and check variable names
   data <- rbind(object$df_numerator, object$df_denominator)
-
   check.overriden.names(data)
 
+  # Create variables vector and check variable names
   vars <- c(var.x, var.y)
-
   check.var.names(vars, data)
+
+  # Estimate density ratio
   data$dr <- predict(object, newdata = data)
 
+  # Create a sample index variable (denominator or numerator)
   obsclass <- rep(c("numerator", "denominator"),
                   c(nrow(object$df_numerator), nrow(object$df_denominator)))
 
-  data$sample <- obsclass
-
+  # Create a object selection variable (both, numerator, denominator)
   obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
 
+  # Filter data based on object selection
   if (obsselect != "both") {
     data <- filter(data, obsclass == obsselect)
   }
 
-  plots <- list()
-
-
-
+  # Create a grid of variable combinations
   var_combinations <- expand.grid(var.x, var.y)
+
+  ## Remove duplicate combinations
+  ## Start by sorting elements within each row
+  ## This makes duplicate rows with different order of variables identical
+  var_combinations <- t(apply(var_combinations, 1, sort))
+  var_combinations <- unique(var_combinations) # retain unique rows only
+
+  # Remove rows where both variables are the same
   var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
-  var_combinations <- var_combinations %>% filter(Var1 != Var2)
+  var_combinations <- var_combinations %>% filter(V1 != V2)
   var_combinations <- as.matrix(var_combinations)
 
-  # Write function to remove duplicate rows
-  remove_duplicate_rows <- function(data_matrix) {
-    # Convert matrix to data frame
-    data_frame <- as.data.frame(data_matrix)
 
-    # Sort elements within each row
-    sorted_data_frame <- t(apply(data_frame, 1, function(row) sort(row)))
-
-    # Convert back to matrix
-    sorted_matrix <- as.matrix(sorted_data_frame)
-
-    # Remove duplicate rows
-    unique_matrix <- unique(sorted_matrix)
-
-    return(unique_matrix)
-  }
-
-  var_combinations <- remove_duplicate_rows(var_combinations)
-
-  # helper function to plot two variables
+  # Define function to make bivariate plot
   plot_twovariables <- function(data, vars, showsamples = show.samples){
     plot <-
     ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
@@ -245,9 +236,14 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   return(plot)
   }
 
+
+  # Iterate over grid of variable combinations
+  # Create a list to store plots
+  plots <- list()
   for(i in 1:nrow(var_combinations)){
     plots[[i]] <- plot_twovariables(data = data, vars = var_combinations[i,])
   }
+
 
   if(output == "assembled"){
   plots_assembly <- patchwork::wrap_plots(plots, guides = "collect", byrow = TRUE,ncol = length(var.x), nrow = length(var.y)) & labs(title = NULL)
@@ -258,63 +254,70 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   }
 }
 
-plot_bivariate_heatmap <- function(object, var.x,var.y, sample = "both", show.samples = TRUE, output = "assembled") {
+plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.samples = TRUE, output = "assembled") {
 
+  # Check object type
   check.object.type(object)
 
+  # Create data object and check variable names
   data <- rbind(object$df_numerator, object$df_denominator)
-
   check.overriden.names(data)
 
+  # Create variables vector and check variable names
   vars <- c(var.x, var.y)
-
   check.var.names(vars, data)
-  data$dr <- predict(object, newdata = data)
 
+  # Create a sample index variable (denominator or numerator)
   obsclass <- rep(c("numerator", "denominator"),
                   c(nrow(object$df_numerator), nrow(object$df_denominator)))
 
-  data$sample <- obsclass
-
+  # Create a object selection variable (both, numerator, denominator)
   obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
 
+  # Filter data based on object selection
   if (obsselect != "both") {
     data <- filter(data, obsclass == obsselect)
   }
 
-  plots <- list()
-
+  # Create a grid of variable combinations
   var_combinations <- expand.grid(var.x, var.y)
+
+  ## Remove duplicate combinations
+  ## Start by sorting elements within each row
+  ## This makes duplicate rows with different order of variables identical
+  var_combinations <- t(apply(var_combinations, 1, sort))
+  var_combinations <- unique(var_combinations) # retain unique rows only
+
+  # Remove rows where both variables are the same
   var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
-  var_combinations <- var_combinations %>% filter(Var1 != Var2)
+  names(var_combinations) <- c("V1", "V2") # In some cases, var names are changed @TO-DO. Why?
+  var_combinations <- var_combinations %>% filter(V1 != V2)
   var_combinations <- as.matrix(var_combinations)
 
+  object2 <- object
+  # Define function to make bivariate plot
+  plot_twovariables_heatmap <- function(object = object2, data, vars, showsamples = show.samples){
 
-  # helper function to plot two variables
-  plot_twovariables <- function(object, data, vars, showsamples = show.samples){
-
-    grid_var1 <- seq(min(data[[vars[1]]]), max(data[[vars[1]]]))
-    grid_var2 <- seq(min(data[[vars[2]]]), max(data[[vars[2]]]))
-
-    grid_data <- expand.grid(grid_var1, grid_var2)
-
+    # Create a 100x100 grid of values for the two variables, in the range of the data
+    seq_var1 <- seq(min(data[[vars[1]]]), max(data[[vars[1]]]), length.out = 100)
+    seq_var2 <- seq(min(data[[vars[2]]]), max(data[[vars[2]]]), length.out = 100)
+    grid_data <- expand.grid(seq_var1, seq_var2)
     colnames(grid_data) <- c(vars[[1]], vars[[2]])
-    #browser()
-    # Identify variables in data that are not in vars
-    other_vars <- setdiff(names(data), vars)
 
-    # Assign the mean value of each other variable to the corresponding variable in grid_data
+    # Add the rest of data variables to the grid, inputting its mean value
+    # First, identify variables in data that are not in vars
+    other_vars <- setdiff(names(data), vars)
     for (var in other_vars) {
       grid_data[[var]] <- mean(data[[var]])
     }
 
+    # Predict density ratio for each combination of values
+    # Assign to dataframe and reorder column in the same order as data, so that predict works
     grid_data <- as.data.frame(grid_data)
-
-    grid_data <- grid_data[, names(data)] # reorder names
-
-
+    grid_data <- grid_data[, names(data)]
     grid_data$dr <- predict(object, newdata = grid_data)
 
+    # Plot
     plot <-
       ggplot(grid_data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
       geom_raster(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
@@ -327,12 +330,17 @@ plot_bivariate_heatmap <- function(object, var.x,var.y, sample = "both", show.sa
       scale_shape_manual(values = c(21, 24))
     return(plot)
   }
-  for (i in 1:nrow(var_combinations)) {
-    plots[[i]] <- plot_twovariables(object = object, data = data, vars = as.character(var_combinations[i,]))
+
+  # Iterate over grid of variable combinations
+  # Create a list to store plots
+  plots <- list()
+  for(i in 1:nrow(var_combinations)){
+    plots[[i]] <- plot_twovariables_heatmap(data = data, vars = var_combinations[i,])
   }
 
+
   if(output == "assembled"){
-    plots_assembly <- patchwork::wrap_plots(plots, guides = "collect", byrow = TRUE,ncol = length(var.x), nrow = length(var.y))  & labs(title = NULL)
+    plots_assembly <- patchwork::wrap_plots(plots, guides = "collect", byrow = TRUE,ncol = length(var.x), nrow = length(var.y)) & labs(title = NULL)
     plots_assembly <- plots_assembly + plot_annotation(title = "Density ratio estimates for combinations of values")
     return(plots_assembly)
   } else {
