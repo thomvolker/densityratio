@@ -1,31 +1,35 @@
 dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
 
+  # Checks
   check.object.type(object)
-
-  data <- rbind(object$df_numerator, object$df_denominator)
-
   check.overriden.names(vars)
 
+  # Create data object and estimate density ratio
+  data <- rbind(object$df_numerator, object$df_denominator)
   data$dr <- predict(object, newdata = data)
 
   if(logscale){
+  # Convert negative predicted density ratios to 10e-0.6, so log can be computed
   data$dr[data$dr < 0] <- 10e-6
   data$dr <- log(data$dr)
   warning("Negative estimated density ratios converted to 10e-0.6 before applying logarithmic transformation",
-          .call = FALSE)
+          call. = FALSE) # to avoid printing the whole call
   }
 
+  # Create a sample index variable (denominator or numerator)
   obsclass <- rep(c("numerator", "denominator"),
                   c(nrow(object$df_numerator), nrow(object$df_denominator)))
-
   data$sample <- obsclass
 
+  # Create a object selection variable (both, numerator, denominator)
   obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
 
+  # If not both, subset data (only num or only den)
   if (obsselect != "both") {
     data <- filter(data, obsclass == obsselect)
   }
 
+  # Plot
   plot <-
     ggplot(data, aes(x = dr)) +
     geom_histogram(aes(fill = sample),
@@ -111,7 +115,7 @@ plot_univariate <- function(object, vars, sample = "both", logscale = TRUE) {
     if(any(data$dr < 0)){
       data$dr[data$dr < 0] <- 10e-6
       warning("Negative estimated density ratios converted to 10e-6 before applying logarithmic transformation",
-              .call = FALSE)
+              call. = FALSE)
     }
 
     data$dr <- log(data$dr)
