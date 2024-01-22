@@ -344,6 +344,9 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
     grid_data <- grid_data[, names(data)]
     grid_data$dr <- predict(object, newdata = grid_data)
 
+    # Estimate density ration in the original datapoints (for superposing)
+    data$dr <- predict(object, newdata = data)
+
     # Determine if DR is shown in logscale (default) or not
     if (logscale) {
 
@@ -354,7 +357,15 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
                 call. = FALSE)
       }
 
+      if(any(grid_data$dr < 0)){
+        # Convert negative predicted HEATMAP density ratios to 10e-6, so log can be computed
+        grid_data$dr[grid_data$dr < 0] <- 10e-6
+        warning("Negative estimated density ratios converted to 10e-6 before applying logarithmic transformation",
+                call. = FALSE)
+      }
+
       grid_data$dr <- log(grid_data$dr)
+      data$dr <- log(data$dr)
 
       # Assign correct y and legend labels
       y_lab <- "Log(Density Ratio)"
@@ -368,10 +379,13 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
     # Plot
     plot <-
       ggplot(grid_data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
+      geom_point(data = data,
+                 colour = "grey40",
+                 alpha = 1,
+                 shape = 1) +
       geom_raster(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
-                  alpha = 0.5) +
+                  alpha = 0.85) +
       scale_fill_viridis_c(option = "B", name = colour_name) +
-      scale_colour_viridis_c(option = "B", name = colour_name) +
       theme_bw() +
       labs(title = "Density ratio estimates for combinations of values",
            shape = "Sample",
@@ -389,7 +403,9 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
 
 
   if(output == "assembled"){
-    plots_assembly <- patchwork::wrap_plots(plots, guides = "collect", byrow = TRUE,ncol = length(var.x), nrow = length(var.y)) & labs(title = NULL)
+    plots_assembly <- patchwork::wrap_plots(plots,
+                                            guides = "collect", byrow = TRUE,
+                                            ncol = length(var.x), nrow = length(var.y)) & labs(title = NULL)
     plots_assembly <- plots_assembly + plot_annotation(title = "Density ratio estimates for combinations of values")
     return(plots_assembly)
   } else {
