@@ -177,7 +177,8 @@ plot_univariate <- function(object, vars, sample = "both", logscale = TRUE) {
 #' @export
 #'
 #' @examples
-plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = TRUE, output = "assembled") {
+plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = TRUE,
+                           output = "assembled", logscale = TRUE) {
 
   # Check object type
   check.object.type(object)
@@ -192,6 +193,28 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
 
   # Estimate density ratio
   data$dr <- predict(object, newdata = data)
+
+  # Determine if DR is shown in logscale (default) or not
+  if (logscale) {
+
+    if(any(data$dr < 0)){
+      # Convert negative predicted density ratios to 10e-6, so log can be computed
+      data$dr[data$dr < 0] <- 10e-6
+      warning("Negative estimated density ratios converted to 10e-6 before applying logarithmic transformation",
+              call. = FALSE)
+    }
+
+    data$dr <- log(data$dr)
+
+    # Assign correct y and legend labels
+    y_lab <- "Log(Density Ratio)"
+    colour_name <- "Log (Density ratio)"
+
+  } else {
+    y_lab <- "Density Ratio"
+    colour_name <- "Density ratio"
+  }
+
 
   # Create a sample index variable (denominator or numerator)
   obsclass <- rep(c("numerator", "denominator"),
@@ -216,7 +239,8 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
 
   # Remove rows where both variables are the same
   var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
-  var_combinations <- var_combinations %>% filter(V1 != V2)
+  names(var_combinations) <- c("Var1", "Var2")
+  var_combinations <- var_combinations %>% filter(Var1 != Var2)
   var_combinations <- as.matrix(var_combinations)
 
 
@@ -226,11 +250,12 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
     ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
     geom_point(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
                alpha = 0.5) +
-    scale_fill_viridis_c(option = "B", name ="Density ratio") +
-    scale_colour_viridis_c(option = "B", name ="Density ratio") +
+    scale_fill_viridis_c(option = "B", name = colour_name) +
+    scale_colour_viridis_c(option = "B", name = colour_name) +
     theme_bw() +
     labs(title = "Density ratio estimates for combinations of values",
-         shape = "Sample") +
+         shape = "Sample",
+         y = y_lab) +
     scale_shape_manual(values = c(21, 24))
 
   return(plot)
@@ -254,7 +279,8 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   }
 }
 
-plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.samples = TRUE, output = "assembled") {
+plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.samples = TRUE,
+                                   output = "assembled", log.scale = TRUE) {
 
   # Check object type
   check.object.type(object)
@@ -290,13 +316,14 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
 
   # Remove rows where both variables are the same
   var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
-  names(var_combinations) <- c("V1", "V2") # In some cases, var names are changed @TO-DO. Why?
-  var_combinations <- var_combinations %>% filter(V1 != V2)
+  names(var_combinations) <- c("Var1", "Var2")
+  var_combinations <- var_combinations %>% filter(Var1 != Var2)
+
   var_combinations <- as.matrix(var_combinations)
 
   object2 <- object
   # Define function to make bivariate plot
-  plot_twovariables_heatmap <- function(object = object2, data, vars, showsamples = show.samples){
+  plot_twovariables_heatmap <- function(object = object2, data, vars, showsamples = show.samples, logscale = log.scale){
 
     # Create a 100x100 grid of values for the two variables, in the range of the data
     seq_var1 <- seq(min(data[[vars[1]]]), max(data[[vars[1]]]), length.out = 100)
@@ -317,16 +344,38 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
     grid_data <- grid_data[, names(data)]
     grid_data$dr <- predict(object, newdata = grid_data)
 
+    # Determine if DR is shown in logscale (default) or not
+    if (logscale) {
+
+      if(any(data$dr < 0)){
+        # Convert negative predicted density ratios to 10e-6, so log can be computed
+        data$dr[data$dr < 0] <- 10e-6
+        warning("Negative estimated density ratios converted to 10e-6 before applying logarithmic transformation",
+                call. = FALSE)
+      }
+
+      grid_data$dr <- log(grid_data$dr)
+
+      # Assign correct y and legend labels
+      y_lab <- "Log(Density Ratio)"
+      colour_name <- "Log (Density ratio)"
+
+    } else {
+      y_lab <- "Density Ratio"
+      colour_name <- "Density ratio"
+    }
+
     # Plot
     plot <-
       ggplot(grid_data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
       geom_raster(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
                   alpha = 0.5) +
-      scale_fill_viridis_c(option = "B", name ="Density ratio") +
-      scale_colour_viridis_c(option = "B", name ="Density ratio") +
+      scale_fill_viridis_c(option = "B", name = colour_name) +
+      scale_colour_viridis_c(option = "B", name = colour_name) +
       theme_bw() +
       labs(title = "Density ratio estimates for combinations of values",
-           shape = "Sample") +
+           shape = "Sample",
+           y = y_lab) +
       scale_shape_manual(values = c(21, 24))
     return(plot)
   }
