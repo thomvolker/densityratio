@@ -275,7 +275,7 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   long_data <- data %>%
       pivot_longer(cols = c("x3", "x4", "x5"))
 
-  plot_data <- inner_join(df, df, by = "dr", multiple = "all") %>%
+  plot_data <- inner_join(long_data, long_data, by = "dr", multiple = "all") %>%
     filter(name.x %in% var.x,
            name.y %in% var.y) %>%
     mutate(dr = ifelse(name.x == name.y, NA, dr),
@@ -325,6 +325,7 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
   if (obsselect != "both") {
     data <- filter(data, obsclass == obsselect)
   }
+
 
   # Create a grid of variable combinations
   var_combinations <- expand.grid(var.x, var.y)
@@ -424,11 +425,11 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
 
   # Assemble plots
   if(output == "assembled"){
+
     plots_assembly <- patchwork::wrap_plots(plots,
-                                            guides = "collect")
-                                            # , byrow = TRUE,
-                                            # axes = "collect",
-                                            # ncol = length(var.x), nrow = length(var.y)) & labs(title = NULL)
+                                            guides = "collect", byrow = TRUE,
+    axes = "collect",
+    ncol = length(var.x), nrow = length(var.y)) & labs(title = NULL)
     return(plots_assembly)
   } else {
     return(plots)
