@@ -228,6 +228,8 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
     data <- filter(data, obsclass == obsselect)
   }
 
+
+  if(output == "individual"){
   # Create a grid of variable combinations
   var_combinations <- expand.grid(var.x, var.y)
 
@@ -242,7 +244,6 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   names(var_combinations) <- c("Var1", "Var2")
   var_combinations <- var_combinations %>% filter(Var1 != Var2)
   var_combinations <- as.matrix(var_combinations)
-
 
   # Define function to make bivariate plot
   plot_twovariables <- function(data, vars, showsamples = show.samples){
@@ -261,21 +262,41 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   return(plot)
   }
 
-
   # Iterate over grid of variable combinations
   # Create a list to store plots
   plots <- list()
   for(i in 1:nrow(var_combinations)){
     plots[[i]] <- plot_twovariables(data = data, vars = var_combinations[i,])
   }
-
-
-  if(output == "assembled"){
-  plots_assembly <- patchwork::wrap_plots(plots, guides = "collect", byrow = TRUE,ncol = length(var.x), nrow = length(var.y)) & labs(title = NULL)
-  plots_assembly <- plots_assembly + plot_annotation(title = "Density ratio estimates for combinations of values")
-  return(plots_assembly)
-  } else {
   return(plots)
+  }
+
+  if (output == "assembled") {
+  long_data <- data %>%
+      pivot_longer(cols = c("x3", "x4", "x5"))
+
+  plot_data <- inner_join(df, df, by = "dr", multiple = "all") %>%
+    filter(name.x %in% var.x,
+           name.y %in% var.y) %>%
+    mutate(dr = ifelse(name.x == name.y, NA, dr),
+           value.x = ifelse(name.x == name.y, NA, value.x),
+           value.y = ifelse(name.x == name.y, NA, value.y))
+  plot <-
+      ggplot(plot_data, mapping = aes(x = value.x, y = value.y)) +
+      geom_point(aes(colour = dr, fill = dr),
+                 alpha = 0.5) +
+      facet_grid(rows = vars(name.y), cols = vars(name.x), scales = "free_y",
+                 switch = "both") +
+      scale_fill_viridis_c(option = "B", name = colour_name) +
+      scale_colour_viridis_c(option = "B", name = colour_name) +
+      scale_y_continuous(position = "right") +
+      scale_x_continuous(position = "top") +
+      theme_bw() +
+      labs(title = "Density ratio estimates for combinations of values",
+         shape = "Sample") +
+      scale_shape_manual(values = c(21, 24))
+
+  return(plot)
   }
 }
 
@@ -401,12 +422,13 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
     plots[[i]] <- plot_twovariables_heatmap(data = data, vars = var_combinations[i,])
   }
 
-
+  # Assemble plots
   if(output == "assembled"){
     plots_assembly <- patchwork::wrap_plots(plots,
-                                            guides = "collect", byrow = TRUE,
-                                            ncol = length(var.x), nrow = length(var.y)) & labs(title = NULL)
-    plots_assembly <- plots_assembly + plot_annotation(title = "Density ratio estimates for combinations of values")
+                                            guides = "collect")
+                                            # , byrow = TRUE,
+                                            # axes = "collect",
+                                            # ncol = length(var.x), nrow = length(var.y)) & labs(title = NULL)
     return(plots_assembly)
   } else {
     return(plots)
