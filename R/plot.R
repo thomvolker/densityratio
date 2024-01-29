@@ -273,15 +273,16 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   }
 
   if (output == "assembled") {
-  long_data <- data %>%
-      pivot_longer(cols = -dr)
 
-  plot_data <- inner_join(long_data, long_data, by = "dr", multiple = "all") %>%
+  plot_data <- inner_join(data, data, by = "dr") %>%
+      pivot_longer(cols = ends_with(".x"), names_to = "name.x", values_to = "value.x") %>%
+      pivot_longer(cols = ends_with(".y"), names_to = "name.y", values_to = "value.y") %>%
+      mutate(name.x = stringr::str_remove(name.x, ".x"),
+             name.y = stringr::str_remove(name.y, ".y")) %>%
     filter(name.x %in% var.x,
            name.y %in% var.y)  %>%
     mutate(dr = ifelse(name.x == name.y, NA, dr),
-           value.x = ifelse(name.x == name.y, NA, value.x),
-           value.y = ifelse(name.x == name.y, NA, value.y))
+           value.x = ifelse(name.x == name.y, NA, value.x))
   plot <-
       ggplot(plot_data, mapping = aes(x = value.x, y = value.y)) +
       geom_point(aes(colour = dr, fill = dr),
@@ -300,7 +301,6 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
 
   return(suppressWarnings(print(plot)))
 
-  return(plot)
   }
 }
 
