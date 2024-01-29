@@ -14,6 +14,10 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
   data$dr <- log(data$dr)
   warning("Negative estimated density ratios converted to 10e-0.6 before applying logarithmic transformation",
           call. = FALSE) # to avoid printing the whole call
+
+  x_lab <- "Log (Density Ratio)"
+  } else {
+  x_lab <- "Density Ratio"
   }
 
   # Create a sample index variable (denominator or numerator)
@@ -41,7 +45,7 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
     scale_fill_manual(values = c("firebrick", "steelblue")) +
     theme_bw()  +
     labs(
-      x = "Density ratio",
+      x = x_lab,
       y = "Count"
     ) +
     labs(title = "Distribution of density ratio estimates",
@@ -207,11 +211,9 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
     data$dr <- log(data$dr)
 
     # Assign correct y and legend labels
-    y_lab <- "Log(Density Ratio)"
     colour_name <- "Log (Density ratio)"
 
   } else {
-    y_lab <- "Density Ratio"
     colour_name <- "Density ratio"
   }
 
@@ -255,8 +257,7 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
     scale_colour_viridis_c(option = "B", name = colour_name) +
     theme_bw() +
     labs(title = "Density ratio estimates for combinations of values",
-         shape = "Sample",
-         y = y_lab) +
+         shape = "Sample") +
     scale_shape_manual(values = c(21, 24))
 
   return(plot)
@@ -273,11 +274,11 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
 
   if (output == "assembled") {
   long_data <- data %>%
-      pivot_longer(cols = c("x3", "x4", "x5"))
+      pivot_longer(cols = -dr)
 
   plot_data <- inner_join(long_data, long_data, by = "dr", multiple = "all") %>%
     filter(name.x %in% var.x,
-           name.y %in% var.y) %>%
+           name.y %in% var.y)  %>%
     mutate(dr = ifelse(name.x == name.y, NA, dr),
            value.x = ifelse(name.x == name.y, NA, value.x),
            value.y = ifelse(name.x == name.y, NA, value.y))
@@ -285,6 +286,7 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
       ggplot(plot_data, mapping = aes(x = value.x, y = value.y)) +
       geom_point(aes(colour = dr, fill = dr),
                  alpha = 0.5) +
+      geom_hline(yintercept = 0, linetype = "dashed") +
       facet_grid(rows = vars(name.y), cols = vars(name.x), scales = "free_y",
                  switch = "both") +
       scale_fill_viridis_c(option = "B", name = colour_name) +
@@ -295,6 +297,8 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
       labs(title = "Density ratio estimates for combinations of values",
          shape = "Sample") +
       scale_shape_manual(values = c(21, 24))
+
+  return(suppressWarnings(print(plot)))
 
   return(plot)
   }
@@ -390,11 +394,9 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
       data$dr <- log(data$dr)
 
       # Assign correct y and legend labels
-      y_lab <- "Log(Density Ratio)"
       colour_name <- "Log (Density ratio)"
 
     } else {
-      y_lab <- "Density Ratio"
       colour_name <- "Density ratio"
     }
 
@@ -410,8 +412,7 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
       scale_fill_viridis_c(option = "B", name = colour_name) +
       theme_bw() +
       labs(title = "Density ratio estimates for combinations of values",
-           shape = "Sample",
-           y = y_lab) +
+           shape = "Sample") +
       scale_shape_manual(values = c(21, 24))
     return(plot)
   }
