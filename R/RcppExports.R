@@ -6,24 +6,21 @@
 #' @param X A numeric input matrix
 #' @param Y A numeric input matrix with the same variables as \code{X}
 #' @param symmetric A logical indicating whether X and Y are the same
+#' @export
 NULL
 
-distance <- function(X, Y, symmetric = FALSE) {
-    .Call(`_densityratio_distance`, X, Y, symmetric)
+#' Create gaussian kernel gram matrix from distance matrix
+#' @param dist A numeric distance matrix
+#' @param sigma A scalar with the length-scale parameter
+#' @export
+NULL
+
+distance <- function(X, Y, intercept = FALSE) {
+    .Call(`_densityratio_distance`, X, Y, intercept)
 }
 
 kernel_gaussian <- function(dist, sigma) {
     .Call(`_densityratio_kernel_gaussian`, dist, sigma)
-}
-
-#' Perform QR decomposition of the input matrix \code{X} through householder
-#' transformations, similar to Matlab's QR decomposition.
-#'
-#' @param X A numeric matrix.
-NULL
-
-householder_QR <- function(X) {
-    .Call(`_densityratio_householder_QR`, X)
 }
 
 make_Phi <- function(dist_nu, sigma) {
@@ -46,8 +43,12 @@ make_UV <- function(U) {
     .Call(`_densityratio_make_UV`, U)
 }
 
-check_sigma_cpp <- function(nsigma, sigma_quantile, sigma, dist) {
-    .Call(`_densityratio_check_sigma_cpp`, nsigma, sigma_quantile, sigma, dist)
+get_sigma_lhss <- function(dist, sigma, quantiles) {
+    .Call(`_densityratio_get_sigma_lhss`, dist, sigma, quantiles)
+}
+
+lhss_compute_alpha <- function(nu, de, ce, symmetric, m, intercept, sigma, quantiles, lambda, maxit, parallel, nthreads, progressbar) {
+    .Call(`_densityratio_lhss_compute_alpha`, nu, de, ce, symmetric, m, intercept, sigma, quantiles, lambda, maxit, parallel, nthreads, progressbar)
 }
 
 ulsif_compute_alpha <- function(Hhat, hhat, lambda) {
