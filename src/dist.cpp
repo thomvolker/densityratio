@@ -8,49 +8,28 @@ using namespace arma;
 //' @param X A numeric input matrix
 //' @param Y A numeric input matrix with the same variables as \code{X}
 //' @param symmetric A logical indicating whether X and Y are the same
+//' @export
 
 // [[Rcpp::export]]
-arma::mat distance(arma::mat X, arma::mat Y, bool symmetric = false) {
-  double dev, dist;
-  int nrx = X.n_rows;
-  int nry = Y.n_rows;
-  int nc = X.n_cols;
+arma::mat distance(const arma::mat& X, const arma::mat& Y, const bool& intercept = false) {
+  int nx = X.n_rows;
+  int ny = intercept ? Y.n_rows : Y.n_rows - 1;
+  int colstart = intercept ? 1 : 0;
 
-  arma::mat out(nrx, nry);
-
-  if (symmetric) {
-    for (int i = 0; i < nrx; i++) {
-      for(int j = i + 1; j < nry; j++) {
-        dist = 0;
-        for(int c = 0; c < nc; c++) {
-          dev = X(i,c) - Y(j,c);
-          dist += dev*dev;
-        }
-        out(i,j) = dist;
-      }
-    }
-    out += out.t();
-  } else {
-    for(int i = 0; i < nrx; i++) {
-      for(int j = 0; j < nry; j++) {
-        dist = 0;
-        for (int c = 0; c < nc; c++) {
-          dev = X(i,c) - Y(j,c);
-          dist += dev*dev;
-        }
-        out(i,j) = dist;
-      }
-    }
-  }
-  return out;
+  arma::mat XY(nx, ny + 1);
+  XY.cols(colstart, ny) -= 2 * X * Y.t();
+  XY.cols(colstart, ny).each_col() += sum(X % X, 1);
+  XY.cols(colstart, ny).each_row() += sum(Y % Y, 1).t();
+  return XY;
 }
 
+//' Create gaussian kernel gram matrix from distance matrix
+//' @param dist A numeric distance matrix
+//' @param sigma A scalar with the length-scale parameter
+//' @export
+
 //[[Rcpp::export]]
-arma::mat kernel_gaussian(arma::mat dist, double sigma) {
+arma::mat kernel_gaussian(const arma::mat& dist, const double& sigma) {
   arma::mat KGM = exp(-dist / (2*sigma*sigma));
   return KGM;
 }
-
-
-
-
