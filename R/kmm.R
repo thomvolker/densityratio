@@ -59,10 +59,10 @@ kmm <- function(df_numerator, df_denominator, method = "unconstrained", sigma = 
     lambda <- sqrt(nrow(nu) + nrow(de))
   }
 
-  distdede <- distance(de, de, TRUE)
-  distdenu <- distance(de, nu)
+  distdede <- distance(de, de, FALSE)
+  distdenu <- distance(de, nu, FALSE)
   if (is.null(sigma)) {
-    sigma <- median_distance(distdede)
+    sigma <- stats::median(distdede[distdede > 0])
   }
 
 
@@ -119,10 +119,10 @@ kmm <- function(df_numerator, df_denominator, method = "unconstrained", sigma = 
          -rep(1000, nde))
 
   # Solve the optimization problem
-  solve.QP(Dmat = Kdede + lambda*diag(nde),
-           dvec = Kdenu %*% one,
-           Amat = A,
-           bvec = b)$solution
+  quadprog::solve.QP(Dmat = Kdede + lambda*diag(nde),
+                     dvec = Kdenu %*% one,
+                     Amat = A,
+                     bvec = b)$solution
 }
 
 
