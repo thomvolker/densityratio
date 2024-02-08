@@ -3,6 +3,7 @@
 \name{summary.ulsif}
 \alias{summary.ulsif}
 \alias{summary.kliep}
+\alias{summary.lhss}
 \alias{summary.naivedensityratio}
 \alias{summary.naivesubspacedensityratio}
 \title{Extract summary from \code{ulsif} object, including two-sample significance
@@ -11,6 +12,8 @@ test for homogeneity of the numerator and denominator samples}
 \method{summary}{ulsif}(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...)
 
 \method{summary}{kliep}(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...)
+
+\method{summary}{lhss}(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...)
 
 \method{summary}{naivedensityratio}(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...)
 
@@ -40,12 +43,17 @@ Summary of the fitted density ratio model
 Summary of the fitted density ratio model
 
 Summary of the fitted density ratio model
+
+Summary of the fitted density ratio model
 }
 \description{
 Extract summary from \code{ulsif} object, including two-sample significance
 test for homogeneity of the numerator and denominator samples
 
 Extract summary from \code{kliep} object, including two-sample significance
+test for homogeneity of the numerator and denominator samples
+
+Extract summary from \code{lhss} object, including two-sample significance
 test for homogeneity of the numerator and denominator samples
 
 Extract summary from \code{naivedensityratio} object, including two-sample
