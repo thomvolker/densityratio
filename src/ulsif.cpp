@@ -38,10 +38,10 @@ int set_threads(int nthreads) {
 }
 
 //[[Rcpp::export]]
-double compute_ulsif_loocv(arma::mat Hhat, const arma::mat& hhat, const double& lambda, const int& nnu, const int& nde, const int& nmin, const int& ncol, const arma::mat& Knu_nmin, const arma::mat& Kde_nmin) {
+double compute_ulsif_loocv(const arma::mat& Hhat, const arma::mat& hhat, const double& lambda, const int& nnu, const int& nde, const int& nmin, const int& ncol, const arma::mat& Knu_nmin, const arma::mat& Kde_nmin) {
   double la = lambda * (nde - 1) / nde;
 
-  arma::vec onen = arma::ones<arma::vec>(nmin);
+  // arma::vec onen = arma::ones<arma::vec>(nmin);
   arma::vec oneb = arma::ones<arma::vec>(ncol);
 
   arma::mat Binv = arma::inv(Hhat + arma::diagmat(oneb * la));
@@ -63,7 +63,7 @@ double compute_ulsif_loocv(arma::mat Hhat, const arma::mat& hhat, const double& 
 }
 
 //[[Rcpp::export]]
-List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::vec lambda, bool parallel, int nthreads, bool progressbar) {
+List compute_ulsif(const arma::mat& dist_nu, const arma::mat& dist_de, const arma::vec& sigma, const arma::vec& lambda, const bool& parallel, int nthreads, const bool& progressbar) {
 
   double si, la;
   bool stopped = false;
@@ -75,13 +75,13 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
   int ncol = dist_nu.n_cols;
   int sig;
 
-  arma::mat loocv = arma::zeros<arma::mat>(nsigma, nlambda);
-  arma::mat Hhat = arma::zeros<arma::mat>(ncol, ncol);
-  arma::vec hhat = arma::zeros<arma::vec>(ncol);
-  arma::mat Knu = arma::zeros<arma::mat>(nnu, ncol);
-  arma::mat Kde = arma::zeros<arma::mat>(nde, ncol);
-  arma::vec current_alpha = arma::zeros<arma::vec>(ncol);
-  arma::cube alpha(ncol, nsigma, nlambda, arma::fill::zeros);
+  arma::mat loocv(nsigma, nlambda);
+  arma::mat Hhat(ncol, ncol);
+  arma::vec hhat(ncol);
+  arma::mat Knu(nnu, ncol);
+  arma::mat Kde(nde, ncol);
+  arma::vec current_alpha(ncol);
+  arma::cube alpha(ncol, nsigma, nlambda);
 
   #ifdef _OPENMP
   if (parallel) {
@@ -130,3 +130,4 @@ List compute_ulsif(arma::mat dist_nu, arma::mat dist_de, arma::vec sigma, arma::
   );
   return out;
 }
+
