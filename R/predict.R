@@ -26,15 +26,11 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
   alpha     <- extract.alpha(object, newsigma, newlambda)
   nsigma    <- length(newsigma)
   nlambda   <- length(newlambda)
-  dratio    <- array(0, c(nrow(newdata), nlambda, nsigma))
+  dratio    <- array(0, c(nrow(newdata), nsigma, nlambda))
   intercept <- nrow(object$alpha) > nrow(object$centers)
 
   for (i in 1:nsigma) {
-    if (intercept) {
-      K <- cbind(0, distance(newdata, object$centers)) |> kernel_gaussian(newsigma[i])
-    } else {
-      K <- distance(newdata, object$centers) |> kernel_gaussian(newsigma[i])
-    }
+    K <- distance(newdata, object$centers, intercept) |> kernel_gaussian(newsigma[i])
     for (j in 1:nlambda) {
       dratio[ , i, j] <- K %*% alpha[, i, j]
     }
@@ -56,38 +52,44 @@ predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
   alpha <- extract.alpha(object, newsigma, lambda = NULL)
   nsigma <- ncol(alpha)
   dratio <- matrix(0, nrow(newdata), nsigma)
+  intercept <- nrow(object$alpha) > nrow(object$centers)
 
   for (i in 1:nsigma) {
-    K <- distance(newdata, object$centers) |> kernel_gaussian(newsigma[i])
+    K <- distance(newdata, object$centers, intercept) |> kernel_gaussian(newsigma[i])
     dratio[, i] <- K %*% alpha[, i]
   }
   dratio
 }
 
-extract.alpha <- function(object, sigma, lambda) {
+#' Obtain predicted density ratio values from a \code{lhss} object
+#'
+#' @rdname predict
+#' @method predict lhss
+#' @export
 
-  if (inherits(object, "kliep")) {
-    if (all(sigma %in% object$sigma)) {
-      which_sigma <- which(object$sigma %in% sigma)
-      alpha <- object$alpha[ , which_sigma, drop = FALSE]
-    } else {
-      alpha <- kliep(object$df_numerator, object$df_denominator, sigma = sigma,
-                     centers = object$centers, cv = FALSE, epsilon = object$epsilon,
-                     maxit = object$maxit, progressbar = FALSE)$alpha
-    }
-  } else if (inherits(object, "ulsif")) {
-    if (all(sigma %in% object$sigma) & all(lambda %in% object$lambda)) {
-      which_sigma <- which(object$sigma %in% sigma)
-      which_lambda <- which(object$lambda %in% lambda)
-      alpha <- object$alpha[ , which_sigma, which_lambda, drop = FALSE]
-    } else {
-      alpha <- ulsif(object$df_numerator, object$df_denominator, sigma = sigma,
-                     lambda = lambda, centers = object$centers, progressbar = FALSE)$alpha
+predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), lambda = c("lambdaopt", "all"), ...) {
+
+  newlambda   <- check.lambda.predict(object, lambda)
+  lambdaind   <- match(newlambda, object$lambda)
+  lambdasigma <- check.lambdasigma.predict(object, sigma, newlambda, lambdaind)
+  newdata     <- check.newdata(object, newdata)
+
+  alpha_U_sigma <- extract.alpha_U_sigma.lhss(object, newlambda, lambdasigma)
+  nlambda     <- length(newlambda)
+  nsigma      <- nrow(lambdasigma) / nlambda
+  dratio    <- array(0, c(nrow(newdata), nsigma, nlambda))
+  intercept <- nrow(object$alpha) > nrow(object$centers)
+  for (i in 1:nlambda) {
+    for (j in 1:nsigma) {
+      U_new <- alpha_U_sigma$U[ , , j, i]
+      alpha_new <- alpha_U_sigma$alpha[ , j, i]
+      K <- distance(newdata %*% U_new, object$centers %*% U_new, intercept) |>
+        kernel_gaussian(sigma = alpha_U_sigma$sigma[j, i])
+      dratio[ , j, i] <- K %*% alpha_new
     }
   }
-  alpha
+  dratio
 }
-
 
 #' Predict function for density object
 #'
@@ -183,5 +185,63 @@ predict.naivesubspacedensityratio <- function(object, newdata = NULL, log = FALS
   res
 }
 
+extract.alpha <- function(object, sigma, lambda) {
+  if (inherits(object, "kliep")) {
+    if (all(sigma %in% object$sigma)) {
+      which_sigma <- match(sigma, object$sigma)
+      alpha <- object$alpha[ , which_sigma, drop = FALSE]
+    } else {
+      alpha <- update(object, sigma = sigma, cv = FALSE)$alpha
+    }
+  } else if (inherits(object, "ulsif")) {
+    if (all(sigma %in% object$sigma) & all(lambda %in% object$lambda)) {
+      which_sigma <- match(sigma, object$sigma)
+      which_lambda <- match(lambda, object$lambda)
+      alpha <- object$alpha[ , which_sigma, which_lambda, drop = FALSE]
+    } else {
+      alpha <- update(object, sigma = sigma, lambda = lambda)$alpha
+    }
+  } else {
+    stop("Unknown object class.")
+  }
+  alpha
+}
 
+extract.alpha_U_sigma.lhss <- function(object, lambda, lambdasigma) {
+  alpha_old <- object$alpha
+  nlambda <- length(lambda)
+  nsigma <- nrow(lambdasigma) / nlambda
+  alpha <- array(0, dim = c(dim(alpha_old)[1], nsigma, nlambda))
+  U <- array(0, dim = c(nrow(object$U_opt), ncol(object$U_opt), nsigma, nlambda))
+  sigma <- matrix(0, nsigma, nlambda)
+  for (i in 1:nlambda) {
+    for (j in 1:nsigma) {
+      ind <- (i-1) * nsigma + j
+      if (!is.na(lambdasigma[ind, 1]) & !is.na(lambdasigma[ind, 2])) {
+        alpha[ , j, i] <- object$alpha[, lambdasigma[ind, 2], lambdasigma[ind, 1]]
+        U[ , , j, i] <- object$U[, , lambdasigma[ind, 2], lambdasigma[ind, 1]]
+        sigma[j, i] <- object$sigma[lambdasigma[ind, 2], lambdasigma[ind, 1]]
+      } else {
+        if (is.na(lambdasigma[ind, 4])) {
+          fitnew <- update(
+            object,
+            sigma = NULL,
+            sigma_quantile = object$sigma_quantiles[j],
+            lambda = lambdasigma[ind, 3]
+          )
+        } else {
+          fitnew <- update(
+            object,
+            sigma = lambdasigma[ind, 4],
+            lambda = lambdasigma[ind, 3]
+          )
+        }
+        alpha[ , j, i] <- fitnew$alpha
+        U[, , j, i] <- fitnew$U_opt
+        sigma[j, i] <- fitnew$sigma_opt
+      }
+    }
+  }
+  list(alpha = alpha, U = U, sigma = sigma)
+}
 

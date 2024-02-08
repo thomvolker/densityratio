@@ -1,4 +1,5 @@
 #' @importFrom stats quantile
+#' @importFrom stats median
 check.dataform <- function(nu, de) {
   # Only accept numeric input matrices (vectors/data.frames/tibbles
   # are converted to matrices by default)
@@ -45,7 +46,7 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
         stop("'nsigma' must be a positive scalar.")
       }
       else if (nsigma == 1) {
-        sigma <- median(dist_nu)
+        sigma <- stats::median(dist_nu)
       } else {
         p <- seq(0.05, 0.95, length.out = nsigma)
         sigma <- quantile(dist_nu, p) |> sqrt()
@@ -59,12 +60,12 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
   u
 }
 
-check.nsigma.lhss <- function(nsigma, sigma, sigma_quantile) {
+check.sigma_quantile.lhss <- function(nsigma, sigma, sigma_quantile) {
   if (!is.null(sigma)) {
     if (!is.numeric(sigma) | !is.null(dim(sigma))) {
       stop("If 'sigma' is specified it must be a numeric scalar or vector.")
-    } else {
-      nsigma <- 0
+    } else{
+      p <- NULL
     }
   } else if (!is.null(sigma_quantile)) {
     if (!is.numeric(sigma_quantile) | !is.null(dim(sigma_quantile))) {
@@ -72,18 +73,23 @@ check.nsigma.lhss <- function(nsigma, sigma, sigma_quantile) {
     } else if (min(sigma_quantile) <= 0 | max(sigma_quantile) >= 1) {
       stop("If 'sigma_quantile' is specified, the values must be larger than 0 and smaller than 1.")
     } else {
-      nsigma <- 0
+      p <- sigma_quantile
     }
-  }  else {
+  } else {
     if (!is.numeric(nsigma) | length(nsigma) != 1) {
-      stop("If 'sigma_quantile' and 'sigma' are not specified, 'nsigma' must be a scalar value.")
+      stop("'nsigma' must be a scalar value.")
     } else {
       if (nsigma < 1) {
         stop("'nsigma' must be a positive scalar.")
       }
+      else if (nsigma == 1) {
+        p <- 0.5
+      } else {
+        p <- seq(0.05, 0.95, length.out = nsigma)
+      }
     }
   }
-  nsigma
+  p
 }
 
 check.lambda <- function(nlambda, lambda) {
@@ -238,6 +244,51 @@ check.sigma.predict <- function(object, sigma) {
   sigma
 }
 
+# for every lambda in the lambdaind vector, i want to extract a sigma value.
+# for "sigmaopt", this must be the optimal sigma value based on je object$cv_score
+# matrix with lambda in the columns and sigma in the rows. For "all", this must
+# be the entire column of sigma values for that lambda. If sigma is a numeric
+# vector, for every lambda value, it must be checked whether that value is in the
+# matrix object$sigma. If not, an NA should be returned. Can you provide the code?
+
+
+
+check.lambdasigma.predict <- function(object, sigma, lambda, lambdaind) {
+  nlambda <- length(lambda)
+
+  if (is.character(sigma)) {
+    sigma <- match.arg(sigma, c("sigmaopt", "all"))
+    if (sigma == "sigmaopt") { # Extract optimal sigma based on cv score for every lambda
+      sigmaind <- sapply(lambdaind, \(i) which.min(object$cv_score[,i]))
+      lambdasigmaind <- matrix(c(lambdaind, sigmaind), ncol = 2)
+    } else if (sigma == "all") { # Extract all sigma values for every lambda
+      sigmaind <- seq_len(nrow(object$sigma))
+      lambdasigmaind <- matrix(c(rep(lambdaind, each = length(sigmaind)),
+                                 rep(sigmaind, nlambda)),
+                               ncol = 2)
+      lambdasigmaind[is.na(lambdasigmaind[,1]), 2] <- NA
+    }
+  } else if (is.numeric(sigma) & is.vector(sigma)) {
+    sigmaind <- lapply(lambdaind, \(i) match(sigma, object$sigma[,i]))
+    lambdasigmaind <- matrix(c(rep(lambdaind, each = length(unlist(sigmaind))/length(lambdaind)),
+                               unlist(sigmaind)),
+                             ncol = 2)
+  } else {
+    stop("'sigma' should be one of 'sigmaopt', 'all' or a numeric scalar or vector with values to use as sigma parameter")
+  }
+  lambdanew <- rep(lambda, each = nrow(lambdasigmaind)/nlambda)
+  sigmanew  <- sapply(1:nrow(lambdasigmaind), \(i) {
+    if (is.numeric(sigma) & is.na(lambdasigmaind[i,2])) {
+      return(sigma[(i-1) %% length(sigma) + 1])
+    } else {
+      return(object$sigma[lambdasigmaind[i, 2], lambdasigmaind[i, 1]])
+    }
+  })
+  lambdasigma <- cbind(lambdasigmaind, lambdanew, sigmanew)
+  colnames(lambdasigma) <- c("lambdaind", "sigmaind", "lambda", "sigma")
+  lambdasigma
+}
+
 check.lambda.predict <- function(object, lambda) {
   if (is.character(lambda)) {
     lambda <- match.arg(lambda, c("lambdaopt", "all"))
@@ -259,9 +310,9 @@ check.subspace <- function(m, P) {
     m <- floor(sqrt(P))
   } else {
     if(!is.numeric(m)) {
-      stop("The dimension of the subspace 'm' must be 'NULL' or an integer value.")
+      stop("The dimension of the subspace 'm' must be 'NULL', an integer value, or an integer vector.")
     } else {
-      if (m %% 1 != 0) stop("The dimension of the subspace 'm' must be 'NULL' or an integer value.")
+      if (any(m %% 1 != 0)) stop("The dimension of the subspace 'm' must be 'NULL', an integer value or an integer vector.")
       if (m > P) stop("The dimension of the subspace 'm' must be smaller than the number of variables.")
     }
   }

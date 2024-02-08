@@ -123,6 +123,65 @@ summary.kliep <- function(object, test = FALSE, n.perm = 100, parallel = FALSE, 
   out
 }
 
+#' Extract summary from \code{lhss} object, including two-sample significance
+#' test for homogeneity of the numerator and denominator samples
+#'
+#' @rdname summary
+#' @return Summary of the fitted density ratio model
+#' @method summary lhss
+#' @importFrom stats predict
+#' @importFrom pbapply pbreplicate
+#' @importFrom parallel detectCores makeCluster stopCluster
+#' @export
+
+summary.lhss <- function(object, test = FALSE, n.perm = 100, parallel = FALSE, cl = NULL, ...) {
+
+  nu <- as.matrix(object$df_numerator)
+  de <- as.matrix(object$df_denominator)
+  stacked <- rbind(nu, de)
+  nnu <- nrow(nu)
+  nde <- nrow(de)
+
+  if (parallel & is.null(cl)) {
+    ncores <- parallel::detectCores() - 1
+    cl <- parallel::makeCluster(ncores)
+    on.exit(parallel::stopCluster(cl))
+  }
+
+  pred_nu <- c(stats::predict(object, newdata = nu))
+  pred_de <- c(stats::predict(object, newdata = de))
+
+  obsPE  <- 1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  if (test) {
+    distPE <- pbapply::pbreplicate(
+      n.perm,
+      permute(object, stacked = stacked, nnu = nnu, nde = nde),
+      simplify = TRUE,
+      cl = cl
+    )
+    rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
+    recPE <- 1/(2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
+      1/nnu * sum(c(stats::predict(rec, newdata = nu))) + 1/2
+  }
+
+  out <- list(
+    alpha_opt  = object$alpha_opt,
+    sigma_opt  = object$sigma_opt,
+    lambda_opt = object$lambda_opt,
+    m = object$m,
+    centers    = object$centers,
+    dr = data.frame(dr = c(pred_nu, pred_de),
+                    group = factor(c(rep(c("nu", "de"), c(nnu, nde))))),
+    PE = obsPE,
+    PErec = switch(test, recPE, NULL),
+    refPE = switch(test, distPE, NULL),
+    p_value = switch(test, min(1, 2 * mean(distPE > max(obsPE, recPE))), NULL),
+    call = object$call
+  )
+  class(out) <- "summary.lhss"
+  out
+}
+
 #' Extract summary from \code{naivedensityratio} object, including two-sample
 #' significance test for homogeneity of the numerator and denominator samples
 #'
