@@ -25,12 +25,9 @@ Description: This package provides functionality to directly estimate the ratio
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
 Imports: 
     quadprog,
     Rcpp,
-    pracma,
-    expm,
     pbapply
 LinkingTo: 
     Rcpp,
@@ -43,3 +40,4 @@ Config/testthat/parallel: true
 Roxygen: list(markdown = TRUE)
 Depends: 
     R (>= 2.10)
+RoxygenNote: 7.2.3
