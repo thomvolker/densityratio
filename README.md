@@ -69,7 +69,6 @@ five variables.
 
 ``` r
 library(densityratio)
-#> Warning: package 'densityratio' was built under R version 4.3.2
 
 head(numerator_data)
 #> # A tibble: 6 × 5
@@ -109,11 +108,12 @@ summary(fit)
 #> Kernel Information:
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
-#>   Optimal sigma: 0.8951539
-#>   Optimal lambda: 0.03162278
-#>   Optimal kernel weights (loocv): num [1:200] 0.021815 0.007418 0.018196 0.015729 -0.000559 ...
+#> 
+#> Optimal sigma: 0.8951539
+#> Optimal lambda: 0.03162278
+#> Optimal kernel weights (loocv): num [1:201] 0.14182 0.01957 0.00488 0.01596 0.01461 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.2925
+#> Pearson divergence between P(nu) and P(de): 0.2871
 #> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.
 ```
 
@@ -130,11 +130,12 @@ summary(fit, test = TRUE)
 #> Kernel Information:
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
-#>   Optimal sigma: 0.8951539
-#>   Optimal lambda: 0.03162278
-#>   Optimal kernel weights (loocv): num [1:200] 0.021815 0.007418 0.018196 0.015729 -0.000559 ...
+#> 
+#> Optimal sigma: 0.8951539
+#> Optimal lambda: 0.03162278
+#> Optimal kernel weights (loocv): num [1:201] 0.14182 0.01957 0.00488 0.01596 0.01461 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.2925
+#> Pearson divergence between P(nu) and P(de): 0.2871
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
@@ -200,9 +201,9 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.3585735
-#> 2                 B        1.3698165
-#> 3                 C        0.6285726
+#> 1                 A        1.3596470
+#> 2                 B        1.3687135
+#> 3                 C        0.6290922
 
 
 table(numerator_data$x1) / table(denominator_data$x1)
@@ -231,11 +232,12 @@ summary(fit_all, test = TRUE, parallel = TRUE)
 #> Kernel Information:
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
-#>   Optimal sigma: 1.474584
-#>   Optimal lambda: 0.3359818
-#>   Optimal kernel weights (loocv): num [1:200] -0.02004 -0.00362 0.10225 0.03995 0.03609 ...
+#> 
+#> Optimal sigma: 1.473857
+#> Optimal lambda: 0.3359818
+#> Optimal kernel weights (loocv): num [1:201] 0.1771 -0.0255 -0.0131 0.0979 0.0354 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.5093
+#> Pearson divergence between P(nu) and P(de): 0.4736
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
