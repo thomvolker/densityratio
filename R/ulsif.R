@@ -54,17 +54,12 @@ ulsif <- function(df_numerator, df_denominator, intercept = TRUE, nsigma = 10,
 
   check.dataform(nu, de)
   centers   <- check.centers(nu, centers, ncenters)
-  symmetric <- check.symmetric(nu, centers)
   parallel  <- check.parallel(parallel, nthreads, sigma, lambda)
   nthreads  <- check.threads(parallel, nthreads)
   intercept <- check.intercept(intercept)
 
-  dist_nu <- distance(nu, centers, symmetric)
-  dist_de <- distance(de, centers)
-  if (intercept) {
-    dist_nu <- cbind(0, dist_nu)
-    dist_de <- cbind(0, dist_de)
-  }
+  dist_nu <- distance(nu, centers, intercept)
+  dist_de <- distance(de, centers, intercept)
 
   sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   lambda <- check.lambda(nlambda, lambda)
@@ -74,7 +69,7 @@ ulsif <- function(df_numerator, df_denominator, intercept = TRUE, nsigma = 10,
   colnames(loocv_scores) <- names(lambda) <- paste0("lambda", 1:length(lambda))
   rownames(loocv_scores) <- names(sigma)  <- paste0("sigma", 1:length(sigma))
   dimnames(res$alpha)    <- list(NULL, names(sigma), names(lambda))
-  min_score <- arrayInd(which.min(res$loocv_score), dim(res$loocv_score))
+  min_score <- arrayInd(which.min(loocv_scores), dim(loocv_scores))
 
   out <- list(
     df_numerator = df_numerator,

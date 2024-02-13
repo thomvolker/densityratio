@@ -3,6 +3,7 @@
 \name{predict.ulsif}
 \alias{predict.ulsif}
 \alias{predict.kliep}
+\alias{predict.lhss}
 \alias{predict.naivedensityratio}
 \alias{predict.naivesubspacedensityratio}
 \title{Obtain predicted density ratio values from a \code{ulsif} object}
@@ -16,6 +17,14 @@
 )
 
 \method{predict}{kliep}(object, newdata = NULL, sigma = c("sigmaopt", "all"), ...)
+
+\method{predict}{lhss}(
+  object,
+  newdata = NULL,
+  sigma = c("sigmaopt", "all"),
+  lambda = c("lambdaopt", "all"),
+  ...
+)
 
 \method{predict}{naivedensityratio}(object, newdata = NULL, log = FALSE, ...)
 
@@ -47,6 +56,8 @@ but otherwise the numerator samples.
 Obtain predicted density ratio values from a \code{ulsif} object
 
 Obtain predicted density ratio values from a \code{kliep} object
+
+Obtain predicted density ratio values from a \code{lhss} object
 
 Obtain predicted density ratio values from a \code{naivedensityratio} object
 

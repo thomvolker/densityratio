@@ -51,6 +51,20 @@ permute.kliep <- function(object, stacked, nnu, nde) {
   mean(log(pmax(sqrt(.Machine$double.eps), pred_nu)))
 }
 
+permute.lhss <- function(object, stacked, nnu, nde) {
+  ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
+  r <- stats::update(
+    object = object,
+    df_numerator = stacked[ind, ],
+    df_denominator = stacked[!ind, ],
+    progressbar = FALSE
+  )
+
+  pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE]))
+
+  mean(log(pmax(sqrt(.Machine$double.eps), pred_nu)))
+}
+
 permute.naivedensityratio <- function(object, stacked, nnu, nde, min_pred, max_pred) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
   r <- stats::update(

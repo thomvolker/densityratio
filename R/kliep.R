@@ -5,6 +5,8 @@
 #' @param df_denominator \code{data.frame} with exclusively numeric variables
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
+#' @param intercept \code{logical} Indicating whether to include an intercept
+#' term in the model. Defaults to \code{TRUE}.
 #' @param nsigma Integer indicating the number of sigma values (bandwidth
 #' parameter of the Gaussian kernel gram matrix) to use in cross-validation.
 #' @param sigma_quantile \code{NULL} or numeric vector with probabilities to
@@ -38,9 +40,10 @@
 #' kliep(x, y, nsigma = 20, ncenters = 100, nfold = 20, epsilon = 10^{3:-5}, maxit = 1000)
 #'
 
-kliep <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NULL, sigma = NULL,
-                  ncenters = 200, centers = NULL, cv = TRUE, nfold = NULL,
-                  epsilon = NULL, maxit = 2000, progressbar = TRUE) {
+kliep <- function(df_numerator, df_denominator, intercept = TRUE, nsigma = 10,
+                  sigma_quantile = NULL, sigma = NULL, ncenters = 200,
+                  centers = NULL, cv = TRUE, nfold = NULL, epsilon = NULL,
+                  maxit = 2000, progressbar = TRUE) {
 
   cl <- match.call()
   nu <- as.matrix(df_numerator)
@@ -51,9 +54,10 @@ kliep <- function(df_numerator, df_denominator, nsigma = 10, sigma_quantile = NU
   check.dataform(nu, de)
   centers   <- check.centers(nu, centers, ncenters)
   symmetric <- check.symmetric(nu, centers)
+  intercept <- check.intercept(intercept)
 
-  dist_nu <- distance(nu, centers, symmetric)
-  dist_de <- distance(de, centers)
+  dist_nu <- distance(nu, centers, intercept)
+  dist_de <- distance(de, centers, intercept)
 
   sigma   <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   epsilon <- check.epsilon(epsilon)

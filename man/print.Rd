@@ -5,6 +5,8 @@
 \alias{print.summary.ulsif}
 \alias{print.kliep}
 \alias{print.summary.kliep}
+\alias{print.lhss}
+\alias{print.summary.lhss}
 \alias{print.naivedensityratio}
 \alias{print.naivesubspacedensityratio}
 \alias{print.summary.naivedensityratio}
@@ -18,6 +20,10 @@
 \method{print}{kliep}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
 \method{print}{summary.kliep}(x, digits = max(3L, getOption("digits") - 3L), ...)
+
+\method{print}{lhss}(x, digits = max(3L, getOption("digits") - 3L), ...)
+
+\method{print}{summary.lhss}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
 \method{print}{naivedensityratio}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
@@ -44,6 +50,10 @@ or \code{summary.kliep}.}
 
 \code{NULL}
 
+\code{NULL}
+
+\code{NULL}
+
 \code{invisble} The inputted \code{naivedensityratio} object.
 
 \code{invisble} The inputted \code{naivesubspacedensityratio} object.
@@ -60,6 +70,10 @@ Print a \code{summary.ulsif} object
 Print a \code{kliep} object
 
 Print a \code{summary.kliep} object
+
+Print a \code{lhss} object
+
+Print a \code{summary.lhss} object
 
 Print a \code{naivedensityratio} object
 

@@ -7,7 +7,8 @@
 lhss(
   df_numerator,
   df_denominator,
-  m = 1,
+  m = NULL,
+  intercept = TRUE,
   nsigma = 10,
   sigma_quantile = NULL,
   sigma = NULL,
@@ -30,6 +31,9 @@ with the denominator samples (must have the same variables as
 \code{df_denominator})}
 
 \item{m}{Scalar indicating the dimensionality of the reduced subspace}
+
+\item{intercept}{\code{logical} Indicating whether to include an intercept
+term in the model. Defaults to \code{TRUE}.}
 
 \item{nsigma}{Integer indicating the number of sigma values (bandwidth
 parameter of the Gaussian kernel gram matrix) to use in cross-validation.}
@@ -69,17 +73,18 @@ to the number of available threads minus one.}
 \item{progressbar}{Logical indicating whether or not to display a progressbar.}
 }
 \value{
+\code{lhss}-object, containing all information to calculate the
+density ratio using optimal sigma, optimal lambda and optimal weights.
+
 \code{lhss} returns \code{rhat}, the estimated density ratio.
 }
 \description{
 Least-squares heterodistributional subspace search
 }
 \examples{
-\dontrun{
 set.seed(1)
-N <- 1000
+N <- 250
 X <- cbind(rnorm(N), rnorm(N, 0, 0.5))
 Y <- cbind(rnorm(N), sample(rep(c(-1, 1), times = N/2)) + rnorm(N))
 out <- lhss(X, Y, m = 1, ncenters = 100)
-}
 }
