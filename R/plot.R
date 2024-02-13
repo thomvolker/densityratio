@@ -192,7 +192,7 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE) {
 #' @export
 #'
 #' @examples
-plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = TRUE,
+plot_bivariate <- function(object, vars, sample = "both", show.samples = TRUE,
                            output = "assembled", logscale = TRUE) {
 
   # Check object type
@@ -202,8 +202,7 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   data <- rbind(object$df_numerator, object$df_denominator)
   check.overriden.names(data)
 
-  # Create variables vector and check variable names
-  vars <- c(var.x, var.y)
+  # Check variable names
   check.var.names(vars, data)
 
   # Estimate density ratio
@@ -214,9 +213,11 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
 
     if(any(data$dr <= 0)){
       # Convert negative predicted density ratios to 10e-3, so log can be computed
+      count <- length(data$dr[data$dr <= 0])
       data$dr[data$dr <= 0] <- 10e-3
-      warning("Negative estimated density ratios converted to 10e-3 before applying logarithmic transformation",
-              call. = FALSE)
+      warning(
+        paste("Negative estimated density ratios for", count, "observations converted to 10e-3 before applying logarithmic transformation"),
+        call. = FALSE)
     }
 
     data$dr <- log(data$dr)
@@ -241,10 +242,8 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
     data <- filter(data, obsclass == obsselect)
   }
 
-
-  if(output == "individual"){
   # Create a grid of variable combinations
-  var_combinations <- expand.grid(var.x, var.y)
+  var_combinations <- expand.grid(vars, vars)
 
   ## Remove duplicate combinations
   ## Start by sorting elements within each row
@@ -258,6 +257,7 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   var_combinations <- var_combinations %>% filter(Var1 != Var2)
   var_combinations <- as.matrix(var_combinations)
 
+  if(output == "individual"){
   # Define function to make bivariate plot
   plot_twovariables <- function(data, vars, showsamples = show.samples){
     plot <-
@@ -272,7 +272,7 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
     scale_shape_manual(values = c(21, 24))
 
   return(plot)
-  }
+    }
 
   # Iterate over grid of variable combinations
   # Create a list to store plots
@@ -285,21 +285,27 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
 
   if (output == "assembled") {
 
-  plot_data <- inner_join(data, data, by = "dr") %>%
+  # plot_data <- data %>%
+  #   pivot_longer(cols = c("V1", "V2"), names_to = "variable", values_to = "value")
+  # browser()
+  combinations <- paste0(var_combinations[,1], "-", var_combinations[,2])
+
+  plot_data <-
+    inner_join(data, data, by = "dr") %>%
       pivot_longer(cols = ends_with(".x"), names_to = "name.x", values_to = "value.x") %>%
       pivot_longer(cols = ends_with(".y"), names_to = "name.y", values_to = "value.y") %>%
       mutate(name.x = stringr::str_remove(name.x, ".x"),
-             name.y = stringr::str_remove(name.y, ".y")) %>%
-    filter(name.x %in% var.x,
-           name.y %in% var.y)  %>%
-    mutate(dr = ifelse(name.x == name.y, NA, dr),
-           value.x = ifelse(name.x == name.y, NA, value.x))
+             name.y = stringr::str_remove(name.y, ".y"),
+             combination = paste0(name.x, "-", name.y)) %>%
+      filter(combination %in% combinations)
+
+
   plot <-
       ggplot(plot_data, mapping = aes(x = value.x, y = value.y)) +
       geom_point(aes(colour = dr, fill = dr),
                  alpha = 0.5) +
       geom_hline(yintercept = 0, linetype = "dashed") +
-      facet_grid(rows = vars(name.y), cols = vars(name.x), scales = "free_y",
+      facet_grid(rows = vars(name.y), cols = vars(name.x), scales = "free",
                  switch = "both") +
       scale_fill_viridis_c(option = "B", name = colour_name) +
       scale_colour_viridis_c(option = "B", name = colour_name) +
@@ -307,7 +313,8 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
       scale_x_continuous(position = "top") +
       theme_bw() +
       labs(title = "Density ratio estimates for combinations of values",
-         shape = "Sample") +
+          x = NULL,
+          y = NULL) +
       scale_shape_manual(values = c(21, 24))
 
   return(suppressWarnings(print(plot)))
@@ -389,15 +396,17 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
 
       if(any(data$dr <= 0)){
         # Convert negative predicted density ratios to 10e-3, so log can be computed
+        count <- length(data$dr[data$dr <= 0])
         data$dr[data$dr <= 0] <- 10e-3
-        warning("Negative estimated density ratios converted to 10e-3 before applying logarithmic transformation",
-                call. = FALSE)
+        warning(
+          paste("Negative estimated density ratios for", count, "observations converted to 10e-3 before applying logarithmic transformation"),
+          call. = FALSE)
       }
 
       if(any(grid_data$dr <= 0)){
         # Convert negative predicted HEATMAP density ratios to 10e-3, so log can be computed
         grid_data$dr[grid_data$dr <= 0] <- 10e-3
-        warning("Negative estimated density ratios converted to 10e-3 before applying logarithmic transformation",
+        warning("Negative estimated density ratios in the heatmap converted to 10e-3 before applying logarithmic transformation",
                 call. = FALSE)
       }
 
