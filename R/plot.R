@@ -1,4 +1,4 @@
-dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
+dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = NULL, bins = NULL,...) {
 
   # Checks
   check.object.type(object)
@@ -6,16 +6,21 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
 
   # Create data object and estimate density ratio
   data <- rbind(object$df_numerator, object$df_denominator)
-  data$dr <- predict(object, newdata = data)
+  data$dr <- predict(object, newdata = data, ...)
 
-  if(logscale){
-  # Convert negative predicted density ratios to 10e-0.6, so log can be computed
-  data$dr[data$dr < 0] <- 10e-6
-  data$dr <- log(data$dr)
-  warning("Negative estimated density ratios converted to 10e-0.6 before applying logarithmic transformation",
-          call. = FALSE) # to avoid printing the whole call
+  if (logscale) {
 
-  x_lab <- "Log (Density Ratio)"
+    if(any(data$dr <= 0)){
+      # Convert negative predicted density ratios to 10e-3, so log can be computed
+      count <- length(data$dr[data$dr <= 0])
+      data$dr[data$dr <= 0] <- 10e-3
+      warning(
+        paste("Negative estimated density ratios for", count, "observations converted to 10e-3 before applying logarithmic transformation"),
+        call. = FALSE)
+    }
+
+    data$dr <- log(data$dr)
+    x_lab <- "Log (Density Ratio)"
   } else {
   x_lab <- "Density Ratio"
   }
@@ -40,6 +45,7 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
                    alpha = .75,
                    color = "black",
                    binwidth = if (!is.null(binwidth)) binwidth else NULL,
+                   bins = if(!is.null(bins)) bins else NULL,
                    position = position_dodge2(preserve = "single",
                                               padding = 0.2)) +
     scale_fill_manual(values = c("firebrick", "steelblue")) +
@@ -64,8 +70,10 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
 #' @export
 #'
 #' @examples
-plot.ulsif <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
-  dr.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth)
+plot.ulsif <- function(object, sample = "both", logscale = FALSE, binwidth = NULL,
+                       bins = NULL) {
+  dr.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth,
+               bins = bins)
 }
 
 #' Title
@@ -78,8 +86,10 @@ plot.ulsif <- function(object, sample = "both", logscale = FALSE, binwidth = NUL
 #' @export
 #'
 #' @examples
-plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NULL) {
-  dr.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth)
+plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NULL,
+                       bins = NULL) {
+  dr.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth,
+               bins = bins)
 }
 
 
@@ -94,7 +104,7 @@ plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NUL
 #' @export
 #'
 #' @examples
-plot_univariate <- function(object, vars, sample = "both", logscale = TRUE) {
+plot_univariate <- function(object, vars, samples = "both", logscale = TRUE) {
 
   # Check object type
   check.object.type(object)
@@ -109,24 +119,26 @@ plot_univariate <- function(object, vars, sample = "both", logscale = TRUE) {
   # Estimate density ratio
   data$dr <- predict(object, newdata = data)
 
-  # Create a sample index variable (denominator or numerator)
-  obsclass <- rep(c("numerator", "denominator"),
-                  c(nrow(object$df_numerator), nrow(object$df_denominator)))
+  # Creta sample identifier
+  data$sample <- rep(c("numerator", "denominator"),
+                     c(nrow(object$df_numerator), nrow(object$df_denominator)))
 
   # Create a object selection variable (both, numerator, denominator)
-  obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
+  obsselect <- match.arg(samples, c("both", "numerator", "denominator"))
 
   if (obsselect != "both") {
-    data <- filter(data, obsclass == obsselect)
+    data <- filter(data, sample == obsselect)
   }
 
 
   if (logscale) {
 
-    if(any(data$dr < 0)){
-      # Convert negative predicted density ratios to 10e-6, so log can be computed
-      data$dr[data$dr < 0] <- 10e-6
-      warning("Negative estimated density ratios converted to 10e-6 before applying logarithmic transformation",
+    if(any(data$dr <= 0)){
+      # Convert negative predicted density ratios to 10e-3, so log can be computed
+      count <- length(data$dr[data$dr <= 0])
+      data$dr[data$dr <= 0] <- 10e-3
+      warning(
+        paste("Negative estimated density ratios for", count, "observations converted to 10e-3 before applying logarithmic transformation"),
               call. = FALSE)
       }
 
@@ -134,27 +146,26 @@ plot_univariate <- function(object, vars, sample = "both", logscale = TRUE) {
 
     # Assign correct y and legend labels
     y_lab <- "Log(Density Ratio)"
-    colour_name <- "Log (Density ratio)"
 
   } else {
     y_lab <- "Density Ratio"
-    colour_name <- "Density ratio"
   }
 
   # Create list storage for plots object (for iteration)
   plots <- list()
 
   # Write the function to make one plot, for one variable
-  one_plot <- function(var, shape = "sample"){
+  one_plot <- function(var){
     plot <-
       ggplot(data, aes(x = .data[[var]], y = dr)) +
-      geom_point(aes(col = dr, shape = sample)) +
+      geom_point(aes(col = sample),
+                 alpha = .6) +
       theme_bw() +
       labs(title = "Scatter plot of individual values and density ratio",
-           shape = "Sample",
+           color = "Sample",
            y = y_lab) +
       geom_hline(yintercept = 0, linetype = "dashed")+
-      scale_colour_viridis_c(option = "B", name = colour_name)  +
+      scale_color_manual(values = c("firebrick", "steelblue")) +
       scale_shape_manual(values = c(16, 3))  +
       scale_y_continuous(breaks = seq(
                                   from = floor(min(data$dr)),
@@ -201,10 +212,10 @@ plot_bivariate <- function(object, var.x,var.y, sample = "both", show.samples = 
   # Determine if DR is shown in logscale (default) or not
   if (logscale) {
 
-    if(any(data$dr < 0)){
-      # Convert negative predicted density ratios to 10e-6, so log can be computed
-      data$dr[data$dr < 0] <- 10e-6
-      warning("Negative estimated density ratios converted to 10e-6 before applying logarithmic transformation",
+    if(any(data$dr <= 0)){
+      # Convert negative predicted density ratios to 10e-3, so log can be computed
+      data$dr[data$dr <= 0] <- 10e-3
+      warning("Negative estimated density ratios converted to 10e-3 before applying logarithmic transformation",
               call. = FALSE)
     }
 
@@ -376,17 +387,17 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
     # Determine if DR is shown in logscale (default) or not
     if (logscale) {
 
-      if(any(data$dr < 0)){
-        # Convert negative predicted density ratios to 10e-6, so log can be computed
-        data$dr[data$dr < 0] <- 10e-6
-        warning("Negative estimated density ratios converted to 10e-6 before applying logarithmic transformation",
+      if(any(data$dr <= 0)){
+        # Convert negative predicted density ratios to 10e-3, so log can be computed
+        data$dr[data$dr <= 0] <- 10e-3
+        warning("Negative estimated density ratios converted to 10e-3 before applying logarithmic transformation",
                 call. = FALSE)
       }
 
-      if(any(grid_data$dr < 0)){
-        # Convert negative predicted HEATMAP density ratios to 10e-6, so log can be computed
-        grid_data$dr[grid_data$dr < 0] <- 10e-6
-        warning("Negative estimated density ratios converted to 10e-6 before applying logarithmic transformation",
+      if(any(grid_data$dr <= 0)){
+        # Convert negative predicted HEATMAP density ratios to 10e-3, so log can be computed
+        grid_data$dr[grid_data$dr <= 0] <- 10e-3
+        warning("Negative estimated density ratios converted to 10e-3 before applying logarithmic transformation",
                 call. = FALSE)
       }
 
