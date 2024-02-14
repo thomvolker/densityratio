@@ -424,11 +424,11 @@ plot_bivariate_heatmap <- function(object, var.x, var.y, sample = "both", show.s
     plot <-
       ggplot(grid_data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
       geom_point(data = data,
-                 colour = "grey40",
+                 colour = "grey60",
                  alpha = 1,
                  shape = 1) +
       geom_raster(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
-                  alpha = 0.85) +
+                  alpha = 0.6) +
       scale_fill_viridis_c(option = "B", name = colour_name) +
       theme_bw() +
       labs(title = "Density ratio estimates for combinations of values",
