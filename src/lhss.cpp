@@ -42,6 +42,7 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
 
   // initialize objects
   int p = nu.n_cols;
+  bool is_subspace = m < p;
   int n_nu = nu.n_rows;
   int n_de = de.n_rows;
   int n_ce = ce.n_rows;
@@ -180,8 +181,10 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
             }
           }
           dPd = (dPd1 / n_nu / s - dPd2 / n_de / s / 2).t();
-          dM.submat(0, m, m-1, p - 1) = dPd * UV.cols(m, p-1);
-          dM.submat(m, 0, p-1, m-1) = - (dPd * UV.cols(m, p-1)).t();
+          if (is_subspace) {
+            dM.submat(0, m, m-1, p - 1) = dPd * UV.cols(m, p-1);
+            dM.submat(m, 0, p-1, m-1) = - (dPd * UV.cols(m, p-1)).t();
+          }
           eM = expmat(dM / maxit * (maxit - iter + 1));
           UV.cols(0, m-1) = UV * eM.t() * eyemat;
           // } end update U given alpha
