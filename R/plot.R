@@ -15,7 +15,7 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
       count <- length(data$dr[data$dr <= 0])
       data$dr[data$dr <= 0] <- 10e-3
       warning(
-        paste("Negative estimated density ratios for", count, "observations converted to 10e-3 before applying logarithmic transformation"),
+        paste("Negative estimated density ratios for", count, "observation(s) converted to 10e-3 before applying logarithmic transformation"),
         call. = FALSE)
     }
 
@@ -48,7 +48,9 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
                    bins = if(!is.null(bins)) bins else NULL,
                    position = position_dodge2(preserve = "single",
                                               padding = 0.2)) +
-    scale_fill_manual(values = c("firebrick", "steelblue")) +
+    scale_fill_manual(values = c("firebrick", "steelblue"),
+                      breaks = c("numerator", "denominator"),
+                      labels = c("Numerator", "Denominator")) +
     theme_bw()  +
     labs(
       x = x_lab,
@@ -92,7 +94,25 @@ plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NUL
                bins = bins)
 }
 
+# Write the function to make one plot, for one variable
+individual_uni_plot <- function(data, var, y_lab){
 
+  y_max <- max(1,data$dr)
+  y_min <- min(-1, data$dr)
+  plot <-
+    ggplot(data, aes(x = .data[[var]], y = dr)) +
+    geom_point(aes(col = sample),
+               alpha = .6) +
+    theme_bw() +
+    labs(title = "Scatter plot of individual values and density ratio",
+         color = "Sample",
+         y = y_lab) +
+    geom_hline(yintercept = 0, linetype = "dashed")+
+    scale_color_manual(values = c("firebrick", "steelblue")) +
+    scale_y_continuous(limits = c(y_min, y_max))
+
+  return(plot)
+}
 
 #' Title
 #'
@@ -104,7 +124,8 @@ plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NUL
 #' @export
 #'
 #' @examples
-plot_univariate <- function(object, vars, samples = "both", logscale = TRUE) {
+plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
+                            output = "individual") {
 
   # Check object type
   check.object.type(object)
@@ -138,7 +159,7 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE) {
       count <- length(data$dr[data$dr <= 0])
       data$dr[data$dr <= 0] <- 10e-3
       warning(
-        paste("Negative estimated density ratios for", count, "observations converted to 10e-3 before applying logarithmic transformation"),
+        paste("Negative estimated density ratios for", count, "observation(s) converted to 10e-3 before applying logarithmic transformation"),
               call. = FALSE)
       }
 
@@ -151,34 +172,39 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE) {
     y_lab <- "Density Ratio"
   }
 
+  if(output == "individual"){
   # Create list storage for plots object (for iteration)
   plots <- list()
+  for(var in vars){
+    plots[[var]] <- individual_uni_plot(data, var, y_lab)
+  }
+  return(plots)
 
-  # Write the function to make one plot, for one variable
-  one_plot <- function(var){
-    plot <-
-      ggplot(data, aes(x = .data[[var]], y = dr)) +
-      geom_point(aes(col = sample),
+  }
+  if (output == "assembled"){
+    data <- data %>%
+      pivot_longer(cols = vars,
+                   names_to = "variable",
+                   values_to = "value")
+
+    y_max <- max(1,data$dr)
+    y_min <- min(-1, data$dr)
+
+    plot <- ggplot(data) +
+      geom_point(aes(x = value, y = dr, col = sample),
                  alpha = .6) +
       theme_bw() +
       labs(title = "Scatter plot of individual values and density ratio",
            color = "Sample",
-           y = y_lab) +
+           y = "Density ratio") +
       geom_hline(yintercept = 0, linetype = "dashed")+
       scale_color_manual(values = c("firebrick", "steelblue")) +
-      scale_shape_manual(values = c(16, 3))  +
-      scale_y_continuous(breaks = seq(
-                                  from = floor(min(data$dr)),
-                                  to = ceiling(max(data$dr))))
+      facet_wrap(~variable, scales = "free_x") +
+      scale_y_continuous(limits = c(y_min, y_max))
 
-    return(plot)
   }
+  return(plot)
 
-
-  for(var in vars){
-    plots[[var]] <- one_plot(var)
-  }
-  return(plots)
 }
 
 #' Title
