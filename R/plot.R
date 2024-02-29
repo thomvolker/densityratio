@@ -26,7 +26,7 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
   }
 
   # Create a sample index variable (denominator or numerator)
-  obsclass <- rep(c("numerator", "denominator"),
+  obsclass <- rep(c("Numerator", "Denominator"),
                   c(nrow(object$df_numerator), nrow(object$df_denominator)))
   data$sample <- obsclass
 
@@ -47,10 +47,10 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
                    binwidth = if (!is.null(binwidth)) binwidth else NULL,
                    bins = if(!is.null(bins)) bins else NULL,
                    position = position_dodge2(preserve = "single",
-                                              padding = 0.2)) +
+                                              padding = 0.2,
+                                              reverse = TRUE)) +
     scale_fill_manual(values = c("firebrick", "steelblue"),
-                      breaks = c("numerator", "denominator"),
-                      labels = c("Numerator", "Denominator")) +
+                      breaks = c("Numerator", "Denominator")) +
     theme_bw()  +
     labs(
       x = x_lab,
@@ -93,6 +93,7 @@ plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NUL
   dr.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth,
                bins = bins)
 }
+
 
 # Write the function to make one plot, for one variable
 individual_uni_plot <- function(data, var, y_lab){
