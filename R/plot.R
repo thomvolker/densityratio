@@ -97,7 +97,7 @@ plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NUL
 
 
 # Write the function to make one plot, for one variable
-individual_uni_plot <- function(data, var, y_lab){
+individual_uni_plot <- function(data, var, y_lab, facet = TRUE){
 
   y_max <- max(1,data$dr)
   y_min <- min(-1, data$dr)
@@ -115,6 +115,10 @@ individual_uni_plot <- function(data, var, y_lab){
                       labels = c("Numerator", "Denominator")) +
     scale_y_continuous(limits = c(y_min, y_max))
 
+  if(facet){
+    plot <- plot + facet_wrap(~sample)
+  }
+
   return(plot)
 }
 
@@ -129,7 +133,7 @@ individual_uni_plot <- function(data, var, y_lab){
 #'
 #' @examples
 plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
-                            output = "individual",
+                            output = "individual", facet = FALSE,
                             nrow = NULL) {
 
   # Check object type
@@ -181,7 +185,7 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
   # Create list storage for plots object (for iteration)
   plots <- list()
   for(var in vars){
-    plots[[var]] <- individual_uni_plot(data, var, y_lab)
+    plots[[var]] <- individual_uni_plot(data, var, y_lab, facet)
   }
   return(plots)
 
@@ -195,6 +199,7 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
     y_max <- max(1,data$dr)
     y_min <- min(-1, data$dr)
 
+
     plot <- ggplot(data) +
       geom_point(aes(x = value, y = dr, col = sample),
                  alpha = .6) +
@@ -206,8 +211,18 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
       scale_color_manual(values = c("firebrick", "steelblue"),
                          breaks = c("numerator", "denominator"),
                          labels = c("Numerator", "Denominator")) +
-      facet_wrap(~variable, scales = "free_x", nrow = nrow) +
       scale_y_continuous(limits = c(y_min, y_max))
+
+    if(facet){
+      plot <- plot +
+        facet_grid(cols = vars(sample),
+                   rows = vars(variable),
+                   scales = "free_x")
+
+      } else {
+        plot <- plot +
+          facet_wrap(~variable, scales = "free_x", nrow = nrow)
+    }
 
   }
   return(plot)
