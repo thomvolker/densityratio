@@ -55,10 +55,9 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
     theme_bw()  +
     labs(
       x = x_lab,
-      y = "Count"
-    ) +
-    labs(title = "Distribution of density ratio estimates",
-         fill = "Sample")
+      y = "Count",
+      title = "Distribution of density ratio estimates",
+      fill = "Sample")
 
   return(plot)
 }
@@ -207,7 +206,6 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
       labs(title = "Scatter plot of individual values and density ratio",
            color = "Sample",
            y = "Density ratio") +
-      geom_hline(yintercept = 0, linetype = "dashed")+
       scale_color_manual(values = c("firebrick", "steelblue"),
                          breaks = c("numerator", "denominator"),
                          labels = c("Numerator", "Denominator")) +
@@ -229,6 +227,29 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
 
 }
 
+
+# Define function to make bivariate plot
+plot_twovariables <- function(data, vars){
+
+  dr_max <- max(1, data$dr)
+  dr_min <- min(-1, data$dr)
+
+  plot <-
+    ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
+    geom_point(aes(colour = dr)) +
+    scale_colour_gradient2(low = "firebrick",
+                           high = "steelblue",
+                           mid = "lightyellow",
+                           limits = c(dr_min, dr_max)) +
+    theme_bw() +
+    labs(title = "Scatter plot, with density ratio mapped to colour",
+         colour = "Log (Density ratio)") +
+    scale_shape_manual(values = c(21, 24))
+
+
+  return(plot)
+}
+
 #' Title
 #'
 #' @param object
@@ -240,7 +261,7 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
 #' @export
 #'
 #' @examples
-plot_bivariate <- function(object, vars, sample = "both", show.samples = TRUE,
+plot_bivariate <- function(object, vars, sample = "both",
                            output = "assembled", logscale = TRUE) {
 
   # Check object type
@@ -302,31 +323,15 @@ plot_bivariate <- function(object, vars, sample = "both", show.samples = TRUE,
   # Remove rows where both variables are the same
   var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
   names(var_combinations) <- c("Var1", "Var2")
+
+  if(output == "individual"){
+
   var_combinations <- var_combinations %>% filter(Var1 != Var2)
   var_combinations <- as.matrix(var_combinations)
 
-  if(output == "individual"){
-  # Define function to make bivariate plot
-  plot_twovariables <- function(data, vars, showsamples = show.samples){
-    plot <-
-    ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
-    geom_point(aes(colour = dr, fill = dr, shape = if (showsamples) sample else NULL),
-               alpha = 0.5) +
-    scale_fill_viridis_c(option = "B", name = colour_name) +
-    scale_colour_viridis_c(option = "B", name = colour_name) +
-    theme_bw() +
-    labs(title = "Density ratio estimates for combinations of values",
-         shape = "Sample") +
-    scale_shape_manual(values = c(21, 24))
-
-  return(plot)
-    }
-
-  # Iterate over grid of variable combinations
-  # Create a list to store plots
   plots <- list()
   for(i in 1:nrow(var_combinations)){
-    plots[[i]] <- plot_twovariables(data = data, vars = var_combinations[i,])
+    plots[[i]] <- plot_twovariables(data, vars = var_combinations[i,])
   }
   return(plots)
   }
@@ -347,25 +352,32 @@ plot_bivariate <- function(object, vars, sample = "both", show.samples = TRUE,
              combination = paste0(name.x, "-", name.y)) %>%
       filter(combination %in% combinations)
 
+  dr_max <- max(1, plot_data$dr)
+  dr_min <- min(-1, plot_data$dr)
+
 
   plot <-
       ggplot(plot_data, mapping = aes(x = value.x, y = value.y)) +
-      geom_point(aes(colour = dr, fill = dr),
-                 alpha = 0.5) +
-      geom_hline(yintercept = 0, linetype = "dashed") +
+      geom_point(aes(colour = dr)) +
       facet_grid(rows = vars(name.y), cols = vars(name.x), scales = "free",
                  switch = "both") +
-      scale_fill_viridis_c(option = "B", name = colour_name) +
-      scale_colour_viridis_c(option = "B", name = colour_name) +
+      scale_colour_gradient2(low = "firebrick",
+                           high = "steelblue",
+                           mid = "#ffffbf",
+                           limits = c(dr_min, dr_max),
+                            ) +
       scale_y_continuous(position = "right") +
       scale_x_continuous(position = "top") +
       theme_bw() +
-      labs(title = "Density ratio estimates for combinations of values",
+      labs(title = "Scatter plots, with density ratio mapped to colour",
           x = NULL,
-          y = NULL) +
+          y = NULL,
+          colour = colour_name) +
       scale_shape_manual(values = c(21, 24))
 
-  return(suppressWarnings(print(plot)))
+  grob <- ggplotGrob(plot)
+
+  return(suppressWarnings(grob))
 
   }
 }
