@@ -26,7 +26,7 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
   }
 
   # Create a sample index variable (denominator or numerator)
-  obsclass <- rep(c("Numerator", "Denominator"),
+  obsclass <- rep(c("numerator", "denominator"),
                   c(nrow(object$df_numerator), nrow(object$df_denominator)))
   data$sample <- obsclass
 
@@ -50,7 +50,8 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
                                               padding = 0.2,
                                               reverse = TRUE)) +
     scale_fill_manual(values = c("firebrick", "steelblue"),
-                      breaks = c("Numerator", "Denominator")) +
+                      breaks = c("numerator", "denominator"),
+                      labels = c("Numerator", "Denominator")) +
     theme_bw()  +
     labs(
       x = x_lab,
@@ -109,7 +110,9 @@ individual_uni_plot <- function(data, var, y_lab){
          color = "Sample",
          y = y_lab) +
     geom_hline(yintercept = 0, linetype = "dashed")+
-    scale_color_manual(values = c("firebrick", "steelblue")) +
+    scale_colour_manual(values = c("firebrick", "steelblue"),
+                      breaks = c("numerator", "denominator"),
+                      labels = c("Numerator", "Denominator")) +
     scale_y_continuous(limits = c(y_min, y_max))
 
   return(plot)
@@ -126,7 +129,8 @@ individual_uni_plot <- function(data, var, y_lab){
 #'
 #' @examples
 plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
-                            output = "individual") {
+                            output = "individual",
+                            nrow = NULL) {
 
   # Check object type
   check.object.type(object)
@@ -199,8 +203,10 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
            color = "Sample",
            y = "Density ratio") +
       geom_hline(yintercept = 0, linetype = "dashed")+
-      scale_color_manual(values = c("firebrick", "steelblue")) +
-      facet_wrap(~variable, scales = "free_x") +
+      scale_color_manual(values = c("firebrick", "steelblue"),
+                         breaks = c("numerator", "denominator"),
+                         labels = c("Numerator", "Denominator")) +
+      facet_wrap(~variable, scales = "free_x", nrow = nrow) +
       scale_y_continuous(limits = c(y_min, y_max))
 
   }
