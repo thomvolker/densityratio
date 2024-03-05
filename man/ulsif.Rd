@@ -36,12 +36,12 @@ parameter of the Gaussian kernel gram matrix) to use in cross-validation.}
 
 \item{sigma_quantile}{\code{NULL} or numeric vector with probabilities to
 calculate the quantiles of the distance matrix to obtain sigma values. If
-\code{NULL}, \code{nsigma} values between \code{0.25} and \code{0.75} are
+\code{NULL}, \code{nsigma} values between \code{0.05} and \code{0.95} are
 used.}
 
 \item{sigma}{\code{NULL} or a scalar value to determine the bandwidth of the
 Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
-\code{0.25} and \code{0.75} are used.}
+\code{0.05} and \code{0.95} are used.}
 
 \item{nlambda}{Integer indicating the number of \code{lambda} values
 (regularization parameter), by default, \code{lambda} is set to

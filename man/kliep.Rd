@@ -7,14 +7,13 @@
 kliep(
   df_numerator,
   df_denominator,
-  intercept = TRUE,
   nsigma = 10,
   sigma_quantile = NULL,
   sigma = NULL,
   ncenters = 200,
   centers = NULL,
   cv = TRUE,
-  nfold = NULL,
+  nfold = 5,
   epsilon = NULL,
   maxit = 2000,
   progressbar = TRUE
@@ -27,9 +26,6 @@ the numerator samples}
 \item{df_denominator}{\code{data.frame} with exclusively numeric variables
 with the denominator samples (must have the same variables as
 \code{df_denominator})}
-
-\item{intercept}{\code{logical} Indicating whether to include an intercept
-term in the model. Defaults to \code{TRUE}.}
 
 \item{nsigma}{Integer indicating the number of sigma values (bandwidth
 parameter of the Gaussian kernel gram matrix) to use in cross-validation.}
