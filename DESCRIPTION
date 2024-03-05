@@ -2,8 +2,12 @@ Package: densityratio
 Type: Package
 Title: Distribution comparison through density ratio estimation
 Version: 0.1.1
-Author: Thom Benjamin Volker
-Maintainer: Thom Benjamin Volker <thombenjaminvolker@gmail.com>
+Authors@R: c(
+    person("Thom", "Volker", email = "thombenjaminvolker@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-2408-7820")),
+    person("Carlos", "Gonzalez Poses", role = "ctb"), 
+    person("Erik-Jan", "van Kesteren", role = "ctb")
+    )
 Description: This package provides functionality to directly estimate the ratio 
   of two probability distributions from samples from these distributions without 
   estimating the densities separately. Density ratio estimation serves many 
