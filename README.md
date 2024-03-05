@@ -123,6 +123,21 @@ follows.
 
 ``` r
 summary(fit, test = TRUE)
+#> 
+#> Call:
+#> ulsif(df_numerator = numerator_data$x5, df_denominator = denominator_data$x5,     nsigma = 5, nlambda = 5)
+#> 
+#> Kernel Information:
+#>   Kernel type: Gaussian with L2 norm distances
+#>   Number of kernels: 200
+#> 
+#> Optimal sigma: 0.8951539
+#> Optimal lambda: 0.03162278
+#> Optimal kernel weights (loocv): num [1:201] 0.14182 0.01957 0.00488 0.01596 0.01461 ...
+#>  
+#> Pearson divergence between P(nu) and P(de): 0.2871
+#> Pr(P(nu)=P(de)) < .001
+#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
 
 The probability that numerator and denominator samples share a common
@@ -153,7 +168,8 @@ ggplot() +
         text = element_text(size = 20))
 ```
 
-<img src="man/figures/README-plot-univ-1.svg" data-fig-align="center" />
+<img src="man/figures/README-plot-univ-1.svg" style="width:15cm"
+data-fig-align="center" />
 
 ### Categorical data
 
@@ -185,9 +201,9 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.3731403
-#> 2                 B        1.3621401
-#> 3                 C        0.6291639
+#> 1                 A        1.3596470
+#> 2                 B        1.3687135
+#> 3                 C        0.6290922
 
 
 table(numerator_data$x1) / table(denominator_data$x1)
@@ -209,6 +225,21 @@ fit_all <- ulsif(
 )
 
 summary(fit_all, test = TRUE, parallel = TRUE)
+#> 
+#> Call:
+#> ulsif(df_numerator = data.frame(lapply(numerator_data, as.numeric)),     df_denominator = data.frame(lapply(denominator_data, as.numeric)))
+#> 
+#> Kernel Information:
+#>   Kernel type: Gaussian with L2 norm distances
+#>   Number of kernels: 200
+#> 
+#> Optimal sigma: 1.473857
+#> Optimal lambda: 0.3359818
+#> Optimal kernel weights (loocv): num [1:201] 0.1771 -0.0255 -0.0131 0.0979 0.0354 ...
+#>  
+#> Pearson divergence between P(nu) and P(de): 0.4736
+#> Pr(P(nu)=P(de)) < .001
+#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
 
 ### Other density ratio estimation functions
@@ -251,7 +282,7 @@ ggplot(data = NULL, aes(x = newx5)) +
         text = element_text(size = 20))
 ```
 
-<img src="man/figures/README-plot-methods-1.svg"
+<img src="man/figures/README-plot-methods-1.svg" style="width:15cm"
 data-fig-align="center" />
 
 The figure directly shows that `ulsif()` and `kliep()` come rather close

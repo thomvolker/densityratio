@@ -85,7 +85,7 @@ without estimating the numerator and denominator density separately. Density rat
 #| out-width: 15cm
 #| fig-dpi: 500
 #| fig-format: svg
-#| fig-align: "center"
+#| fig-align: center
 
 set.seed(1)
 library(ggplot2)
@@ -102,9 +102,7 @@ dratio <- function(x, p, dif, mu, sd) {
 fit  <- densityratio::ulsif(
   df_numerator = densityratio::numerator_data$x5, 
   df_denominator = densityratio::denominator_data$x5,
-  centers = c(densityratio::numerator_data$x5, densityratio::denominator_data$x5),
-  nsigma = 2,
-  nlambda = 2
+  centers = c(densityratio::numerator_data$x5, densityratio::denominator_data$x5)
 )
 
 ggplot() +
@@ -198,7 +196,6 @@ summary(fit)
 To formally evaluate whether the numerator and denominator densities differ significantly, you can perform a two-sample homogeneity test as follows.
 
 ```{r}
-#| eval: false
 summary(fit, test = TRUE)
 ```
 
@@ -210,8 +207,9 @@ Using these variables, we can obtain the estimated density ratio using `predict(
 
 ```{r}
 #| label: plot-univ
-#| fig-height: 7
+#| fig-height: 6
 #| fig-width: 10
+#| out-width: 15cm
 #| fig-dpi: 500
 #| fig-format: svg
 #| fig-align: "center"
@@ -267,7 +265,6 @@ table(numerator_data$x1) / table(denominator_data$x1)
 After transforming all variables to numeric variables, it is possible to calculate the density ratio over the entire multivariate space of the data.
 
 ```{r}
-#| eval: false
 fit_all <- ulsif(
   df_numerator = numerator_data |> lapply(as.numeric) |> data.frame(),
   df_denominator = denominator_data |> lapply(as.numeric) |> data.frame()
@@ -287,8 +284,9 @@ Besides `ulsif()`, the package contains several other functions to estimate a de
 
 ```{r}
 #| label: plot-methods
-#| fig-height: 7
+#| fig-height: 6
 #| fig-width: 10
+#| out-width: 15cm
 #| fig-dpi: 500
 #| fig-format: svg
 #| fig-align: "center"
