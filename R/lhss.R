@@ -12,11 +12,11 @@
 #' parameter of the Gaussian kernel gram matrix) to use in cross-validation.
 #' @param sigma_quantile \code{NULL} or numeric vector with probabilities to
 #' calculate the quantiles of the distance matrix to obtain sigma values. If
-#' \code{NULL}, \code{nsigma} values between \code{0.25} and \code{0.75} are
+#' \code{NULL}, \code{nsigma} values between \code{0.05} and \code{0.95} are
 #' used.
 #' @param sigma \code{NULL} or a scalar value to determine the bandwidth of the
 #' Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
-#' \code{0.25} and \code{0.75} are used.
+#' \code{0.05} and \code{0.95} are used.
 #' @param nlambda Integer indicating the number of \code{lambda} values
 #' (regularization parameter), by default, \code{lambda} is set to
 #' \code{10^seq(3, -3, length.out = nlambda)}.
@@ -71,6 +71,7 @@ lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
   is_quantile    <- !is.null(sigma_quantile)
   lambda         <- check.lambda(nlambda, lambda)
   m              <- check.subspace(m, p)
+  maxit          <- check.maxit(maxit)
 
   res <- lhss_compute_alpha(nu, de, centers, symmetric, m, intercept, sigma,
                             is_quantile, lambda, maxit, parallel, nthreads,
