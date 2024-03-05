@@ -7,7 +7,9 @@ using namespace arma;
 //' observations in the input matrix \code{X} and the input matrix \code{Y}
 //' @param X A numeric input matrix
 //' @param Y A numeric input matrix with the same variables as \code{X}
-//' @param symmetric A logical indicating whether X and Y are the same
+//' @param intercept Logical indicating whether an intercept should be added to
+//' the estimation procedure. In this case, the first column is an all-zero
+//' column (which will be transformed into an all-ones column in the kernel).
 //' @export
 
 // [[Rcpp::export]]
