@@ -9,7 +9,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![densityratio status
-badge](https://thomvolker.r-universe.dev/badges/densityratio.png)](https://thomvolker.r-universe.dev/densityratio)
+badge](https://thomvolker.r-universe.dev/badges/densityratio)](https://thomvolker.r-universe.dev/densityratio)
 [![DOI](https://zenodo.org/badge/613441108.svg)](https://zenodo.org/badge/latestdoi/613441108)
 
 <!-- badges: end -->
@@ -263,8 +263,7 @@ fit_naive <- naive(
 
 fit_kliep <- kliep(
   df_numerator = numerator_data$x5, 
-  df_denominator = denominator_data$x5,
-  maxit = 10000
+  df_denominator = denominator_data$x5
 )
 
 pred_naive <- predict(fit_naive, newdata = newx5)

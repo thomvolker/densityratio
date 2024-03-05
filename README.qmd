@@ -1,5 +1,6 @@
 ---
 format: gfm
+default-image-extension: ""
 ---
 
 ```{r, include=FALSE}
@@ -87,6 +88,7 @@ without estimating the numerator and denominator density separately. Density rat
 #| fig-format: svg
 #| fig-align: "center"
 
+set.seed(1)
 library(ggplot2)
 library(patchwork)
 
@@ -97,6 +99,13 @@ dbinorm <- function(x, p, dif) {
 dratio <- function(x, p, dif, mu, sd) {
   dbinorm(x, p, dif) / dnorm(x, mu, sd)
 }
+
+fit  <- densityratio::ulsif(
+  df_numerator = densityratio::numerator_data$x5, 
+  df_denominator = densityratio::denominator_data$x5,
+  centers = c(densityratio::numerator_data$x5, densityratio::denominator_data$x5),
+  progressbar = FALSE,
+)
 
 ggplot() +
   stat_function(aes(col = factor(1, labels = "italic(P[n](x))")), 
@@ -118,14 +127,18 @@ ggplot() +
   xlab(expression(italic(x))) +
   ylab(NULL) +
 ggplot() +
-  stat_function(aes(col = "frac(italic(P[n](x)), italic(P[d](x)))"), 
+  stat_function(aes(col = "italic(r(x))"), 
                 fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
                 size = 1) +
+  geom_line(aes(x = seq(-5, 8.6, length.out = 100),
+                y = predict(fit, seq(-5, 8.6, length.out = 100)),
+                col = "italic(hat(r)(x))"),
+            size = 1) +
   xlim(-5, 8.6) +
   theme_classic() +
   hexSticker::theme_transparent() +
   scale_color_manual(name = NULL, 
-                     values = c("#de0277"),
+                     values = c("pink", "#de0277"),
                      labels = scales::parse_format()) +
   theme(legend.position = c(0.9, 0.9),
         text = element_text(size = 20),
@@ -289,8 +302,7 @@ fit_naive <- naive(
 
 fit_kliep <- kliep(
   df_numerator = numerator_data$x5, 
-  df_denominator = denominator_data$x5,
-  maxit = 10000
+  df_denominator = denominator_data$x5
 )
 
 pred_naive <- predict(fit_naive, newdata = newx5)
