@@ -1,3 +1,4 @@
+
 dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = NULL, bins = NULL,...) {
 
   # Checks
@@ -229,10 +230,10 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
 
 
 # Define function to make bivariate plot
-plot_twovariables <- function(data, vars){
+plot_twovariables <- function(data, vars, logscale){
 
-  dr_max <- max(1, data$dr)
-  dr_min <- min(-1, data$dr)
+  dr_max <- ifelse(logscale, max(2, data$dr), max(exp(2), data$dr))
+  dr_min <- ifelse(logscale, max(-2, data$dr), min(exp(-2, data$dr)))
 
   plot <-
     ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
@@ -331,7 +332,7 @@ plot_bivariate <- function(object, vars, sample = "both",
 
   plots <- list()
   for(i in 1:nrow(var_combinations)){
-    plots[[i]] <- plot_twovariables(data, vars = var_combinations[i,])
+    plots[[i]] <- plot_twovariables(data, vars = var_combinations[i,], logscale)
   }
   return(plots)
   }
@@ -366,18 +367,33 @@ plot_bivariate <- function(object, vars, sample = "both",
                            mid = "#ffffbf",
                            limits = c(dr_min, dr_max),
                             ) +
-      scale_y_continuous(position = "right") +
-      scale_x_continuous(position = "top") +
+      scale_y_continuous(position = "left") +
+      scale_x_continuous(position = "bottom") +
       theme_bw() +
+      theme(strip.placement = "outside") +
       labs(title = "Scatter plots, with density ratio mapped to colour",
           x = NULL,
           y = NULL,
           colour = colour_name) +
       scale_shape_manual(values = c(21, 24))
 
+  # Erase upper diagonal
+  ## Create plot into a grob
   grob <- ggplotGrob(plot)
+  ## Create name of empty panels in the upper diagonal
+  empty_panels <- expand.grid(seq(1:length(vars)), seq(1:length(vars))) %>%
+    filter(Var2 > Var1) %>%
+    mutate(panel = paste0("panel-", Var1, "-", Var2)) %>%
+    pull(panel)
+  # Delete panels in upper diagonal, based in their index
+  idx <- which(grob$layout$name %in% empty_panels)
+  for (i in idx) grob$grobs[[i]] <- grid::nullGrob()
 
-  return(suppressWarnings(grob))
+  out <- grob
+  class(out) <- "bivariateplot"
+  return(out)
+  # grid::grid.newpage()
+  # grid::grid.draw(grob)
 
   }
 }
