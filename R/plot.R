@@ -1,42 +1,74 @@
 
-dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = NULL, bins = NULL,...) {
+#' A histogram of density ratio estimates
+#'
+#' Creates a histogram of the density ratio estimates. Useful to understand the
+#' distribution of estimated density ratios in each sample, or compare it among
+#' samples. It is the default plotting method for density ratio objects.
+#'
+#' @param object Density ratio object created with e.g., [kliep()], [ulsif()],
+#'   or [naive()]
+#' @param sample Character string indicating whether to plot the 'numerator',
+#'   'denominator', or 'both' samples. Default is 'both'.
+#' @param logscale Logical indicating whether to plot the density ratio
+#'   estimates on a log scale. Default is TRUE.
+#' @param binwidth Numeric indicating the width of the bins, passed on to
+#'   `ggplot2`.
+#' @param bins Numeric indicating the number of bins. Overriden by binwidth, and
+#'   passed on to `ggplot2`.
+#' @param ... Additional arguments passed on to `predict()`.
+#'
+#' @return A histogram of density ratio estimates.
+#'
+#'
+#' @examples
+dr.histogram <- function(object,
+                         samples = "both",
+                         logscale = TRUE,
+                         binwidth = NULL,
+                         bins = NULL,
+                         ...) {
 
-  # Checks
+  # Check object type
   check.object.type(object)
-  check.overriden.names(vars)
+
 
   # Create data object and estimate density ratio
   data <- rbind(object$df_numerator, object$df_denominator)
+  # Check no variable names that will be overriden when plotting.
+  check.overriden.names(data)
+  # Create density ratio prediction
   data$dr <- predict(object, newdata = data, ...)
+
 
   if (logscale) {
 
+    # Convert negative predicted density ratios to 10e-3, so log can be computed
     if(any(data$dr <= 0)){
-      # Convert negative predicted density ratios to 10e-3, so log can be computed
-      count <- length(data$dr[data$dr <= 0])
       data$dr[data$dr <= 0] <- 10e-3
+      # Throw warning with number of converted values
+      count <- length(data$dr[data$dr <= 0])
       warning(
         paste("Negative estimated density ratios for", count, "observation(s) converted to 10e-3 before applying logarithmic transformation"),
         call. = FALSE)
     }
 
+    # Apply log transformation
     data$dr <- log(data$dr)
     x_lab <- "Log (Density Ratio)"
   } else {
-  x_lab <- "Density Ratio"
+    x_lab <- "Density Ratio"
   }
 
   # Create a sample index variable (denominator or numerator)
-  obsclass <- rep(c("numerator", "denominator"),
-                  c(nrow(object$df_numerator), nrow(object$df_denominator)))
-  data$sample <- obsclass
+  data$sample <- rep(c("numerator", "denominator"),
+                     c(nrow(object$df_numerator), nrow(object$df_denominator)))
 
   # Create a object selection variable (both, numerator, denominator)
-  obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
+  obsselect <- match.arg(samples, c("both", "numerator", "denominator"))
 
   # If not both, subset data (only num or only den)
   if (obsselect != "both") {
-    data <- filter(data, obsclass == obsselect)
+    data <- filter(data, sample == obsselect)
   }
 
   # Plot
@@ -63,35 +95,34 @@ dr.histogram <- function(object, sample = "both", logscale = FALSE, binwidth = N
   return(plot)
 }
 
-#' Title
-#'
-#' @param object
-#' @param sample
-#' @param logscale
+
+
+#' @inheritParams dr.histogram
+#' @rdname dr.histogram
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plot.ulsif <- function(object, sample = "both", logscale = FALSE, binwidth = NULL,
+plot.ulsif <- function(object, samples = "both", logscale = FALSE, binwidth = NULL,
                        bins = NULL) {
-  dr.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth,
+  dr.histogram(object, samples = samples, logscale = logscale, binwidth = binwidth,
                bins = bins)
 }
 
-#' Title
-#'
-#' @param object
-#' @param sample
+
+
+#' @inheritParams dr.histogram
+#' @rdname dr.histogram
 #' @param logscale
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plot.kliep <- function(object, sample = "both", logscale = FALSE, binwidth = NULL,
+plot.kliep <- function(object, samples = "both", logscale = FALSE, binwidth = NULL,
                        bins = NULL) {
-  dr.histogram(object, sample = sample, logscale = logscale, binwidth = binwidth,
+  dr.histogram(object, samples = samples, logscale = logscale, binwidth = binwidth,
                bins = bins)
 }
 
@@ -122,13 +153,16 @@ individual_uni_plot <- function(data, var, y_lab, facet = TRUE){
   return(plot)
 }
 
-#' Title
+#' Scatter plot of density ratios and individual variables
 #'
-#' @param object
-#' @param vars
-#' @param sample
+#' Plot a scatter plot showing the relationship between estimated densityratios and individual variables.Said differently, displays which densityratios are more likely for which values of the individual variables.
 #'
-#' @return
+#' @inheritParams dr.histogram
+#' @param vars Character vector of variable names to be plotted.
+#' @param output Character indicating whether output should be a list of individual plots ("individual"), or one facetted plot with all variables ("assembled"). Defaults to "individual".
+#' @param sample.facet Logical indicating whether to facet the plot by sample, i.e, showing plots separate for each sample, and side to side. Defaults to FALSE.
+#' @param nrow Integer indicating the number of rows in the assembled plot. If NULL, the number of rows is automatically calculated.
+#' @return Scatter plot of density ratios and individual variables.
 #' @export
 #'
 #' @examples
@@ -212,7 +246,7 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
                          labels = c("Numerator", "Denominator")) +
       scale_y_continuous(limits = c(y_min, y_max))
 
-    if(facet){
+    if(sample.facet){
       plot <- plot +
         facet_grid(cols = vars(sample),
                    rows = vars(variable),

@@ -11,6 +11,7 @@
 \alias{print.naivesubspacedensityratio}
 \alias{print.summary.naivedensityratio}
 \alias{print.summary.naivesubspacedensityratio}
+\alias{print.bivariateplot}
 \title{Print a \code{ulsif} object}
 \usage{
 \method{print}{ulsif}(x, digits = max(3L, getOption("digits") - 3L), ...)
@@ -32,6 +33,8 @@
 \method{print}{summary.naivedensityratio}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
 \method{print}{summary.naivesubspacedensityratio}(x, digits = max(3L, getOption("digits") - 3L), ...)
+
+\method{print}{bivariate.plot}(x, ...)
 }
 \arguments{
 \item{x}{Object of class \code{ulsif}, \code{summary.ulsif}, \code{kliep}
@@ -61,6 +64,8 @@ or \code{summary.kliep}.}
 \code{NULL}
 
 \code{NULL}
+
+\code{NULL}
 }
 \description{
 Print a \code{ulsif} object
@@ -82,4 +87,6 @@ Print a \code{naivesubspacedensityratio} object
 Print a \code{summary.naivedensityratio} object
 
 Print a \code{summary.naivesubspacedensityratio} object
+
+Print a \code{bivariate.plot} object
 }
