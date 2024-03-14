@@ -305,10 +305,8 @@ print.summary.naivesubspacedensityratio <- function(x, digits = max(3L, getOptio
 #' @method print bivariate.plot
 #' @importFrom
 #' @export
-print.bivariateplot <- function(x, newpage = TRUE) {
-  if (newpage) {
-    grid::grid.newpage()
-  }
+print.bivariateplot <- function(x,  ...) {
+  grid::grid.newpage()
   grid::grid.draw(x)
-  invisible(x)
+  # invisible(x)
 }

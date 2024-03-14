@@ -230,14 +230,14 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
 
 
 # Define function to make bivariate plot
-plot_twovariables <- function(data, vars, logscale){
+plot_twovariables <- function(data, vars, logscale, show.sample){
 
   dr_max <- ifelse(logscale, max(2, data$dr), max(exp(2), data$dr))
-  dr_min <- ifelse(logscale, max(-2, data$dr), min(exp(-2, data$dr)))
+  dr_min <- ifelse(logscale, min(-2, data$dr), min(exp(-2), data$dr))
 
   plot <-
     ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
-    geom_point(aes(colour = dr)) +
+    geom_point(aes(colour = dr, shape = if(show.sample) sample else NULL)) +
     scale_colour_gradient2(low = "firebrick",
                            high = "steelblue",
                            mid = "lightyellow",
@@ -246,7 +246,6 @@ plot_twovariables <- function(data, vars, logscale){
     labs(title = "Scatter plot, with density ratio mapped to colour",
          colour = "Log (Density ratio)") +
     scale_shape_manual(values = c(21, 24))
-
 
   return(plot)
 }
@@ -262,8 +261,8 @@ plot_twovariables <- function(data, vars, logscale){
 #' @export
 #'
 #' @examples
-plot_bivariate <- function(object, vars, sample = "both",
-                           output = "assembled", logscale = TRUE) {
+plot_bivariate <- function(object, vars, samples = "both",
+                           output = "assembled", logscale = TRUE, show.sample = FALSE) {
 
   # Check object type
   check.object.type(object)
@@ -301,15 +300,15 @@ plot_bivariate <- function(object, vars, sample = "both",
 
 
   # Create a sample index variable (denominator or numerator)
-  obsclass <- rep(c("numerator", "denominator"),
+  data$sample <- rep(c("numerator", "denominator"),
                   c(nrow(object$df_numerator), nrow(object$df_denominator)))
 
   # Create a object selection variable (both, numerator, denominator)
-  obsselect <- match.arg(sample, c("both", "numerator", "denominator"))
+  obsselect <- match.arg(samples, c("both", "numerator", "denominator"))
 
   # Filter data based on object selection
   if (obsselect != "both") {
-    data <- filter(data, obsclass == obsselect)
+    data <- filter(data, sample == obsselect)
   }
 
   # Create a grid of variable combinations
@@ -332,7 +331,7 @@ plot_bivariate <- function(object, vars, sample = "both",
 
   plots <- list()
   for(i in 1:nrow(var_combinations)){
-    plots[[i]] <- plot_twovariables(data, vars = var_combinations[i,], logscale)
+    plots[[i]] <- plot_twovariables(data, vars = var_combinations[i,], logscale, show.sample)
   }
   return(plots)
   }
@@ -345,7 +344,7 @@ plot_bivariate <- function(object, vars, sample = "both",
   combinations <- paste0(var_combinations[,1], "-", var_combinations[,2])
 
   plot_data <-
-    inner_join(data, data, by = "dr") %>%
+      inner_join(data, data, by = c("dr", "sample")) %>% # Possible error in case of duplicate DR?
       pivot_longer(cols = ends_with(".x"), names_to = "name.x", values_to = "value.x") %>%
       pivot_longer(cols = ends_with(".y"), names_to = "name.y", values_to = "value.y") %>%
       mutate(name.x = stringr::str_remove(name.x, ".x"),
@@ -356,9 +355,9 @@ plot_bivariate <- function(object, vars, sample = "both",
   dr_max <- max(1, plot_data$dr)
   dr_min <- min(-1, plot_data$dr)
 
-
   plot <-
-      ggplot(plot_data, mapping = aes(x = value.x, y = value.y)) +
+      ggplot(plot_data, mapping = aes(x = value.x, y = value.y,
+                                      shape = if(show.sample) sample else NULL)) +
       geom_point(aes(colour = dr)) +
       facet_grid(rows = vars(name.y), cols = vars(name.x), scales = "free",
                  switch = "both") +
@@ -374,7 +373,8 @@ plot_bivariate <- function(object, vars, sample = "both",
       labs(title = "Scatter plots, with density ratio mapped to colour",
           x = NULL,
           y = NULL,
-          colour = colour_name) +
+          colour = colour_name,
+          shape = if(show.sample) "Sample" else NULL) +
       scale_shape_manual(values = c(21, 24))
 
   # Erase upper diagonal
@@ -390,7 +390,8 @@ plot_bivariate <- function(object, vars, sample = "both",
   for (i in idx) grob$grobs[[i]] <- grid::nullGrob()
 
   out <- grob
-  class(out) <- "bivariateplot"
+  class(out) <- c("bivariateplot", class(grob))
+
   return(out)
   # grid::grid.newpage()
   # grid::grid.draw(grob)
