@@ -3,33 +3,38 @@
 \name{dr.histogram}
 \alias{dr.histogram}
 \alias{plot.ulsif}
+\alias{plot.kliep}
 \title{A histogram of density ratio estimates}
 \usage{
 dr.histogram(
   object,
-  sample = "both",
+  samples = "both",
   logscale = TRUE,
   binwidth = NULL,
-  bins = NULL
+  bins = NULL,
+  ...
 )
 
-\method{plot}{ulsif}(object, sample = "both", logscale = FALSE, binwidth = NULL, bins = NULL)
+\method{plot}{ulsif}(object, samples = "both", logscale = FALSE, binwidth = NULL, bins = NULL)
+
+\method{plot}{kliep}(object, samples = "both", logscale = FALSE, binwidth = NULL, bins = NULL)
 }
 \arguments{
 \item{object}{Density ratio object created with e.g., \code{\link[=kliep]{kliep()}}, \code{\link[=ulsif]{ulsif()}},
 or \code{\link[=naive]{naive()}}}
 
-\item{sample}{Character string indicating whether to plot the 'numerator',
-'denominator', or 'both' samples. Default is 'both'.}
-
-\item{logscale}{Logical indicating whether to plot the density ratio
-estimates on a log scale. Default is TRUE.}
+\item{logscale}{}
 
 \item{binwidth}{Numeric indicating the width of the bins, passed on to
 \code{ggplot2}.}
 
 \item{bins}{Numeric indicating the number of bins. Overriden by binwidth, and
 passed on to \code{ggplot2}.}
+
+\item{...}{Additional arguments passed on to \code{predict()}.}
+
+\item{sample}{Character string indicating whether to plot the 'numerator',
+'denominator', or 'both' samples. Default is 'both'.}
 }
 \value{
 A histogram of density ratio estimates.

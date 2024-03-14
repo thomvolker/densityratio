@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot_bivariate}
 \alias{plot_bivariate}
-\title{Title}
+\title{Densityratio in bidimensional plot}
 \usage{
 plot_bivariate(
   object,
@@ -14,8 +14,20 @@ plot_bivariate(
 )
 }
 \arguments{
-\item{show.samples}{}
+\item{object}{Density ratio object created with e.g., \code{\link[=kliep]{kliep()}}, \code{\link[=ulsif]{ulsif()}},
+or \code{\link[=naive]{naive()}}}
+
+\item{vars}{Character vector of variable names to be plotted.}
+
+\item{output}{Character indicating whether output should be a list of individual plots ("individual"), or one facetted plot with all variables ("assembled"). Defaults to "individual".}
+
+\item{logscale}{}
+
+\item{show.sample}{Logical indicating whether to give different shapes to observations, depending on the sample they come from (numerator or denominator). Defaults to FALSE.}
+}
+\value{
+Scatter plot of two variables, with density ratio mapped to the colour scale.
 }
 \description{
-Title
+Plots a scatterplot of two variables, with densityratio mapped to the colour scale.
 }

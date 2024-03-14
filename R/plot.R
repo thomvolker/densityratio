@@ -127,11 +127,22 @@ plot.kliep <- function(object, samples = "both", logscale = FALSE, binwidth = NU
 }
 
 
-# Write the function to make one plot, for one variable
-individual_uni_plot <- function(data, var, y_lab, facet = TRUE){
 
-  y_max <- max(1,data$dr)
-  y_min <- min(-1, data$dr)
+#' Indivual univariate plot
+#'
+#' Scatterplot of individual values and density ratio estimates. Used internally in [plot.univariate()]
+#' @param data Data frame with the individual values and density ratio estimates
+#' @param var Name of the variable to be plotted
+#' @param y_lab Name of the y-axis label ("Density Ratio" or "Log Density Ratio")
+#' @param sample.facet Logical indicating whether to facet the plot by sample. Default is TRUE.
+#'
+#' @return
+#'
+individual_uni_plot <- function(data, var, y_lab, sample.facet = TRUE){
+
+  y_max <- max(2,data$dr)
+  y_min <- min(-2, data$dr)
+
   plot <-
     ggplot(data, aes(x = .data[[var]], y = dr)) +
     geom_point(aes(col = sample),
@@ -146,7 +157,7 @@ individual_uni_plot <- function(data, var, y_lab, facet = TRUE){
                       labels = c("Numerator", "Denominator")) +
     scale_y_continuous(limits = c(y_min, y_max))
 
-  if(facet){
+  if(sample.facet){
     plot <- plot + facet_wrap(~sample)
   }
 
@@ -155,7 +166,7 @@ individual_uni_plot <- function(data, var, y_lab, facet = TRUE){
 
 #' Scatter plot of density ratios and individual variables
 #'
-#' Plot a scatter plot showing the relationship between estimated densityratios and individual variables.Said differently, displays which densityratios are more likely for which values of the individual variables.
+#' A scatter plot showing the relationship between estimated density ratios and individual variables.
 #'
 #' @inheritParams dr.histogram
 #' @param vars Character vector of variable names to be plotted.
@@ -167,7 +178,7 @@ individual_uni_plot <- function(data, var, y_lab, facet = TRUE){
 #'
 #' @examples
 plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
-                            output = "individual", facet = FALSE,
+                            output = "individual", sample.facet = FALSE,
                             nrow = NULL) {
 
   # Check object type
@@ -215,24 +226,26 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
     y_lab <- "Density Ratio"
   }
 
+
   if(output == "individual"){
   # Create list storage for plots object (for iteration)
   plots <- list()
   for(var in vars){
-    plots[[var]] <- individual_uni_plot(data, var, y_lab, facet)
+    plots[[var]] <- individual_uni_plot(data, var, y_lab, sample.facet)
   }
   return(plots)
 
   }
+
   if (output == "assembled"){
     data <- data %>%
       pivot_longer(cols = vars,
                    names_to = "variable",
                    values_to = "value")
 
+    # Maximum scale for y
     y_max <- max(1,data$dr)
     y_min <- min(-1, data$dr)
-
 
     plot <- ggplot(data) +
       geom_point(aes(x = value, y = dr, col = sample),
@@ -263,8 +276,15 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
 }
 
 
-# Define function to make bivariate plot
-plot_twovariables <- function(data, vars, logscale, show.sample){
+#' Bivariate plot
+#'
+#' @inheritParams individual_uni_plot
+#' @param show.sample Logical indicating whether to give different shapes to observations, depending on the sample they come from (numerator or denominator). Defaults to FALSE.
+#'
+#' @return Bivariate plot
+#'
+#' @examples
+individual_biv_plot <- function(data, vars, logscale, show.sample){
 
   dr_max <- ifelse(logscale, max(2, data$dr), max(exp(2), data$dr))
   dr_min <- ifelse(logscale, min(-2, data$dr), min(exp(-2), data$dr))
@@ -284,14 +304,14 @@ plot_twovariables <- function(data, vars, logscale, show.sample){
   return(plot)
 }
 
-#' Title
+#' Densityratio in bidimensional plot
 #'
-#' @param object
-#' @param vars
-#' @param sample
-#' @param show.samples
+#' Plots a scatterplot of two variables, with densityratio mapped to the colour scale.
 #'
-#' @return
+#' @inheritParams plot.univariate
+#' @inheritParams individual_biv_plot
+#'
+#' @return Scatter plot of two variables, with density ratio mapped to the colour scale.
 #' @export
 #'
 #' @examples
@@ -316,8 +336,8 @@ plot_bivariate <- function(object, vars, samples = "both",
 
     if(any(data$dr <= 0)){
       # Convert negative predicted density ratios to 10e-3, so log can be computed
-      count <- length(data$dr[data$dr <= 0])
       data$dr[data$dr <= 0] <- 10e-3
+      count <- length(data$dr[data$dr <= 0])
       warning(
         paste("Negative estimated density ratios for", count, "observations converted to 10e-3 before applying logarithmic transformation"),
         call. = FALSE)
@@ -353,28 +373,24 @@ plot_bivariate <- function(object, vars, samples = "both",
   ## This makes duplicate rows with different order of variables identical
   var_combinations <- t(apply(var_combinations, 1, sort))
   var_combinations <- unique(var_combinations) # retain unique rows only
-
-  # Remove rows where both variables are the same
   var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
   names(var_combinations) <- c("Var1", "Var2")
 
   if(output == "individual"){
-
+    # Remove rows where both variables are the same
   var_combinations <- var_combinations %>% filter(Var1 != Var2)
   var_combinations <- as.matrix(var_combinations)
 
   plots <- list()
   for(i in 1:nrow(var_combinations)){
-    plots[[i]] <- plot_twovariables(data, vars = var_combinations[i,], logscale, show.sample)
+    plots[[i]] <- individual_biv_plot(data, vars = var_combinations[i,], logscale, show.sample)
   }
   return(plots)
   }
 
   if (output == "assembled") {
 
-  # plot_data <- data %>%
-  #   pivot_longer(cols = c("V1", "V2"), names_to = "variable", values_to = "value")
-  # browser()
+  # Give variable combinations in a format we can use later
   combinations <- paste0(var_combinations[,1], "-", var_combinations[,2])
 
   plot_data <-
@@ -427,8 +443,7 @@ plot_bivariate <- function(object, vars, samples = "both",
   class(out) <- c("bivariateplot", class(grob))
 
   return(out)
-  # grid::grid.newpage()
-  # grid::grid.draw(grob)
+
 
   }
 }
