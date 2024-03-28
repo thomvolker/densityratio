@@ -34,57 +34,51 @@ dr.histogram <- function(object,
 
   # Create data object and estimate density ratio
   data <- rbind(object$df_numerator, object$df_denominator)
-  # Check no variable names that will be overriden when plotting.
-  check.overriden.names(data)
-  # Create density ratio prediction
-  data$dr <- predict(object, newdata = data, ...)
+  ext <- data.frame(dr = predict(object, data = data, ...),
+                    sample = c(rep("numerator", nrow(object$df_numerator)),
+                               rep("denominator", nrow(object$df_denominator))))
 
-
+  # Check if logscale is TRUE
   if (logscale) {
 
     # Convert negative predicted density ratios to 10e-3, so log can be computed
-    if(any(data$dr <= 0)){
-      data$dr[data$dr <= 0] <- 10e-3
+    if(any(ext$dr <= 0)){
+      ext$dr[ext$dr <= 0] <- 10e-3
       # Throw warning with number of converted values
-      count <- length(data$dr[data$dr <= 0])
+      count <- length(ext$dr[ext$dr <= 0])
       warning(
         paste("Negative estimated density ratios for", count, "observation(s) converted to 10e-3 before applying logarithmic transformation"),
         call. = FALSE)
     }
 
     # Apply log transformation
-    data$dr <- log(data$dr)
+    ext$dr <- log(ext$dr)
     x_lab <- "Log (Density Ratio)"
   } else {
     x_lab <- "Density Ratio"
   }
 
-  # Create a sample index variable (denominator or numerator)
-  data$sample <- rep(c("numerator", "denominator"),
-                     c(nrow(object$df_numerator), nrow(object$df_denominator)))
-
-  # Create a object selection variable (both, numerator, denominator)
-  obsselect <- match.arg(samples, c("both", "numerator", "denominator"))
-
-  # If not both, subset data (only num or only den)
-  if (obsselect != "both") {
-    data <- filter(data, sample == obsselect)
+  # Select data
+  samples <- match.arg(samples, c("both", "numerator", "denominator"))
+  if(samples != "both"){
+  data <- subset(data, ext$sample == samples)
+  ext  <- subset(ext, ext$sample == samples)
   }
 
   # Plot
   plot <-
-    ggplot(data, aes(x = dr)) +
+    ggplot(ext, aes(x = dr)) +
     geom_histogram(aes(fill = sample),
                    alpha = .75,
                    color = "black",
-                   binwidth = if (!is.null(binwidth)) binwidth else NULL,
-                   bins = if(!is.null(bins)) bins else NULL,
+                   binwidth = binwidth,
+                   bins = bins,
                    position = position_dodge2(preserve = "single",
                                               padding = 0.2,
                                               reverse = TRUE)) +
-    scale_fill_manual(values = c("firebrick", "steelblue"),
-                      breaks = c("numerator", "denominator"),
-                      labels = c("Numerator", "Denominator")) +
+    scale_fill_viridis_d(option = "cividis",
+                        breaks = c("numerator", "denominator"),
+                        labels = c("Numerator", "Denominator")) +
     theme_bw()  +
     labs(
       x = x_lab,
@@ -104,7 +98,7 @@ dr.histogram <- function(object,
 #' @export
 #'
 #' @examples
-plot.ulsif <- function(object, samples = "both", logscale = FALSE, binwidth = NULL,
+plot.ulsif <- function(object, samples = "both", logscale = TRUE, binwidth = NULL,
                        bins = NULL) {
   dr.histogram(object, samples = samples, logscale = logscale, binwidth = binwidth,
                bins = bins)
@@ -120,7 +114,7 @@ plot.ulsif <- function(object, samples = "both", logscale = FALSE, binwidth = NU
 #' @export
 #'
 #' @examples
-plot.kliep <- function(object, samples = "both", logscale = FALSE, binwidth = NULL,
+plot.kliep <- function(object, samples = "both", logscale = TRUE, binwidth = NULL,
                        bins = NULL) {
   dr.histogram(object, samples = samples, logscale = logscale, binwidth = binwidth,
                bins = bins)
@@ -138,23 +132,23 @@ plot.kliep <- function(object, samples = "both", logscale = FALSE, binwidth = NU
 #'
 #' @return
 #'
-individual_uni_plot <- function(data, var, y_lab, sample.facet = TRUE){
+create_univariate_plot <- function(data, ext, var, y_lab, sample.facet = TRUE){
 
-  y_max <- max(2,data$dr)
-  y_min <- min(-2, data$dr)
+  y_max <- max(2, ext$dr)
+  y_min <- min(-2, ext$dr)
 
   plot <-
-    ggplot(data, aes(x = .data[[var]], y = dr)) +
-    geom_point(aes(col = sample),
+    ggplot(data, aes(x = .data[[var]], y = ext$dr)) +
+    geom_point(aes(col = ext$sample),
                alpha = .6) +
     theme_bw() +
     labs(title = "Scatter plot of individual values and density ratio",
          color = "Sample",
          y = y_lab) +
     geom_hline(yintercept = 0, linetype = "dashed")+
-    scale_colour_manual(values = c("firebrick", "steelblue"),
-                      breaks = c("numerator", "denominator"),
-                      labels = c("Numerator", "Denominator")) +
+    scale_color_viridis_d(option = "cividis",
+                         breaks = c("numerator", "denominator"),
+                         labels = c("Numerator", "Denominator")) +
     scale_y_continuous(limits = c(y_min, y_max))
 
   if(sample.facet){
@@ -170,54 +164,53 @@ individual_uni_plot <- function(data, var, y_lab, sample.facet = TRUE){
 #'
 #' @inheritParams dr.histogram
 #' @param vars Character vector of variable names to be plotted.
-#' @param output Character indicating whether output should be a list of individual plots ("individual"), or one facetted plot with all variables ("assembled"). Defaults to "individual".
+#' @param grid Logical indicating whether output should be a list of individual plots ("individual"), or one facetted plot with all variables ("assembled"). Defaults to "individual".
 #' @param sample.facet Logical indicating whether to facet the plot by sample, i.e, showing plots separate for each sample, and side to side. Defaults to FALSE.
 #' @param nrow Integer indicating the number of rows in the assembled plot. If NULL, the number of rows is automatically calculated.
+#' @param ... Additional arguments passed to the predict() function.
+#'
 #' @return Scatter plot of density ratios and individual variables.
 #' @export
 #'
 #' @examples
 plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
-                            output = "individual", sample.facet = FALSE,
-                            nrow = NULL) {
+                            grid = FALSE, sample.facet = FALSE,
+                            nrow = NULL, ...) {
 
   # Check object type
   check.object.type(object)
 
-  # Create data object
+  # Create data object and estimate density ratio
   data <- rbind(object$df_numerator, object$df_denominator)
-
-  # Check names in data and variable names
-  check.overriden.names(data)
+  ext <- data.frame(dr = predict(object, data = data, ...),
+                    sample = c(rep("numerator", nrow(object$df_numerator)),
+                               rep("denominator", nrow(object$df_denominator))))
+  # Check variable names
   check.var.names(vars, data)
 
   # Estimate density ratio
-  data$dr <- predict(object, newdata = data)
+  ext$dr <- predict(object, newdata = data)
 
-  # Creta sample identifier
-  data$sample <- rep(c("numerator", "denominator"),
-                     c(nrow(object$df_numerator), nrow(object$df_denominator)))
-
-  # Create a object selection variable (both, numerator, denominator)
-  obsselect <- match.arg(samples, c("both", "numerator", "denominator"))
-
-  if (obsselect != "both") {
-    data <- filter(data, sample == obsselect)
+  # Select data
+  samples <- match.arg(samples, c("both", "numerator", "denominator"))
+  if(samples != "both"){
+    data <- subset(data, ext$sample == samples)
+    ext  <- subset(ext, ext$sample == samples)
   }
 
 
   if (logscale) {
 
-    if(any(data$dr <= 0)){
+    if(any(ext$dr <= 0)){
       # Convert negative predicted density ratios to 10e-3, so log can be computed
-      count <- length(data$dr[data$dr <= 0])
-      data$dr[data$dr <= 0] <- 10e-3
+      count <- length(ext$dr[ext$dr <= 0])
+      ext$dr[ext$dr <= 0] <- 10e-3
       warning(
         paste("Negative estimated density ratios for", count, "observation(s) converted to 10e-3 before applying logarithmic transformation"),
               call. = FALSE)
       }
 
-    data$dr <- log(data$dr)
+    ext$dr <- log(ext$dr)
 
     # Assign correct y and legend labels
     y_lab <- "Log(Density Ratio)"
@@ -227,36 +220,33 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
   }
 
 
-  if(output == "individual"){
-  # Create list storage for plots object (for iteration)
-  plots <- list()
-  for(var in vars){
-    plots[[var]] <- individual_uni_plot(data, var, y_lab, sample.facet)
-  }
-  return(plots)
+  if(!grid){
 
-  }
+  plot <- lapply(vars, function(var) create_univariate_plot(data, ext, var, y_lab, sample.facet))
 
-  if (output == "assembled"){
-    data <- data %>%
-      pivot_longer(cols = vars,
-                   names_to = "variable",
-                   values_to = "value")
+  } else {
+
+    values <- data[, vars] |> unlist(use.names = FALSE)
+    variable <- rep(vars, each = length(values)/length(vars))
+    dr <- rep(ext$dr, length(vars))
+    sample <- rep(ext$sample, length(vars))
+    data <- data.frame(values = values, variable = variable)
+    ext <- data.frame(dr = dr, sample = sample)
 
     # Maximum scale for y
-    y_max <- max(1,data$dr)
-    y_min <- min(-1, data$dr)
+    y_max <- max(1,ext$dr)
+    y_min <- min(-1, ext$dr)
 
     plot <- ggplot(data) +
-      geom_point(aes(x = value, y = dr, col = sample),
+      geom_point(aes(x = values, y = ext$dr, col = ext$sample),
                  alpha = .6) +
       theme_bw() +
       labs(title = "Scatter plot of individual values and density ratio",
            color = "Sample",
            y = "Density ratio") +
-      scale_color_manual(values = c("firebrick", "steelblue"),
-                         breaks = c("numerator", "denominator"),
-                         labels = c("Numerator", "Denominator")) +
+      scale_color_viridis_d(option = "cividis",
+                            breaks = c("numerator", "denominator"),
+                            labels = c("Numerator", "Denominator")) +
       scale_y_continuous(limits = c(y_min, y_max))
 
     if(sample.facet){
@@ -268,11 +258,12 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
       } else {
         plot <- plot +
           facet_wrap(~variable, scales = "free_x", nrow = nrow)
-    }
+      }
+
 
   }
-  return(plot)
 
+  return(plot)
 }
 
 
@@ -284,14 +275,14 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
 #' @return Bivariate plot
 #'
 #' @examples
-individual_biv_plot <- function(data, vars, logscale, show.sample){
+create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 
-  dr_max <- ifelse(logscale, max(2, data$dr), max(exp(2), data$dr))
-  dr_min <- ifelse(logscale, min(-2, data$dr), min(exp(-2), data$dr))
+  dr_max <- ifelse(logscale, max(2, ext$dr), max(exp(2), ext$dr))
+  dr_min <- ifelse(logscale, min(-2, ext$dr), min(exp(-2), ext$dr))
 
   plot <-
     ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
-    geom_point(aes(colour = dr, shape = if(show.sample) sample else NULL)) +
+    geom_point(aes(colour = ext$dr, shape = if(show.sample) sample else NULL)) +
     scale_colour_gradient2(low = "firebrick",
                            high = "steelblue",
                            mid = "lightyellow",
@@ -309,41 +300,42 @@ individual_biv_plot <- function(data, vars, logscale, show.sample){
 #' Plots a scatterplot of two variables, with densityratio mapped to the colour scale.
 #'
 #' @inheritParams plot.univariate
-#' @inheritParams individual_biv_plot
+#' @param logscale Logical indicating whether to plot the density ratio
+#'   estimates on a log scale. Default is TRUE.
+#'
 #'
 #' @return Scatter plot of two variables, with density ratio mapped to the colour scale.
 #' @export
 #'
 #' @examples
 plot_bivariate <- function(object, vars, samples = "both",
-                           output = "assembled", logscale = TRUE, show.sample = FALSE) {
+                           grid = FALSE, logscale = TRUE, show.sample = FALSE,
+                           ...) {
 
   # Check object type
   check.object.type(object)
 
-  # Create data object and check variable names
+  # Create data object and estimate density ratio
   data <- rbind(object$df_numerator, object$df_denominator)
-  check.overriden.names(data)
-
+  ext <- data.frame(dr = predict(object, data = data, ...),
+                    sample = c(rep("numerator", nrow(object$df_numerator)),
+                               rep("denominator", nrow(object$df_denominator))))
   # Check variable names
   check.var.names(vars, data)
-
-  # Estimate density ratio
-  data$dr <- predict(object, newdata = data)
 
   # Determine if DR is shown in logscale (default) or not
   if (logscale) {
 
-    if(any(data$dr <= 0)){
+    if(any(ext$dr <= 0)){
       # Convert negative predicted density ratios to 10e-3, so log can be computed
-      data$dr[data$dr <= 0] <- 10e-3
-      count <- length(data$dr[data$dr <= 0])
+      ext$dr[ext$dr <= 0] <- 10e-3
+      count <- length(ext$dr[ext$dr <= 0])
       warning(
         paste("Negative estimated density ratios for", count, "observations converted to 10e-3 before applying logarithmic transformation"),
         call. = FALSE)
     }
 
-    data$dr <- log(data$dr)
+    ext$dr <- log(ext$dr)
 
     # Assign correct y and legend labels
     colour_name <- "Log (Density ratio)"
@@ -376,9 +368,9 @@ plot_bivariate <- function(object, vars, samples = "both",
   var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
   names(var_combinations) <- c("Var1", "Var2")
 
-  if(output == "individual"){
+  if(!grid){
     # Remove rows where both variables are the same
-  var_combinations <- var_combinations %>% filter(Var1 != Var2)
+  var_combinations <- var_combinations |> subset(Var1 != Var2)
   var_combinations <- as.matrix(var_combinations)
 
   plots <- list()
@@ -388,7 +380,7 @@ plot_bivariate <- function(object, vars, samples = "both",
   return(plots)
   }
 
-  if (output == "assembled") {
+  if (grid) {
 
   # Give variable combinations in a format we can use later
   combinations <- paste0(var_combinations[,1], "-", var_combinations[,2])
@@ -397,13 +389,13 @@ plot_bivariate <- function(object, vars, samples = "both",
       inner_join(data, data, by = c("dr", "sample")) %>% # Possible error in case of duplicate DR?
       pivot_longer(cols = ends_with(".x"), names_to = "name.x", values_to = "value.x") %>%
       pivot_longer(cols = ends_with(".y"), names_to = "name.y", values_to = "value.y") %>%
-      mutate(name.x = stringr::str_remove(name.x, ".x"),
-             name.y = stringr::str_remove(name.y, ".y"),
+      mutate(name.x = substr(name.x, 1 ,nchar(name.x)-2),
+             name.y = substr(name.y, 1 ,nchar(name.y)-2),
              combination = paste0(name.x, "-", name.y)) %>%
       filter(combination %in% combinations)
 
-  dr_max <- max(1, plot_data$dr)
-  dr_min <- min(-1, plot_data$dr)
+  dr_max <- max(1, plot_ext$dr)
+  dr_min <- min(-1, plot_ext$dr)
 
   plot <-
       ggplot(plot_data, mapping = aes(x = value.x, y = value.y,
@@ -440,9 +432,10 @@ plot_bivariate <- function(object, vars, samples = "both",
   for (i in idx) grob$grobs[[i]] <- grid::nullGrob()
 
   out <- grob
-  class(out) <- c("bivariateplot", class(grob))
+ # class(out) <- c("bivariateplot", class(grob))
 
-  return(out)
+  grid::grid.newpage()
+  grid::grid.draw(out)
 
 
   }

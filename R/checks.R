@@ -332,7 +332,7 @@ check.newdata <- function(object, newdata) {
 
 check.var.names <- function(vars, data){
   if(!all(vars %in% names(data))) {
-  stop("Indicated variable (s) are not present in object. Check variable names are correct")
+  stop("Indicated variable (s) are not present in object. Check whether variable names are correct")
   }
 }
 
