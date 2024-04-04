@@ -141,6 +141,59 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// compute_psihat
+arma::mat compute_psihat(const arma::mat& K, const arma::mat& Evecs, const arma::vec& Evals, const int& maxJ, const int& ncol);
+RcppExport SEXP _densityratio_compute_psihat(SEXP KSEXP, SEXP EvecsSEXP, SEXP EvalsSEXP, SEXP maxJSEXP, SEXP ncolSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Evecs(EvecsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type Evals(EvalsSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxJ(maxJSEXP);
+    Rcpp::traits::input_parameter< const int& >::type ncol(ncolSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_psihat(K, Evecs, Evals, maxJ, ncol));
+    return rcpp_result_gen;
+END_RCPP
+}
+// spectral_cv_loss
+arma::rowvec spectral_cv_loss(const arma::mat& Knu, const arma::mat& Kde, const arma::vec& J, const int& maxJ, const int& nfolds, const arma::uvec& cv_ind_nu, const arma::uvec& cv_ind_de, const int& nthreads, const bool& parallel);
+RcppExport SEXP _densityratio_spectral_cv_loss(SEXP KnuSEXP, SEXP KdeSEXP, SEXP JSEXP, SEXP maxJSEXP, SEXP nfoldsSEXP, SEXP cv_ind_nuSEXP, SEXP cv_ind_deSEXP, SEXP nthreadsSEXP, SEXP parallelSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Knu(KnuSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kde(KdeSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type J(JSEXP);
+    Rcpp::traits::input_parameter< const int& >::type maxJ(maxJSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nfolds(nfoldsSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_nu(cv_ind_nuSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_de(cv_ind_deSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nthreads(nthreadsSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type parallel(parallelSEXP);
+    rcpp_result_gen = Rcpp::wrap(spectral_cv_loss(Knu, Kde, J, maxJ, nfolds, cv_ind_nu, cv_ind_de, nthreads, parallel));
+    return rcpp_result_gen;
+END_RCPP
+}
+// spectral_dre
+List spectral_dre(const arma::mat& dist_nu, const arma::mat& dist_de, const arma::vec& J, const arma::vec& sigma, const arma::uvec& cv_ind_nu, const arma::uvec& cv_ind_de, const bool& parallel, int nthreads, const bool& progressbar);
+RcppExport SEXP _densityratio_spectral_dre(SEXP dist_nuSEXP, SEXP dist_deSEXP, SEXP JSEXP, SEXP sigmaSEXP, SEXP cv_ind_nuSEXP, SEXP cv_ind_deSEXP, SEXP parallelSEXP, SEXP nthreadsSEXP, SEXP progressbarSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type dist_nu(dist_nuSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type dist_de(dist_deSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type J(JSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_nu(cv_ind_nuSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_de(cv_ind_deSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type parallel(parallelSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type progressbar(progressbarSEXP);
+    rcpp_result_gen = Rcpp::wrap(spectral_dre(dist_nu, dist_de, J, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ulsif_compute_alpha
 arma::vec ulsif_compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double& lambda);
 RcppExport SEXP _densityratio_ulsif_compute_alpha(SEXP HhatSEXP, SEXP hhatSEXP, SEXP lambdaSEXP) {
@@ -212,6 +265,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_densityratio_make_UV", (DL_FUNC) &_densityratio_make_UV, 1},
     {"_densityratio_get_sigma_lhss", (DL_FUNC) &_densityratio_get_sigma_lhss, 3},
     {"_densityratio_lhss_compute_alpha", (DL_FUNC) &_densityratio_lhss_compute_alpha, 13},
+    {"_densityratio_compute_psihat", (DL_FUNC) &_densityratio_compute_psihat, 5},
+    {"_densityratio_spectral_cv_loss", (DL_FUNC) &_densityratio_spectral_cv_loss, 9},
+    {"_densityratio_spectral_dre", (DL_FUNC) &_densityratio_spectral_dre, 9},
     {"_densityratio_ulsif_compute_alpha", (DL_FUNC) &_densityratio_ulsif_compute_alpha, 3},
     {"_densityratio_set_threads", (DL_FUNC) &_densityratio_set_threads, 1},
     {"_densityratio_compute_ulsif_loocv", (DL_FUNC) &_densityratio_compute_ulsif_loocv, 9},

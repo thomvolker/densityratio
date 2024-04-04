@@ -3,13 +3,17 @@
 
 #' Create a Gram matrix with squared Euclidean distances between
 #' observations in the input matrix \code{X} and the input matrix \code{Y}
+#' @name distance
 #' @param X A numeric input matrix
 #' @param Y A numeric input matrix with the same variables as \code{X}
-#' @param symmetric A logical indicating whether X and Y are the same
+#' @param intercept Logical indicating whether an intercept should be added to
+#' the estimation procedure. In this case, the first column is an all-zero
+#' column (which will be transformed into an all-ones column in the kernel).
 #' @export
 NULL
 
 #' Create gaussian kernel gram matrix from distance matrix
+#' @name kernel_gaussian
 #' @param dist A numeric distance matrix
 #' @param sigma A scalar with the length-scale parameter
 #' @export
@@ -49,6 +53,18 @@ get_sigma_lhss <- function(dist, sigma, quantiles) {
 
 lhss_compute_alpha <- function(nu, de, ce, symmetric, m, intercept, sigma, quantiles, lambda, maxit, parallel, nthreads, progressbar) {
     .Call(`_densityratio_lhss_compute_alpha`, nu, de, ce, symmetric, m, intercept, sigma, quantiles, lambda, maxit, parallel, nthreads, progressbar)
+}
+
+compute_psihat <- function(K, Evecs, Evals, maxJ, ncol) {
+    .Call(`_densityratio_compute_psihat`, K, Evecs, Evals, maxJ, ncol)
+}
+
+spectral_cv_loss <- function(Knu, Kde, J, maxJ, nfolds, cv_ind_nu, cv_ind_de, nthreads, parallel) {
+    .Call(`_densityratio_spectral_cv_loss`, Knu, Kde, J, maxJ, nfolds, cv_ind_nu, cv_ind_de, nthreads, parallel)
+}
+
+spectral_dre <- function(dist_nu, dist_de, J, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar) {
+    .Call(`_densityratio_spectral_dre`, dist_nu, dist_de, J, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar)
 }
 
 ulsif_compute_alpha <- function(Hhat, hhat, lambda) {
