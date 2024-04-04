@@ -202,22 +202,20 @@ check.maxit <- function(maxit) {
   maxit
 }
 
-check.nfold <- function(cv, nfold, sigma, nnu) {
+check.nfold <- function(cv, nfold, sigma, n) {
 
   if (!cv) {
-    cv_ind <- rep(0, nnu)
-  } else if (cv & is.null(nfold)) {
-    cv_ind <- sample(rep_len(0:4, nnu))
+    cv_ind <- rep(0, n)
   } else {
     if (!is.numeric(nfold) | length(nfold) > 1) {
       stop("'nfold' must be a positive scalar indicating the number of cross-validation folds.")
-    } else if (nfold < 2 | nfold > nnu) {
-      stop(paste0("'nfold' must be at least 2 and at most the number of numerator samples (", nnu, ")"))
+    } else if (nfold < 2 | nfold > n) {
+      stop(paste0("'nfold' must be at least 2 and at most ", n, ", given the number of observations"))
     } else {
       if (length(sigma) == 1) {
         warning("Only a single 'sigma' value is specified, while cross-validation serves to optimize 'sigma'.\n")
       }
-      cv_ind <- sample(rep_len(0:(nfold-1), nnu))
+      cv_ind <- sample(rep_len(0:(nfold-1), n))
     }
   }
   cv_ind
@@ -243,15 +241,6 @@ check.sigma.predict <- function(object, sigma) {
   }
   sigma
 }
-
-# for every lambda in the lambdaind vector, i want to extract a sigma value.
-# for "sigmaopt", this must be the optimal sigma value based on je object$cv_score
-# matrix with lambda in the columns and sigma in the rows. For "all", this must
-# be the entire column of sigma values for that lambda. If sigma is a numeric
-# vector, for every lambda value, it must be checked whether that value is in the
-# matrix object$sigma. If not, an NA should be returned. Can you provide the code?
-
-
 
 check.lambdasigma.predict <- function(object, sigma, lambda, lambdaind) {
   nlambda <- length(lambda)
@@ -305,6 +294,24 @@ check.lambda.predict <- function(object, lambda) {
   lambda
 }
 
+check.J.predict <- function(object, J) {
+  if (is.character(J)) {
+    J <- match.arg(J, c("Jopt", "all"))
+    if (J == "Jopt") {
+      J <- object$J_opt
+    } else if (J == "all") {
+      J <- object$J
+    }
+  } else if (is.numeric(J) & is.vector(J)) {
+    if (max(J) > nrow(object$centers)) {
+      stop("'J' cannot exceed the number of centers.")
+    }
+  } else {
+    stop("'J' should be one of 'Jopt', 'all' or an integer vector with values to use as J parameter")
+  }
+  J
+}
+
 check.subspace <- function(m, P) {
   if(is.null(m)) {
     m <- floor(sqrt(P))
@@ -317,6 +324,26 @@ check.subspace <- function(m, P) {
     }
   }
   m
+}
+
+check.subspace.spectral <- function(J, cv_ind_de) {
+
+  ncenters <- ifelse(all(cv_ind_de == 0),
+                     length(cv_ind_de),
+                     length(cv_ind_de) - max(table(cv_ind_de)))
+
+  if (is.null(J)) {
+    J <- seq(1, ncenters, length.out = 50)
+    J <- unique(floor(J))
+  } else {
+    if (!is.numeric(J)) {
+      stop("The number of spectral components 'J' must be 'NULL' or a numeric scalar or vector.")
+    } else {
+      if (any(J < 1) | any(J > ncenters)) stop(paste0("The number of spectral components 'J' must be at least 1 and at most ", ncenters, "."))
+      J <- unique(floor(J))
+    }
+  }
+  J
 }
 
 check.newdata <- function(object, newdata) {
