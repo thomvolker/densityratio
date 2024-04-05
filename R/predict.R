@@ -141,8 +141,6 @@ predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), l
 #' @param newdata Optional \code{matrix} new data set to compute the density
 #' @param sigma A scalar with the Gaussian kernel width
 #' @param J integer indicating the dimension of the eigenvector expansion
-#' @param tol A scalar indicating the smallest eligible density ratio value
-#' (used to censor negative predicted density ratio values).
 #' @param ... Additional arguments to be passed to the function
 #'
 #' @return An array with predicted density ratio values from possibly new data,
@@ -162,7 +160,7 @@ predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), l
 #' predict(fit1, newdata = rbind(x, y), sigma = 2, J = 10)
 
 predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"),
-                             J = c("Jopt", "all"), tol = 1e-6, ...) {
+                             J = c("Jopt", "all"), ...) {
 
   newsigma <- check.sigma.predict(object, sigma)
   newJ     <- check.J.predict(object, J)
@@ -173,9 +171,11 @@ predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"
 
   for (i in 1:length(newsigma)) {
     K <- distance(newdata, object$centers, FALSE) |> kernel_gaussian(newsigma[i])
-    phihatpred <- K %*% alpha_eigen$Evecs[,,i] %*% diag(sqrt(nrow(object$centers))/alpha_eigen$Evals[,i])
+    D <- diag(length(alpha_eigen$Evals[,i]))
+    diag(D) <- sqrt(nrow(object$centers))/alpha_eigen$Evals[,i]
+    phihatpred <- K %*% alpha_eigen$Evecs[,,i] %*% D
     for (j in 1:length(newJ)) {
-      dratio[ , j, i] <- pmax(tol, phihatpred[,seq_len(newJ[j])] %*% alpha_eigen$alpha[seq_len(newJ[j]),i])
+      dratio[ , j, i] <- phihatpred[,seq_len(newJ[j]), drop = FALSE] %*% alpha_eigen$alpha[seq_len(newJ[j]),i, drop = FALSE]
     }
   }
   dratio

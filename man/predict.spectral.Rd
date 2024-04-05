@@ -9,7 +9,6 @@
   newdata = NULL,
   sigma = c("sigmaopt", "all"),
   J = c("Jopt", "all"),
-  tol = 1e-06,
   ...
 )
 }
@@ -21,9 +20,6 @@
 \item{sigma}{A scalar with the Gaussian kernel width}
 
 \item{J}{integer indicating the dimension of the eigenvector expansion}
-
-\item{tol}{A scalar indicating the smallest eligible density ratio value
-(used to censor negative predicted density ratio values).}
 
 \item{...}{Additional arguments to be passed to the function}
 }

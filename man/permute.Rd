@@ -3,14 +3,29 @@
 \name{permute}
 \alias{permute}
 \alias{permute.ulsif}
+\alias{permute.kliep}
+\alias{permute.lhss}
+\alias{permute.spectral}
+\alias{permute.naivedensityratio}
+\alias{permute.naivesubspacedensityratio}
 \title{Single permutation}
 \usage{
 permute(object, ...)
 
-\method{permute}{ulsif}(object, stacked, nnu, nde)
+\method{permute}{ulsif}(object, stacked, nnu, nde, ...)
+
+\method{permute}{kliep}(object, stacked, nnu, nde, min_pred = sqrt(.Machine$double.eps), ...)
+
+\method{permute}{lhss}(object, stacked, nnu, nde, ...)
+
+\method{permute}{spectral}(object, stacked, nnu, nde, ...)
+
+\method{permute}{naivedensityratio}(object, stacked, nnu, nde, min_pred, max_pred)
+
+\method{permute}{naivesubspacedensityratio}(object, stacked, nnu, nde, min_pred, max_pred)
 }
 \arguments{
-\item{object}{\code{ulsif} object}
+\item{object}{\code{naivesubspacedensityratio} object}
 
 \item{...}{Additional arguments to pass through to specific permute functions.}
 
@@ -19,8 +34,22 @@ permute(object, ...)
 \item{nnu}{Scalar with numerator sample size}
 
 \item{nde}{Scalar with denominator sample size}
+
+\item{min_pred}{Minimum value of the predicted density ratio}
+
+\item{max_pred}{Maximum value of the predicted density ratio}
 }
 \value{
+permutation statistic for a single permutation of the data
+
+permutation statistic for a single permutation of the data
+
+permutation statistic for a single permutation of the data
+
+permutation statistic for a single permutation of the data
+
+permutation statistic for a single permutation of the data
+
 permutation statistic for a single permutation of the data
 
 permutation statistic for a single permutation of the data
@@ -29,4 +58,14 @@ permutation statistic for a single permutation of the data
 Single permutation
 
 Single permutation statistic of \code{ulsif} object
+
+Single permutation statistic of \code{kliep} object
+
+Single permutation statistic of \code{lhss} object
+
+Single permutation statistic of \code{spectral} object
+
+Single permutation statistic of \code{naivedensityratio} object
+
+Single permutation statistic of \code{naivesubspacedensityratio} object
 }
