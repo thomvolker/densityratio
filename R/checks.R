@@ -227,6 +227,8 @@ check.sigma.predict <- function(object, sigma) {
     if (sigma == "sigmaopt") {
       if (!is.null(object$sigma_opt)) {
         sigma <- object$sigma_opt
+      } else if (length(object$sigma) == 1) {
+        sigma <- object$sigma
       } else {
         warning("No optimal 'sigma' is defined, all 'sigma' values are used instead.")
         sigma <- object$sigma
