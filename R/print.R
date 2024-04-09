@@ -24,7 +24,7 @@ print.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
       "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
   cat("Optimal kernel weights (loocv):")
-  cat(str(x$alpha_opt), "\n")
+  cat(str(unname(x$alpha_opt)), "\n")
   invisible(x)
 }
 
@@ -51,7 +51,7 @@ print.summary.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), .
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
       "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
   cat("Optimal kernel weights (loocv):")
-  cat(str(x$alpha_opt), "\n")
+  cat(str(unname(x$alpha_opt)), "\n")
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
@@ -89,7 +89,7 @@ print.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   if (!is.null(x$cv_score)) {
     cat("\nOptimal sigma (", paste(x$nfold), "-fold cv): ", paste(format(x$sigma_opt, digits = digits, ...), collapse = "  "), "\n", sep = "")
     cat("Optimal kernel weights (", paste(x$nfold), "-fold cv): ", sep = "")
-    cat(str(x$alpha_opt))
+    cat(str(unname(x$alpha_opt)))
   } else {
     cat("\nOptimal sigma: NULL (no cross-validation)\n", sep = "")
     cat("Optimal kernel weights: NULL (no cross-validation)\n", sep = "")
@@ -124,7 +124,7 @@ print.summary.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), .
   cat("Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
       "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
   cat("Optimal kernel weights (loocv):")
-  cat(str(x$alpha_opt), "\n")
+  cat(str(unname(x$alpha_opt)), "\n")
   cat("Kullback-Leibler divergence between P(nu) and P(de): ", paste(format(x$UKL, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
@@ -165,7 +165,7 @@ print.lhss <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
       "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
   cat("Optimal kernel weights (loocv):")
-  cat(str(x$alpha_opt), "\n")
+  cat(str(unname(x$alpha_opt)), "\n")
   invisible(x)
 }
 
@@ -192,7 +192,7 @@ print.summary.lhss <- function(x, digits = max(3L, getOption("digits") - 3L), ..
   cat("Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
       "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
   cat("Optimal kernel weights (loocv):")
-  cat(str(x$alpha_opt), "\n")
+  cat(str(unname(x$alpha_opt)), "\n")
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
@@ -234,7 +234,7 @@ print.spectral <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
       "Optimal subspace: ", paste(format(x$J_opt, digits, ...)), "\n", sep = "")
   cat("Optimal kernel weights (loocv):")
-  cat(str(x$alpha_opt), "\n")
+  cat(str(unname(x$alpha_opt)), "\n")
   invisible(x)
 }
 
@@ -261,7 +261,7 @@ print.summary.spectral <- function(x, digits = max(3L, getOption("digits") - 3L)
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
       "Optimal subspace: ", paste(format(x$J_opt, digits, ...)), "\n", sep = "")
   cat("Optimal kernel weights (loocv):")
-  cat(str(x$alpha_opt), "\n")
+  cat(str(unname(x$alpha_opt)), "\n")
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
@@ -297,9 +297,9 @@ print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L
       "  Number of numerator samples: ", nrow(as.matrix(x$df_numerator)), "\n",
       "  Number of denominator samples: ", nrow(as.matrix(x$df_denominator)), "\n", sep = "")
   cat("  Numerator density:")
-  cat(str(stats::predict(x, newdata = x$df_numerator)))
+  cat(str(unname(stats::predict(x, newdata = x$df_numerator))))
   cat("  Denominator density:")
-  cat(str(stats::predict(x, newdata = x$df_denominator)), "\n")
+  cat(str(unname(stats::predict(x, newdata = x$df_denominator))), "\n")
 
   invisible(x)
 }
@@ -327,9 +327,9 @@ print.naivesubspacedensityratio <- function(x, digits = max(3L, getOption("digit
       "  Number of numerator samples: ", nrow(as.matrix(x$df_numerator)), "\n",
       "  Number of denominator samples: ", nrow(as.matrix(x$df_denominator)), "\n", sep="")
   cat("  Numerator density:")
-  cat(str(stats::predict(x, newdata = x$df_numerator)))
+  cat(str(unname(stats::predict(x, newdata = x$df_numerator))))
   cat("  Denominator density:")
-  cat(str(stats::predict(x, newdata = x$df_denominator)), "\n\n")
+  cat(str(unname(stats::predict(x, newdata = x$df_denominator))), "\n\n")
 
   invisible(x)
 }
@@ -355,9 +355,9 @@ print.summary.naivedensityratio <- function(x, digits = max(3L, getOption("digit
       "  Number of numerator samples: ", x$n[1], "\n",
       "  Number of denominator samples: ", x$n[2], "\n", sep="")
   cat("  Density ratio for numerator samples:")
-  cat(str(x$dr$dr[1:x$n[1]]))
+  cat(str(unname(x$dr$dr[1:x$n[1]])))
   cat("  Density ratio for denominator samples:")
-  cat(str(x$dr$dr[(x$n[1]+1):(x$n[1]+x$n[2])]), "\n\n")
+  cat(str(unname(x$dr$dr[(x$n[1]+1):(x$n[1]+x$n[2])])), "\n\n")
 
   cat("Squared average log density ratio difference for numerator and denominator samples (SALDRD): ",
       paste(format(x$SALDRD, digits = digits, ...)), "\n", sep = "")
@@ -396,9 +396,9 @@ print.summary.naivesubspacedensityratio <- function(x, digits = max(3L, getOptio
       "  Number of numerator samples: ", x$n[1], "\n",
       "  Number of denominiator samples: ", x$n[2], "\n", sep="")
   cat("  Density ratio for numerator samples:")
-  cat(str(x$dr$dr[1:x$n[1]]))
+  cat(str(unname(x$dr$dr[1:x$n[1]])))
   cat("  Density ratio for denominator samples:")
-  cat(str(x$dr$dr[(x$n[1]+1):(x$n[1]+x$n[2])]), "\n\n")
+  cat(str(unname(x$dr$dr[(x$n[1]+1):(x$n[1]+x$n[2])])), "\n\n")
 
   cat("Squared average log density ratio difference for numerator and denominator samples (SALDRD): ",
       paste(format(x$SALDRD, digits = digits, ...)), "\n", sep = "")
