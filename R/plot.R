@@ -76,6 +76,7 @@ dr.histogram <- function(object,
                    position = position_dodge2(preserve = "single",
                                               padding = 0.2,
                                               reverse = TRUE)) +
+
     scale_fill_viridis_d(option = "cividis",
                         breaks = c("numerator", "denominator"),
                         labels = c("Numerator", "Denominator")) +
@@ -136,7 +137,6 @@ create_univariate_plot <- function(data, ext, var, y_lab, sample.facet = TRUE){
 
   y_max <- max(2, ext$dr)
   y_min <- min(-2, ext$dr)
-
   plot <-
     ggplot(data, aes(x = .data[[var]], y = ext$dr)) +
     geom_point(aes(col = ext$sample),
@@ -152,7 +152,7 @@ create_univariate_plot <- function(data, ext, var, y_lab, sample.facet = TRUE){
     scale_y_continuous(limits = c(y_min, y_max))
 
   if(sample.facet){
-    plot <- plot + facet_wrap(~sample)
+    plot <- plot + facet_wrap(~vars(ext$sample))
   }
 
   return(plot)
@@ -176,7 +176,6 @@ create_univariate_plot <- function(data, ext, var, y_lab, sample.facet = TRUE){
 plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
                             grid = FALSE, sample.facet = FALSE,
                             nrow = NULL, ...) {
-
   # Check object type
   check.object.type(object)
 
@@ -225,7 +224,6 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
   plot <- lapply(vars, function(var) create_univariate_plot(data, ext, var, y_lab, sample.facet))
 
   } else {
-
     values <- data[, vars] |> unlist(use.names = FALSE)
     variable <- rep(vars, each = length(values)/length(vars))
     dr <- rep(ext$dr, length(vars))
@@ -250,6 +248,7 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
       scale_y_continuous(limits = c(y_min, y_max))
 
     if(sample.facet){
+
       plot <- plot +
         facet_grid(cols = vars(sample),
                    rows = vars(variable),
@@ -277,15 +276,24 @@ plot_univariate <- function(object, vars, samples = "both", logscale = TRUE,
 #' @examples
 create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 
+
   dr_max <- ifelse(logscale, max(2, ext$dr), max(exp(2), ext$dr))
   dr_min <- ifelse(logscale, min(-2, ext$dr), min(exp(-2), ext$dr))
 
   plot <-
     ggplot(data, mapping = aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
-    geom_point(aes(colour = ext$dr, shape = if(show.sample) sample else NULL)) +
-    scale_colour_gradient2(low = "firebrick",
-                           high = "steelblue",
-                           mid = "lightyellow",
+    geom_point(aes(colour = ext$dr, shape = show.sample),
+               alpha = 1,
+               size = 2.0) +
+    # scale_colour_gradient2(low = "#00204DFF",
+    #                        high = "#7D0000",
+    #                        mid = "lightyellow",
+    #                        midpoint = 0,
+    #                        limits = c(dr_min, dr_max)) +
+    scale_colour_gradient2(low = "#00204DFF",
+                           high = "#FFEA46FF",
+                           mid = "#7C7B78FF",
+                           midpoint = 0,
                            limits = c(dr_min, dr_max)) +
     theme_bw() +
     labs(title = "Scatter plot, with density ratio mapped to colour",
@@ -309,7 +317,7 @@ create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 #'
 #' @examples
 plot_bivariate <- function(object, vars, samples = "both",
-                           grid = FALSE, logscale = TRUE, show.sample = FALSE,
+                           grid = FALSE, logscale = TRUE, show.sample = NULL,
                            ...) {
 
   # Check object type
@@ -365,28 +373,41 @@ plot_bivariate <- function(object, vars, samples = "both",
   ## This makes duplicate rows with different order of variables identical
   var_combinations <- t(apply(var_combinations, 1, sort))
   var_combinations <- unique(var_combinations) # retain unique rows only
+
   var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
   names(var_combinations) <- c("Var1", "Var2")
 
-  if(!grid){
-    # Remove rows where both variables are the same
+  # Remove rows where both variables are the same
   var_combinations <- var_combinations |> subset(Var1 != Var2)
-  var_combinations <- as.matrix(var_combinations)
+  var_combinations <- as.list(as.data.frame(t(var_combinations)))
 
-  plots <- list()
-  for(i in 1:nrow(var_combinations)){
-    plots[[i]] <- individual_biv_plot(data, vars = var_combinations[i,], logscale, show.sample)
-  }
-  return(plots)
+  if(!grid){
+
+
+  plot <- lapply(var_combinations, function(vars) create_bivariate_plot(data, ext, vars, logscale, show.sample))
+
+  return(plot)
   }
 
   if (grid) {
-
+  browser()
   # Give variable combinations in a format we can use later
-  combinations <- paste0(var_combinations[,1], "-", var_combinations[,2])
+
+    combinations <- sapply(var_combinations, \(vars) paste0(vars, collapse = "-"))
+
+    ext <- data.frame(data, ext$dr, ext$sample)
+    datlist <- lapply(var_combinations, \(x) data.frame(values.x = ext[,x[1]],
+                                              values.y = ext[,x[2]],
+                                              xvar = rep(x[1], nrow(ext)),
+                                              yvar = rep(x[2], nrow(ext)),
+                                              sample = ext[, "ext.sample"],
+                                              dr = ext[, "ext.dr"]))
+
+
+    plot_data2 <- do.call(datlist, what = rbind)
 
   plot_data <-
-      inner_join(data, data, by = c("dr", "sample")) %>% # Possible error in case of duplicate DR?
+      inner_join(ext, ext, by = c("dr", "sample")) %>% # Possible error in case of duplicate DR?
       pivot_longer(cols = ends_with(".x"), names_to = "name.x", values_to = "value.x") %>%
       pivot_longer(cols = ends_with(".y"), names_to = "name.y", values_to = "value.y") %>%
       mutate(name.x = substr(name.x, 1 ,nchar(name.x)-2),
