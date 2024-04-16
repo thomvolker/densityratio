@@ -18,6 +18,13 @@
 #' @param ... Additional arguments passed on to `predict()`.
 #'
 #' @return A histogram of density ratio estimates.
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 position_dodge2
+#' @importFrom ggplot2 geom_histogram
+#' @importFrom ggplot2 scale_fill_viridis_d
+#' @importFrom ggplot2 theme_bw
+#' @importFrom ggplot2 labs
 #'
 #'
 #' @examples
@@ -133,6 +140,17 @@ plot.kliep <- function(object, samples = "both", logscale = TRUE, binwidth = NUL
 #'
 #' @return
 #'
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 theme_bw
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 scale_color_viridis_d
+#' @importFrom ggplot2 scale_y_continuous
+#' @importFrom ggplot2 facet_wrap
+#' @importFrom ggplot2 geom_hline
+#'
+#'
 create_univariate_plot <- function(data, ext, var, y_lab, sample.facet = TRUE){
 
   y_max <- max(2, ext$dr)
@@ -173,6 +191,17 @@ create_univariate_plot <- function(data, ext, var, y_lab, sample.facet = TRUE){
 #'
 #' @return Scatter plot of density ratios and individual variables.
 #' @export
+#'
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 geom_hline
+#' @importFrom ggplot2 theme_bw
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 scale_color_viridis_d
+#' @importFrom ggplot2 scale_y_continuous
+#' @importFrom ggplot2 facet_wrap
+#' @importFrom ggplot2 facet_grid
 #'
 #' @examples
 plot_univariate <- function(object, vars = NULL, samples = "both", logscale = TRUE,
@@ -282,6 +311,15 @@ plot_univariate <- function(object, vars = NULL, samples = "both", logscale = TR
 #' @return Bivariate plot
 #'
 #' @examples
+#'
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 scale_colour_gradient2
+#' @importFrom ggplot2 scale_shape_manual
+#' @importFrom ggplot2 theme_bw
+#' @importFrom ggplot2 labs
+#'
 create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 
 
@@ -317,6 +355,22 @@ create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 #'
 #' @return Scatter plot of two variables, with density ratio mapped to the colour scale.
 #' @export
+#'
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 facet_grid
+#' @importFrom ggplot2 scale_colour_gradient2
+#' @importFrom ggplot2 scale_y_continuous
+#' @importFrom ggplot2 scale_x_continuous
+#' @importFrom ggplot2 theme_bw
+#' @importFrom ggplot2 theme
+#' @importFrom ggplot2 labs
+#' @importFrom ggplot2 scale_shape_manual
+#' @importFrom ggplot2 ggplotGrob
+#' @importFrom grid grid.draw
+#' @importFrom grid grid.newpage
+#' @importFrom grid nullGrob
 #'
 #' @examples
 plot_bivariate <- function(object, vars1, vars2 = NULL, samples = "both",
