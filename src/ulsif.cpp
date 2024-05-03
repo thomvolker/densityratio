@@ -56,10 +56,10 @@ double compute_ulsif_loocv(const arma::mat& Hhat, const arma::mat& hhat, const d
   arma::mat B2  = (nnu * B0 - B1) * (nde - 1) / (nde * (nnu - 1));
   B2.elem(find(B2 < 0)).zeros();
 
-  arma::vec wtr = sum(Kde_nmin % B2.t(), 1);
-  arma::vec wte = sum(Knu_nmin % B2.t(), 1);
+  arma::vec wde = sum(Kde_nmin % B2.t(), 1);
+  arma::vec wnu = sum(Knu_nmin % B2.t(), 1);
 
-  return as_scalar(arma::dot(wtr, wtr) / (2*nmin) - mean(wte));
+  return as_scalar(arma::dot(wde, wde) / (2*nmin) - mean(wnu));
 }
 
 //[[Rcpp::export]]
