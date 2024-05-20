@@ -336,14 +336,73 @@ check.var.names <- function(vars, data){
   }
 }
 
-check.overriden.names <- function(data){
-  if("dr" %in% names(data) | "sample" %in% names(data)) {
-    stop("Variables in your dataframe cannot have name 'dr' or 'sample'. Please rename your variable(s)")
+check.object.type <- function(object) {
+  if(all(c("ulsif", "kliep", "lhss", "spectral") != attr(object, "class"))) {
+    stop("Objects should be of class 'ulsif' or 'kliep'")
   }
 }
 
-check.object.type <- function(object) {
-  if(all(c("ulsif", "kliep") != attr(object, "class"))) {
-    stop("Objects should be of class 'ulsif' or 'kliep'")
+check.logscale <- function(ext, logscale, tol){
+  if (logscale) {
+    # Convert values lower than tolerance to tol
+    negdr <- ext$dr < tol
+    ext$dr[negdr] <- tol
+    if (any(negdr)) {
+      warning(
+        paste(
+          "Negative estimated density ratios for", sum(negdr),
+          "observation(s) converted to",tol,
+          "before applying logarithmic transformation"
+        ),
+        call. = FALSE
+      )
+    }
+
+    # Apply log transformation
+    ext$dr <- log(ext$dr)
+
+    # Set y axis intercept to 0
+    ext$yintercept <- 0
+  } else {
+    # Set y axis intercept to 1
+    ext$yintercept <- 1
   }
+  return(ext)
+}
+
+check.var.combinations <- function(data, vars1, vars2) {
+  if (is.null(vars2)) {
+    # Check variable names
+    check.var.names(vars1, data)
+    var_combinations <- expand.grid(vars1, vars1)
+  } else {
+    if(length(vars1) != length(vars2)){
+      stop("The number of variables in vars1 and vars2 must be the same")
+    }
+    # Check variable names
+    check.var.names(vars1, data)
+    check.var.names(vars2, data)
+
+    var_combinations <- expand.grid(vars1, vars2)
+  }
+
+  ## Remove duplicate combinations
+  ## Start by sorting elements within each row
+  ## This makes duplicate rows with different order of variables identical
+  var_combinations <- t(apply(var_combinations, 1, sort))
+  var_combinations <- unique(var_combinations) # retain unique rows only
+
+  if(length(vars1) != 1){
+    var_combinations <- as.data.frame(apply(var_combinations, 2,  as.character))
+  } else {
+    var_combinations <- as.data.frame(var_combinations)
+  }
+
+  names(var_combinations) <- c("Var1", "Var2")
+
+  # Remove rows where both variables are the same
+  var_combinations <- var_combinations |> subset(Var1 != Var2)
+  var_combinations <- as.list(as.data.frame(t(var_combinations)))
+
+  return(var_combinations)
 }
