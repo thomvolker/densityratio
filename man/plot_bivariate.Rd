@@ -6,24 +6,37 @@
 \usage{
 plot_bivariate(
   object,
-  vars,
+  vars1,
+  vars2 = NULL,
   samples = "both",
-  output = "assembled",
+  grid = FALSE,
   logscale = TRUE,
-  show.sample = FALSE
+  show.sample = NULL,
+  tol = 0.01,
+  ...
 )
 }
 \arguments{
 \item{object}{Density ratio object created with e.g., \code{\link[=kliep]{kliep()}}, \code{\link[=ulsif]{ulsif()}},
 or \code{\link[=naive]{naive()}}}
 
-\item{vars}{Character vector of variable names to be plotted.}
+\item{vars1}{Character vector of variable names to be plotted on X axis}
 
-\item{output}{Character indicating whether output should be a list of individual plots ("individual"), or one facetted plot with all variables ("assembled"). Defaults to "individual".}
+\item{vars2}{Character vector of variable names to be plotted on Y axis}
 
-\item{logscale}{}
+\item{samples}{Character string indicating whether to plot the 'numerator',
+'denominator', or 'both' samples. Default is 'both'.}
+
+\item{grid}{Logical indicating whether output should be a list of individual plots ("individual"), or one facetted plot with all variables ("assembled"). Defaults to "individual".}
+
+\item{logscale}{Logical indicating whether to plot the density ratio
+estimates on a log scale. Default is TRUE.}
 
 \item{show.sample}{Logical indicating whether to give different shapes to observations, depending on the sample they come from (numerator or denominator). Defaults to FALSE.}
+
+\item{tol}{Numeric indicating the tolerance: values below this value will be set to the tolerance value, for legibility of the plots}
+
+\item{...}{Additional arguments passed to the predict() function.}
 }
 \value{
 Scatter plot of two variables, with density ratio mapped to the colour scale.

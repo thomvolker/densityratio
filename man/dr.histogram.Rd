@@ -4,6 +4,8 @@
 \alias{dr.histogram}
 \alias{plot.ulsif}
 \alias{plot.kliep}
+\alias{plot.spectral}
+\alias{plot.lhss}
 \title{A histogram of density ratio estimates}
 \usage{
 dr.histogram(
@@ -12,16 +14,52 @@ dr.histogram(
   logscale = TRUE,
   binwidth = NULL,
   bins = NULL,
+  tol = 0.01,
   ...
 )
 
-\method{plot}{ulsif}(object, samples = "both", logscale = FALSE, binwidth = NULL, bins = NULL)
+\method{plot}{ulsif}(
+  object,
+  samples = "both",
+  logscale = TRUE,
+  binwidth = NULL,
+  bins = NULL,
+  tol = 0.01
+)
 
-\method{plot}{kliep}(object, samples = "both", logscale = FALSE, binwidth = NULL, bins = NULL)
+\method{plot}{kliep}(
+  object,
+  samples = "both",
+  logscale = TRUE,
+  binwidth = NULL,
+  bins = NULL,
+  tol = 0.01
+)
+
+\method{plot}{spectral}(
+  object,
+  samples = "both",
+  logscale = TRUE,
+  binwidth = NULL,
+  bins = NULL,
+  tol = 0.01
+)
+
+\method{plot}{lhss}(
+  object,
+  samples = "both",
+  logscale = TRUE,
+  binwidth = NULL,
+  bins = NULL,
+  tol = 0.01
+)
 }
 \arguments{
 \item{object}{Density ratio object created with e.g., \code{\link[=kliep]{kliep()}}, \code{\link[=ulsif]{ulsif()}},
 or \code{\link[=naive]{naive()}}}
+
+\item{samples}{Character string indicating whether to plot the 'numerator',
+'denominator', or 'both' samples. Default is 'both'.}
 
 \item{logscale}{}
 
@@ -31,12 +69,19 @@ or \code{\link[=naive]{naive()}}}
 \item{bins}{Numeric indicating the number of bins. Overriden by binwidth, and
 passed on to \code{ggplot2}.}
 
-\item{...}{Additional arguments passed on to \code{predict()}.}
+\item{tol}{Numeric indicating the tolerance: values below this value will be set to the tolerance value, for legibility of the plots}
 
-\item{sample}{Character string indicating whether to plot the 'numerator',
-'denominator', or 'both' samples. Default is 'both'.}
+\item{...}{Additional arguments passed on to \code{predict()}.}
 }
 \value{
+A histogram of density ratio estimates.
+
+A histogram of density ratio estimates.
+
+A histogram of density ratio estimates.
+
+A histogram of density ratio estimates.
+
 A histogram of density ratio estimates.
 }
 \description{
