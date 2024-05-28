@@ -41,7 +41,7 @@ dr.histogram <- function(object,
 
   # Create data object and estimate density ratio
   data <- rbind(object$df_numerator, object$df_denominator)
-  ext <- data.frame(dr = predict(object, data = data, ...),
+  ext <- data.frame(dr = predict(object, newdata = data, ...),
                     sample = c(rep("numerator", nrow(object$df_numerator)),
                                rep("denominator", nrow(object$df_denominator))))
 
@@ -230,7 +230,7 @@ plot_univariate <- function(object, vars = NULL, samples = "both", logscale = TR
 
   # Create data object, and external object with density ratio and sample indicators
   data <- rbind(object$df_numerator, object$df_denominator)
-  ext <- data.frame(dr = predict(object, data = data, ...),
+  ext <- data.frame(dr = predict(object, newdata = data, ...),
                     sample = c(rep("numerator", nrow(object$df_numerator)),
                                rep("denominator", nrow(object$df_denominator))))
   # Check variable names
@@ -393,7 +393,7 @@ plot_bivariate <- function(object, vars1, vars2 = NULL, samples = "both",
 
   # Create data object and estimate density ratio
   data <- rbind(object$df_numerator, object$df_denominator)
-  ext <- data.frame(dr = predict(object, data = data, ...),
+  ext <- data.frame(dr = predict(object, newdata = data, ...),
                     sample = c(rep("numerator", nrow(object$df_numerator)),
                                rep("denominator", nrow(object$df_denominator))))
 
