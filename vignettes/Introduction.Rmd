@@ -1,0 +1,96 @@
+---
+title: "Introduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(densityratio)
+```
+
+# Introduction
+
+The goal of the `densityratio` package is to provide an accessible, complete and easy way to perform density ratio estimation. It includes functionality to estimate density ratios using different methods, summarize and examine the results - including visualization features.
+
+In this vignette, we guide through a full user case: how to estimate density ratios, how to examine and visualize the results, and a usecase of density ratios in practice for covariate shift adaptation.
+
+Throughout the vignette, we illustrate the functionality using the penguins dataset. We can load the dataset from the `palmerpenguins` package. After loading it, we split the data into two parts: the numerator and the denominator. For simplicity, we use a 50-50 split and we only use data with numeric variables.
+
+
+```{r}
+library(palmerpenguins)
+library(dplyr)
+library(tidyr)
+data <- penguins |> 
+  select(starts_with("bill") | starts_with("flipper") | starts_with("body_mass") | year) |> 
+  na.omit()
+  
+set.seed(134)
+index <- sample(1:nrow(data), nrow(data) * 0.5)
+index
+numerator <- data[index,]
+denominator <- data[-index, ]
+```
+
+
+# Density ratio estimation
+
+A density ratio is simply a ratio of the density of two samples:
+$$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$ 
+
+The package provides functionality to estimate a density ratio using different methods, most notably without directly estimating the numerator and denominator density separately. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated
+over the entire multivariate space of the data. Subsequently, the density ratio values can be examined, or summarized in different ways. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting
+under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. 
+
+
+The package includes different methods for density ratio estimation. Each of these methods has its own function, but all the functions work similarly. The user provides two datasets (numerator and denominator), and the function returns a `densityratio` object, which can be used and examined.
+
+For instance, we can use the function `ulsif()`, which accounts for 'unconstrained least-squares importance fitting'. The function is called as follows:
+
+```{r}
+densratio <- ulsif(numerator, denominator)
+```
+If no extra parameters are provided, the function uses default values and, when possible, determines optimal parameters through cross-validation. Different methods are available for the resulting object.
+
+```{r}
+summary(densratio, test = TRUE)
+```
+The summary method displays information regarding estimation (e.g., optimal sigma and lambda), the Pearson divergence (a measure of discrepancy between densities), and the test results. 
+
+Other density ratio estimation methods are available, concretely: Kullback-Leibler importance estimation procedure (`kliep()`), ratio of estimated densities (`naive()`), ratio of estimated densities after dimension reduction (`naivesubspace()`), least-squares heterodistributional subspace search (`lhss()`), and 'spectral estimation?` (`spectral()`).
+
+There is also a `print` method, and a `predict` method. The predict method can be used to predict density ratios for new data, or to get the density ratio predictions for the observed data.
+
+```{r}
+predict(densratio, data = numerator)
+print(densratio)
+```
+
+
+# Visualization methods
+
+The package includes different visualization methods to examine the density ratio results. The default `plot` method results in a histogram of the density ratio values. The histogram can be used to examine the distribution of the density ratio values, and to identify potential outliers. 
+´
+```{r}
+plot(densratio)
+```
+
+
+most important visualization method is the `plot` method, which can be used to plot the density ratio values. The plot method can be used to plot the density ratio values for the observed data, or for new data.
+
+
+# User case: covariate shift adaptation
+
+https://archive.ics.uci.edu/dataset/1/abalone
+
+lm, randomForest, gbm
