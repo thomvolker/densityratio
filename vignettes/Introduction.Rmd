@@ -35,11 +35,31 @@ data <- penguins |>
   select(starts_with("bill") | starts_with("flipper") | starts_with("body_mass") | year) |> 
   na.omit()
   
-set.seed(134)
-index <- sample(1:nrow(data), nrow(data) * 0.5)
+summary(data)
+
+summary(data)
+psych::describe(data)
+
+prob <- data |> 
+  mutate(z = -9 + 0.0025*body_mass_g,
+         prob = 1/(1 + exp(-z))) 
+cor(prob)
+set.seed(431)
+index <- sample(1:nrow(data), size = nrow(data) * 0.5, prob = prob$prob)
 index
 numerator <- data[index,]
 denominator <- data[-index, ]
+numerator
+denominator
+summary(numerator)
+summary(denominator)
+
+numerator <- data |> 
+  filter(body_mass_g > 4050) 
+denominator <- data |> 
+  filter(body_mass_g <= 4050)
+
+predict(densratio)
 ```
 
 
@@ -59,6 +79,10 @@ For instance, we can use the function `ulsif()`, which accounts for 'unconstrain
 
 ```{r}
 densratio <- ulsif(numerator, denominator)
+plot(densratio, logscale = FALSE)
+hist(predict(densratio, newdata = numerator))
+hist(predict(densratio, newdata = denominator))
+debug(densityratio:::dr.histogram)
 ```
 If no extra parameters are provided, the function uses default values and, when possible, determines optimal parameters through cross-validation. Different methods are available for the resulting object.
 
@@ -74,16 +98,30 @@ There is also a `print` method, and a `predict` method. The predict method can b
 ```{r}
 predict(densratio, data = numerator)
 print(densratio)
+plot(densratio)
 ```
 
 
 # Visualization methods
 
-The package includes different visualization methods to examine the density ratio results. The default `plot` method results in a histogram of the density ratio values. The histogram can be used to examine the distribution of the density ratio values, and to identify potential outliers. 
+The package includes different visualization methods to examine the density ratio results. The plots are built with `ggplot2`, and thus return a customizable `ggplot2` object. 
+
+The default `plot` method results in a histogram of the log of the density ratio values. The `plot()` method takes different arguments, so you can plot the densityratio for only some samples, not using the log scale, etc. You can check them with `?plot.ulsif`.
+
+The function is meant to given an overview of the similarity of the samples. For equal samples, the density ratio should be 1, and thus its log should be zero. Therefore, we expect the distribution to be centered around zero, and with no major differences of the distribution between numerator and denominator samples. 
+
+In cases where the numerator and denominator samples have different densities, the density ratio values will be different from 1. We no longer expect the distribution to be centered at zero, and we expect to see differences in the distributions between the numerator and denominator samples (one having larger values than the other).
 ´
 ```{r}
 plot(densratio)
 ```
+There are two other visualization functions, `plot_univariate()` and `plot_bivariate()`. The `plot_univariate()` function plots the value of the density ratio for each variable separately, againas the density ratio. The function plot_
+
+while the `plot_bivariate()` function plots the value of the density ratio for pairs of variables. 
+
+
+The first one plots the density ratio values for each variable separately, while the second one plots the density ratio values for pairs of variables. 
+  
 
 
 most important visualization method is the `plot` method, which can be used to plot the density ratio values. The plot method can be used to plot the density ratio values for the observed data, or for new data.
