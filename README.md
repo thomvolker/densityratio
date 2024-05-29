@@ -109,7 +109,7 @@ summary(fit)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.8951539
+#> Optimal sigma: 0.4958598
 #> Optimal lambda: 0.03162278
 #> Optimal kernel weights (loocv): num [1:201] 0.14182 0.01957 0.00488 0.01596 0.01461 ...
 #>  
@@ -131,7 +131,7 @@ summary(fit, test = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.8951539
+#> Optimal sigma: 0.4958598
 #> Optimal lambda: 0.03162278
 #> Optimal kernel weights (loocv): num [1:201] 0.14182 0.01957 0.00488 0.01596 0.01461 ...
 #>  
@@ -171,28 +171,33 @@ ggplot() +
 <img src="man/figures/README-plot-univ-1.svg" style="width:15cm"
 data-fig-align="center" />
 
+### Scaling
+
+By default, all functions in the `densityratio` package standardize the
+data to the numerator means and standard deviations. This is done to
+ensure that the importance of each variable in the kernel estimates is
+not dependent on the scale of the data. By setting
+`scale = "denominator"` one can scale the data to the means and standard
+deviations of the denominator data, and by setting `scale = FALSE` the
+data remains on the original scale.
+
 ### Categorical data
 
-Currently, none of the functions in the `densityratio` package accept
-non-numeric variables (e.g., having categorical variables will return an
-error message).
+All of the functions in the `densityratio` package accept categorical
+variables types. However, note that internally, these variables are
+one-hot encoded, which can lead to a high-dimensional feature-space.
 
 ``` r
-ulsif(
-  df_numerator = numerator_data$x1, 
-  df_denominator = denominator_data$x2
-)
-#> Error in check.dataform(nu, de): Currently only numeric data is supported.
-```
+summary(numerator_data$x1)
+#>   A   B   C 
+#> 351 339 310
+summary(denominator_data$x1)
+#>   A   B   C 
+#> 252 232 516
 
-However, transforming the variables into numeric variables will work,
-and can give a reasonable estimate of the ratio of proportions in the
-different data sets (although there is some regularization applied).
-
-``` r
 fit_cat <- ulsif(
-  df_numerator = numerator_data$x1 |> as.numeric(),
-  df_denominator = denominator_data$x1 |> as.numeric()
+  df_numerator = numerator_data$x1, 
+  df_denominator = denominator_data$x1
 )
 #> Warning in check.sigma(nsigma, sigma_quantile, sigma, dist_nu): There are duplicate values in 'sigma', only the unique values are used.
 
@@ -201,16 +206,20 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.3596470
-#> 2                 B        1.3687135
-#> 3                 C        0.6290922
-
+#> 1                 A        1.2254287
+#> 2                 B        1.3379850
+#> 3                 C        0.6797991
 
 table(numerator_data$x1) / table(denominator_data$x1)
 #> 
 #>         A         B         C 
 #> 1.3928571 1.4612069 0.6007752
 ```
+
+This transformation can give a reasonable estimate of the ratio of
+proportions in the different data sets (although there is some
+regularization applied such that the estimated odds are closer to one
+than seen in the real data).
 
 ### Full data example
 
@@ -220,24 +229,24 @@ data.
 
 ``` r
 fit_all <- ulsif(
-  df_numerator = numerator_data |> lapply(as.numeric) |> data.frame(),
-  df_denominator = denominator_data |> lapply(as.numeric) |> data.frame()
+  df_numerator = numerator_data,
+  df_denominator = denominator_data
 )
 
 summary(fit_all, test = TRUE, parallel = TRUE)
 #> 
 #> Call:
-#> ulsif(df_numerator = data.frame(lapply(numerator_data, as.numeric)),     df_denominator = data.frame(lapply(denominator_data, as.numeric)))
+#> ulsif(df_numerator = numerator_data, df_denominator = denominator_data)
 #> 
 #> Kernel Information:
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 1.473857
-#> Optimal lambda: 0.3359818
-#> Optimal kernel weights (loocv): num [1:201] 0.1771 -0.0255 -0.0131 0.0979 0.0354 ...
+#> Optimal sigma: 1.304529
+#> Optimal lambda: 0.6951928
+#> Optimal kernel weights (loocv): num [1:201] 0.13106 -0.018888 0.000864 0.059422 0.037997 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.4736
+#> Pearson divergence between P(nu) and P(de): 0.4049
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```

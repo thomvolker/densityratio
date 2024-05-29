@@ -99,10 +99,12 @@ dratio <- function(x, p, dif, mu, sd) {
   dbinorm(x, p, dif) / dnorm(x, mu, sd)
 }
 
-fit  <- densityratio::ulsif(
+fit <- densityratio::ulsif(
   df_numerator = densityratio::numerator_data$x5, 
   df_denominator = densityratio::denominator_data$x5,
-  centers = c(densityratio::numerator_data$x5, densityratio::denominator_data$x5)
+  centers = c(densityratio::numerator_data$x5, densityratio::denominator_data$x5),
+  parallel = TRUE,
+  nthreads = 14
 )
 
 ggplot() +
@@ -231,24 +233,25 @@ ggplot() +
         text = element_text(size = 20))
 ```
 
+### Scaling
+
+By default, all functions in the `densityratio` package standardize the data to the numerator means and standard deviations. This is done to ensure that the importance of each variable in the kernel estimates is not dependent on the scale of the data. By setting `scale = "denominator"` one can scale the data to the means and standard deviations of the denominator data, and by setting `scale = FALSE` the data remains on the original scale.
+
+
 ### Categorical data
 
-Currently, none of the functions in the `densityratio` package accept non-numeric variables (e.g., having categorical variables will return an error message).
+All of the functions in the `densityratio` package accept categorical variables types. However, note that internally, these variables are one-hot encoded, which can lead to a high-dimensional feature-space. 
+
 
 ```{r}
 #| error: true
-ulsif(
-  df_numerator = numerator_data$x1, 
-  df_denominator = denominator_data$x2
-)
-```
 
-However, transforming the variables into numeric variables will work, and can give a reasonable estimate of the ratio of proportions in the different data sets (although there is some regularization applied).
+summary(numerator_data$x1)
+summary(denominator_data$x1)
 
-```{r}
 fit_cat <- ulsif(
-  df_numerator = numerator_data$x1 |> as.numeric(),
-  df_denominator = denominator_data$x1 |> as.numeric()
+  df_numerator = numerator_data$x1, 
+  df_denominator = denominator_data$x1
 )
 
 aggregate(
@@ -256,9 +259,11 @@ aggregate(
   FUN = unique
 )
 
-
 table(numerator_data$x1) / table(denominator_data$x1)
 ```
+
+This transformation can give a reasonable estimate of the ratio of proportions in the different data sets (although there is some regularization applied such that the estimated odds are closer to one than seen in the real data).
+
 
 ### Full data example
 
@@ -266,8 +271,8 @@ After transforming all variables to numeric variables, it is possible to calcula
 
 ```{r}
 fit_all <- ulsif(
-  df_numerator = numerator_data |> lapply(as.numeric) |> data.frame(),
-  df_denominator = denominator_data |> lapply(as.numeric) |> data.frame()
+  df_numerator = numerator_data,
+  df_denominator = denominator_data
 )
 
 summary(fit_all, test = TRUE, parallel = TRUE)
