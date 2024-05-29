@@ -23,15 +23,30 @@ library(dplyr)
 ```{r}
 # data <- read.csv(url("https://raw.githubusercontent.com/avehtari/ROS-Examples/master/KidIQ/data/kidiq.csv"))
 
-data <- readRDS("kids.rds") |> select(-mom_hs)
-  mutate(mom_hs = as.factor(mom_hs))
+data <- readRDS("kids.rds") 
 
-mysyn <- syn(data)
+
+good_syn <- syn(data)
+
+
+summary(data)
+
+# predictor_matrix <- matrix(rep(0, ncol(data)*ncol(data)), ncol = ncol(data))
+# bad_syn <- syn(data, predictor.matrix = predictor_matrix)
+bad_syn <- data.frame(kid_score = rnorm(nrow(data), mean = 90, sd = 5), 
+                      mom_hs = rbinom(nrow(data), size = 1, prob = 0.5),
+                      mom_iq = rnorm(nrow(data), mean = 50, sd = 15),
+                      mom_work = as.factor(rep(1:4, length.out = nrow(data))),
+                      mom_age = rnorm(nrow(data), mean = 30, sd = 5)) |> 
+  mutate(mom_work = as.factor(mom_work))
+str(bad_syn)
+str(data)
 ```
 
 ```{r}
-densratio <- ulsif(mysyn$syn, data)
-class(mysyn$syn)
+densratio_good <- ulsif(good_syn$syn, data)
+densratio_bad <- ulsif(bad_syn, data)
+
 ```
 
 
@@ -42,16 +57,21 @@ One is covariate-shift.
 One is synthetic data.
 In this vignette, we demonstrate how to use it to create synthetic data.
 
+```{r}
+plot(densratio_good)
+plot(densratio_bad)
+```
+
 # Data
 
-Brief data description and source. Included in the vignette.
+Brief data description and source. Same (copy from introduction)
 
 # Synthetic data
 
 We use the package synthpop. We start with a deliberately wrong model.
 We examine plot_univariate(), and plot_bivariate(), and plot. We check a summary.
 
-We use the defualt model, which gives an appropriate model.
+We use the default model, which gives an appropriate model.
 
 # Conclusion
 
