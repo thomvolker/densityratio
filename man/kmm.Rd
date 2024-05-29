@@ -7,6 +7,7 @@
 kmm(
   df_numerator,
   df_denominator,
+  scale = "numerator",
   method = "unconstrained",
   sigma = NULL,
   lambda = NULL
@@ -19,6 +20,11 @@ the numerator samples}
 \item{df_denominator}{\code{data.frame} with exclusively numeric variables
 with the denominator samples (must have the same variables as
 \code{df_denominator})}
+
+\item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+indicating whether to standardize each numeric variable according to the
+numerator means and standard deviations, the denominator means and standard
+deviations, or apply no standardization at all.}
 
 \item{method}{Character string containing the method used for kernel mean
 matching. Currently, \code{method = "unconstrained"} and

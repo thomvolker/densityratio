@@ -8,6 +8,7 @@ ulsif(
   df_numerator,
   df_denominator,
   intercept = TRUE,
+  scale = "numerator",
   nsigma = 10,
   sigma_quantile = NULL,
   sigma = NULL,
@@ -30,6 +31,11 @@ with the denominator samples (must have the same variables as
 
 \item{intercept}{\code{logical} Indicating whether to include an intercept
 term in the model. Defaults to \code{TRUE}.}
+
+\item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+indicating whether to standardize each numeric variable according to the
+numerator means and standard deviations, the denominator means and standard
+deviations, or apply no standardization at all.}
 
 \item{nsigma}{Integer indicating the number of sigma values (bandwidth
 parameter of the Gaussian kernel gram matrix) to use in cross-validation.}

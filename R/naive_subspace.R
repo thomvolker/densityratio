@@ -11,6 +11,10 @@
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
 #' @param m The size (in number of features) of the subspace
+#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+#' indicating whether to standardize each numeric variable according to the
+#' numerator means and standard deviations, the denominator means and standard
+#' deviations, or apply no standardization at all.
 #' @param n the number of equally spaced points at which the density is to be
 #' estimated. When n > 512, it is rounded up to a power of 2 during the
 #' calculations (as fft is used) and the final result is interpolated by
@@ -44,22 +48,22 @@
 #' lines(df_new[,1], predict(dr_subspace, df_new), col = "darkorange")
 #'
 #' @export
-naivesubspace <- function(df_numerator, df_denominator, m = NULL, n = 2L^11, ...) {
+naivesubspace <- function(df_numerator, df_denominator, m = NULL,
+                          scale = "numerator", n = 2L^11, ...) {
   cl <- match.call()
-  nu <- as.matrix(df_numerator)
-  de <- as.matrix(df_denominator)
-  check.dataform(nu, de)
+  nu <- check.datatype(df_numerator)
+  de <- check.datatype(df_denominator)
 
-  m <- check.subspace(m, ncol(nu))
+  check.variables(nu, de)
+
+  dat <- check.dataform(nu, de, nu, TRUE, NULL, scale)
+
+  m <- check.subspace(m, ncol(dat$nu))
 
   # first, use svd to compute m-dimensional subspace
-  de_centered <- scale(de, scale = FALSE)
-  center <- attr(de_centered, "scaled:center")
-  V <- svd(de_centered, nu = m, nv = m)$v
-  de_proj <- de_centered %*% V
-
-  nu_centered <- scale(nu, center = center, scale = FALSE)
-  nu_proj <- nu_centered %*% V
+  V <- svd(dat$de, nu = m, nv = m)$v
+  de_proj <- dat$de %*% V
+  nu_proj <- dat$nu %*% V
 
   # then, perform naive density ratio estimation
   d_nu <- lapply(1:m, \(p) density(nu_proj[,p], n = n, ...))
@@ -71,7 +75,7 @@ naivesubspace <- function(df_numerator, df_denominator, m = NULL, n = 2L^11, ...
     df_denominator = df_denominator,
     projection_matrix = V,
     subspace_dim = m,
-    center = center,
+    model_matrices = list(nu = dat$nu, de = dat$de),
     density_numerator = d_nu,
     density_denominator = d_de,
     call = cl

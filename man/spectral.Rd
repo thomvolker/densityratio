@@ -8,6 +8,7 @@ spectral(
   df_numerator,
   df_denominator,
   J = NULL,
+  scale = "numerator",
   nsigma = 10,
   sigma_quantile = NULL,
   sigma = NULL,
@@ -31,6 +32,11 @@ with the denominator samples (must have the same variables as
 spectral series expansion. Defaults to 50 evenly spaced values between 1 and
 the number of denominator samples (or the largest number of samples that can
 be used as centers in the cross-validation scheme).}
+
+\item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+indicating whether to standardize each numeric variable according to the
+numerator means and standard deviations, the denominator means and standard
+deviations, or apply no standardization at all.}
 
 \item{nsigma}{Integer indicating the number of sigma values (bandwidth
 parameter of the Gaussian kernel gram matrix) to use in cross-validation.}

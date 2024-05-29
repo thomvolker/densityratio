@@ -5,6 +5,10 @@
 #' @param df_denominator \code{data.frame} with exclusively numeric variables
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
+#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+#' indicating whether to standardize each numeric variable according to the
+#' numerator means and standard deviations, the denominator means and standard
+#' deviations, or apply no standardization at all.
 #' @param nsigma Integer indicating the number of sigma values (bandwidth
 #' parameter of the Gaussian kernel gram matrix) to use in cross-validation.
 #' @param sigma_quantile \code{NULL} or numeric vector with probabilities to
@@ -38,22 +42,24 @@
 #' kliep(x, y, nsigma = 20, ncenters = 100, nfold = 20, epsilon = 10^{3:-5}, maxit = 1000)
 #'
 
-kliep <- function(df_numerator, df_denominator, nsigma = 10,
+kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10,
                   sigma_quantile = NULL, sigma = NULL, ncenters = 200,
                   centers = NULL, cv = TRUE, nfold = 5, epsilon = NULL,
                   maxit = 2000, progressbar = TRUE) {
 
   cl <- match.call()
-  nu <- as.matrix(df_numerator)
-  de <- as.matrix(df_denominator)
+  nu <- check.datatype(df_numerator)
+  de <- check.datatype(df_denominator)
 
-  nnu <- nrow(nu)
+  check.variables(nu, de, centers)
 
-  check.dataform(nu, de)
-  centers   <- check.centers(nu, centers, ncenters)
+  df_centers <- check.centers(nu, centers, ncenters)
+  dat <- check.dataform(nu, de, df_centers, is.null(centers), NULL, scale)
 
-  dist_nu <- distance(nu, centers)
-  dist_de <- distance(de, centers)
+  nnu <- nrow(dat$nu)
+
+  dist_nu <- distance(dat$nu, dat$ce)
+  dist_de <- distance(dat$de, dat$ce)
 
   sigma   <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   epsilon <- check.epsilon(epsilon)
@@ -70,8 +76,10 @@ kliep <- function(df_numerator, df_denominator, nsigma = 10,
     df_denominator = df_denominator,
     alpha = res$alpha,
     cv_score = switch(cv, res$cv_score, NULL),
+    scale = scale,
     sigma = sigma,
-    centers = centers,
+    centers = df_centers,
+    model_matrices = dat,
     nfold = switch(cv, max(cv_ind) + 1, NULL),
     epsilon = epsilon,
     maxit = maxit,

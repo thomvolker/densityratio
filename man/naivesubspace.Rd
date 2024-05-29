@@ -4,7 +4,14 @@
 \alias{naivesubspace}
 \title{Naive subspace density ratio estimation}
 \usage{
-naivesubspace(df_numerator, df_denominator, m = NULL, n = 2L^11, ...)
+naivesubspace(
+  df_numerator,
+  df_denominator,
+  m = NULL,
+  scale = "numerator",
+  n = 2L^11,
+  ...
+)
 }
 \arguments{
 \item{df_numerator}{\code{data.frame} with exclusively numeric variables with
@@ -15,6 +22,11 @@ with the denominator samples (must have the same variables as
 \code{df_denominator})}
 
 \item{m}{The size (in number of features) of the subspace}
+
+\item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+indicating whether to standardize each numeric variable according to the
+numerator means and standard deviations, the denominator means and standard
+deviations, or apply no standardization at all.}
 
 \item{n}{the number of equally spaced points at which the density is to be
 estimated. When n > 512, it is rounded up to a power of 2 during the

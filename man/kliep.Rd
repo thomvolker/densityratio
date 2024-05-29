@@ -7,6 +7,7 @@
 kliep(
   df_numerator,
   df_denominator,
+  scale = "numerator",
   nsigma = 10,
   sigma_quantile = NULL,
   sigma = NULL,
@@ -26,6 +27,11 @@ the numerator samples}
 \item{df_denominator}{\code{data.frame} with exclusively numeric variables
 with the denominator samples (must have the same variables as
 \code{df_denominator})}
+
+\item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+indicating whether to standardize each numeric variable according to the
+numerator means and standard deviations, the denominator means and standard
+deviations, or apply no standardization at all.}
 
 \item{nsigma}{Integer indicating the number of sigma values (bandwidth
 parameter of the Gaussian kernel gram matrix) to use in cross-validation.}

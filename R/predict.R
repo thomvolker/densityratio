@@ -27,7 +27,7 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
 
   newsigma  <- check.sigma.predict(object, sigma)
   newlambda <- check.lambda.predict(object, lambda)
-  newdata <- check.newdata(object, newdata)
+  newdata   <- check.newdata(object, newdata)
 
   alpha     <- extract_params(object, sigma = newsigma, lambda = newlambda, ...)
   nsigma    <- length(newsigma)
@@ -36,7 +36,7 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
   intercept <- nrow(object$alpha) > nrow(object$centers)
 
   for (i in 1:nsigma) {
-    K <- distance(newdata, object$centers, intercept) |> kernel_gaussian(newsigma[i])
+    K <- distance(newdata, object$model_matrices$ce, intercept) |> kernel_gaussian(newsigma[i])
     for (j in 1:nlambda) {
       dratio[ , i, j] <- K %*% alpha[, i, j]
     }
@@ -79,7 +79,7 @@ predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
   intercept <- nrow(object$alpha) > nrow(object$centers)
 
   for (i in 1:nsigma) {
-    K <- distance(newdata, object$centers, intercept) |> kernel_gaussian(newsigma[i])
+    K <- distance(newdata, object$model_matrices$ce, intercept) |> kernel_gaussian(newsigma[i])
     dratio[, i] <- K %*% alpha[, i]
   }
   dratio
@@ -126,7 +126,7 @@ predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), l
     for (j in 1:nsigma) {
       U_new <- alpha_U_sigma$U[ , , j, i]
       alpha_new <- alpha_U_sigma$alpha[ , j, i]
-      K <- distance(newdata %*% U_new, object$centers %*% U_new, intercept) |>
+      K <- distance(newdata %*% U_new, object$model_matrices$ce %*% U_new, intercept) |>
         kernel_gaussian(sigma = alpha_U_sigma$sigma[j, i])
       dratio[ , j, i] <- K %*% alpha_new
     }
@@ -170,9 +170,9 @@ predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"
   dratio <- array(0, dim = c(nrow(newdata), length(newJ), length(newsigma)))
 
   for (i in 1:length(newsigma)) {
-    K <- distance(newdata, object$centers, FALSE) |> kernel_gaussian(newsigma[i])
+    K <- distance(newdata, object$model_matrices$ce, FALSE) |> kernel_gaussian(newsigma[i])
     D <- diag(length(alpha_eigen$Evals[,i]))
-    diag(D) <- sqrt(nrow(object$centers))/alpha_eigen$Evals[,i]
+    diag(D) <- sqrt(nrow(object$model_matrices$ce))/alpha_eigen$Evals[,i]
     phihatpred <- K %*% alpha_eigen$Evecs[,,i] %*% D
     for (j in 1:length(newJ)) {
       dratio[ , j, i] <- phihatpred[,seq_len(newJ[j]), drop = FALSE] %*% alpha_eigen$alpha[seq_len(newJ[j]),i, drop = FALSE]
@@ -282,10 +282,7 @@ predict.naivesubspacedensityratio <- function(object, newdata = NULL, log = FALS
 
   N <- nrow(newdata)
 
-  # project newdata to subspace
-  nd <- as.matrix(newdata)
-  nd_centered <- scale(nd, center = object$center, scale = FALSE)
-  nd_proj <- nd_centered %*% object$projection_matrix
+  nd_proj <- newdata %*% object$projection_matrix
 
   # work on log scale
   # log-densities

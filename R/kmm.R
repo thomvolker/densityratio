@@ -5,6 +5,10 @@
 #' @param df_denominator \code{data.frame} with exclusively numeric variables
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
+#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+#' indicating whether to standardize each numeric variable according to the
+#' numerator means and standard deviations, the denominator means and standard
+#' deviations, or apply no standardization at all.
 #' @param method Character string containing the method used for kernel mean
 #' matching. Currently, \code{method = "unconstrained"} and
 #' \code{method = "constrained"} are supported.
@@ -27,13 +31,17 @@
 #' kmm(x, y, sigma = 2, lambda = 2)
 #'
 
-kmm <- function(df_numerator, df_denominator, method = "unconstrained", sigma = NULL, lambda = NULL) {
+kmm <- function(df_numerator, df_denominator, scale = "numerator",
+                method = "unconstrained", sigma = NULL, lambda = NULL) {
 
   cl <- match.call()
-  nu <- as.matrix(df_numerator)
-  de <- as.matrix(df_denominator)
 
-  check.dataform(nu, de)
+  nu <- check.datatype(df_numerator)
+  de <- check.datatype(df_denominator)
+
+  check.variables(nu, de)
+
+  dat <- check.dataform(nu, de, de, TRUE, NULL, scale)
 
   methods <- c("unconstrained", "constrained")
 
@@ -42,9 +50,6 @@ kmm <- function(df_numerator, df_denominator, method = "unconstrained", sigma = 
 
   if (length(method) > 1 | !method %in% methods) {
     stop(paste("Method must be a single method: constrained or unconstrained"))
-  }
-  if (!is.numeric(de) | !is.numeric(nu) | !ncol(de) == ncol(nu)) {
-    stop("Arguments de and nu must be matrices with the same variables")
   }
   if (!is.null(sigma)) {
     if (!is.numeric(sigma) | length(sigma) > 1) {
@@ -56,11 +61,11 @@ kmm <- function(df_numerator, df_denominator, method = "unconstrained", sigma = 
       stop("Only scalar values for lambda are currently accepted")
     }
   } else {
-    lambda <- sqrt(nrow(nu) + nrow(de))
+    lambda <- sqrt(nrow(dat$nu) + nrow(dat$de))
   }
 
-  distdede <- distance(de, de, FALSE)
-  distdenu <- distance(de, nu, FALSE)
+  distdede <- distance(dat$de, dat$de, FALSE)
+  distdenu <- distance(dat$de, dat$nu, FALSE)
   if (is.null(sigma)) {
     sigma <- stats::median(distdede[distdede > 0])
   }

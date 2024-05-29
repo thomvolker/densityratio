@@ -10,6 +10,10 @@
 #' @param df_denominator \code{data.frame} with exclusively numeric variables
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
+#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+#' indicating whether to standardize each numeric variable according to the
+#' numerator means and standard deviations, the denominator means and standard
+#' deviations, or apply no standardization at all.
 #' @param n \code{integer} the number of equally spaced points at which the density is
 #' estimated. When n > 512, it is rounded up to a power of 2 during the
 #' calculations (as fft is used) and the final result is interpolated by
@@ -30,22 +34,27 @@
 #' naive(x, y, bw = 2)
 #'
 #' @export
-naive <- function(df_numerator, df_denominator, n = 2L^11, ...) {
+naive <- function(df_numerator, df_denominator, scale = "numerator", n = 2L^11, ...) {
   cl <- match.call()
-  nu <- as.matrix(df_numerator)
-  de <- as.matrix(df_denominator)
-  P <- ncol(nu)
-  check.dataform(nu, de)
 
-  # naive-bayes like assumption of independence:
+  nu <- check.datatype(df_numerator)
+  de <- check.datatype(df_denominator)
+
+  check.variables(nu, de)
+  dat <- check.dataform(nu, de, nu, TRUE, NULL, scale)
+
+  P <- ncol(dat$nu)
+
+  # naive-Bayes like assumption of independence:
   # compute and store densities for each column
-  d_nu <- lapply(1:P, \(p) density(nu[,p], n = n, ...))
-  d_de <- lapply(1:P, \(p) density(de[,p], n = n, ...))
+  d_nu <- lapply(1:P, \(p) density(dat$nu[,p], n = n, ...))
+  d_de <- lapply(1:P, \(p) density(dat$de[,p], n = n, ...))
 
   # return object
   out <- list(
     df_numerator = df_numerator,
     df_denominator = df_denominator,
+    model_matrices = list(nu = dat$nu, de = dat$de),
     density_numerator = d_nu,
     density_denominator = d_de,
     call = cl

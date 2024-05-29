@@ -8,6 +8,10 @@
 #' @param m Scalar indicating the dimensionality of the reduced subspace
 #' @param intercept \code{logical} Indicating whether to include an intercept
 #' term in the model. Defaults to \code{TRUE}.
+#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+#' indicating whether to standardize each numeric variable according to the
+#' numerator means and standard deviations, the denominator means and standard
+#' deviations, or apply no standardization at all.
 #' @param nsigma Integer indicating the number of sigma values (bandwidth
 #' parameter of the Gaussian kernel gram matrix) to use in cross-validation.
 #' @param sigma_quantile \code{NULL} or numeric vector with probabilities to
@@ -49,21 +53,23 @@
 
 
 lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
-                     nsigma = 10, sigma_quantile = NULL, sigma = NULL,
-                     nlambda = 10, lambda = NULL, ncenters = 200,
-                     centers = NULL, maxit = 200, parallel = FALSE,
-                     nthreads = NULL, progressbar = TRUE) {
+                 scale = "numerator", nsigma = 10, sigma_quantile = NULL,
+                 sigma = NULL, nlambda = 10, lambda = NULL, ncenters = 200,
+                 centers = NULL, maxit = 200, parallel = FALSE, nthreads = NULL,
+                 progressbar = TRUE) {
 
-  cl   <- match.call()
-  nu   <- as.matrix(df_numerator)
-  de   <- as.matrix(df_denominator)
-  p    <- ncol(nu)
-  n_nu <- nrow(nu)
-  n_de <- nrow(de)
+  cl <- match.call()
+  nu <- check.datatype(df_numerator)
+  de <- check.datatype(df_denominator)
 
-  check.dataform(nu, de)
-  centers        <- check.centers(nu, centers, ncenters)
-  symmetric      <- check.symmetric(nu, centers)
+  check.variables(nu, de, centers)
+
+  df_centers <- check.centers(nu, centers, ncenters)
+  dat <- check.dataform(nu, de, df_centers, is.null(centers), NULL, scale)
+
+  p <- ncol(dat$nu)
+
+  symmetric      <- check.symmetric(dat$nu, dat$ce)
   parallel       <- check.parallel(parallel, nthreads, sigma, lambda)
   nthreads       <- check.threads(parallel, nthreads)
   sigma_quantile <- check.sigma_quantile.lhss(nsigma, sigma, sigma_quantile)
@@ -73,7 +79,7 @@ lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
   m              <- check.subspace(m, p)
   maxit          <- check.maxit(maxit)
 
-  res <- lhss_compute_alpha(nu, de, centers, symmetric, m, intercept, sigma,
+  res <- lhss_compute_alpha(dat$nu, dat$de, dat$ce, symmetric, m, intercept, sigma,
                             is_quantile, lambda, maxit, parallel, nthreads,
                             progressbar)
 
@@ -90,12 +96,14 @@ lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
     df_denominator = df_denominator,
     alpha = res$alpha,
     cv_score = res$loocv,
+    scale = scale,
     sigma = res$sigmaopt,
     sigma_quantiles = sigma_quantile,
     lambda = lambda,
     U = U,
     m = m,
-    centers = centers,
+    centers = df_centers,
+    model_matrices = dat,
     alpha_opt = res$alpha[, min_score[1], min_score[2]],
     lambda_opt = lambda[min_score[2]],
     sigma_opt = res$sigmaopt[min_score[1], min_score[2]],

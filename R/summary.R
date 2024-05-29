@@ -21,8 +21,8 @@
 
 summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, ...) {
 
-  nu <- as.matrix(object$df_numerator)
-  de <- as.matrix(object$df_denominator)
+  nu <- check.datatype(object$df_numerator)
+  de <- check.datatype(object$df_denominator)
   stacked <- rbind(nu, de)
   nnu <- nrow(nu)
   nde <- nrow(de)
@@ -33,8 +33,8 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
     on.exit(parallel::stopCluster(cl))
   }
 
-  pred_nu <- c(stats::predict(object, newdata = nu))
-  pred_de <- c(stats::predict(object, newdata = de))
+  pred_nu <- c(stats::predict(object, newdata = object$df_numerator))
+  pred_de <- c(stats::predict(object, newdata = object$df_denominator))
 
   obsPE  <- 1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
   if (test) {
@@ -55,7 +55,7 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
     lambda_opt = object$lambda_opt,
     centers    = object$centers,
     dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(c(rep(c("nu", "de"), c(nnu, nde))))),
+                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
     PE = obsPE,
     PErec = switch(test, recPE, NULL),
     refPE = switch(test, distPE, NULL),
@@ -92,8 +92,8 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
 
 summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, min_pred = 1e-6, ...) {
 
-  nu <- as.matrix(object$df_numerator)
-  de <- as.matrix(object$df_denominator)
+  nu <- check.datatype(object$df_numerator)
+  de <- check.datatype(object$df_denominator)
   stacked <- rbind(nu, de)
   nnu <- nrow(nu)
   nde <- nrow(de)
@@ -157,8 +157,8 @@ summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
 
 summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, ...) {
 
-  nu <- as.matrix(object$df_numerator)
-  de <- as.matrix(object$df_denominator)
+  nu <- check.datatype(object$df_numerator)
+  de <- check.datatype(object$df_denominator)
   stacked <- rbind(nu, de)
   nnu <- nrow(nu)
   nde <- nrow(de)
@@ -192,7 +192,7 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
     m = object$m,
     centers    = object$centers,
     dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(c(rep(c("nu", "de"), c(nnu, nde))))),
+                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
     PE = obsPE,
     PErec = switch(test, recPE, NULL),
     refPE = switch(test, distPE, NULL),
@@ -225,8 +225,8 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
 
 summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, ...) {
 
-  nu <- as.matrix(object$df_numerator)
-  de <- as.matrix(object$df_denominator)
+  nu <- check.datatype(object$df_numerator)
+  de <- check.datatype(object$df_denominator)
   stacked <- rbind(nu, de)
   nnu <- nrow(nu)
   nde <- nrow(de)
@@ -259,7 +259,7 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
     J_opt = object$J_opt,
     centers    = object$centers,
     dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(c(rep(c("nu", "de"), c(nnu, nde))))),
+                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
     PE = obsPE,
     PErec = switch(test, recPE, NULL),
     refPE = switch(test, distPE, NULL),
@@ -292,13 +292,13 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
 
 summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, ...) {
 
-  nu <- as.matrix(object$df_numerator)
-  de <- as.matrix(object$df_denominator)
+  nu <- check.datatype(object$df_numerator)
+  de <- check.datatype(object$df_denominator)
 
   stacked <- rbind(nu, de)
 
-  n_nu <- nrow(nu)
-  n_de <- nrow(de)
+  nnu <- nrow(nu)
+  nde <- nrow(de)
 
   if (parallel & is.null(cl)) {
     ncores <- parallel::detectCores() - 1
@@ -316,17 +316,17 @@ summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parall
   if (test) {
     distSALDRD <- pbapply::pbreplicate(
       n_perm,
-      permute(object, stacked = stacked, nnu = n_nu, nde = n_de, min_pred = min_pred, max_pred = max_pred),
+      permute(object, stacked = stacked, nnu = nnu, nde = nde, min_pred = min_pred, max_pred = max_pred),
       simplify = TRUE,
       cl = cl
     )
   }
 
   out <- list(
-    n = c(n_nu = n_nu, n_de = n_de),
+    n = c(nnu = nnu, nde = nde),
     nvars = ncol(nu),
     dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(rep(c("nu", "de"), c(n_nu, n_de)))),
+                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
     SALDRD = SALDRD,
     refSALDRD = switch(test, distSALDRD, NULL),
     p_value = switch(test, mean(distSALDRD > SALDRD), NULL),
@@ -358,13 +358,13 @@ summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parall
 
 summary.naivesubspacedensityratio <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, ...) {
 
-  nu <- as.matrix(object$df_numerator)
-  de <- as.matrix(object$df_denominator)
+  nu <- check.datatype(object$df_numerator)
+  de <- check.datatype(object$df_denominator)
 
   stacked <- rbind(nu, de)
 
-  n_nu <- nrow(nu)
-  n_de <- nrow(de)
+  nnu <- nrow(nu)
+  nde <- nrow(de)
 
   if (parallel & is.null(cl)) {
     ncores <- parallel::detectCores() - 1
@@ -382,18 +382,18 @@ summary.naivesubspacedensityratio <- function(object, test = FALSE, n_perm = 100
   if (test) {
     distSALDRD <- pbapply::pbreplicate(
       n_perm,
-      permute(object, stacked = stacked, nnu = n_nu, nde = n_de, min_pred = min_pred, max_pred = max_pred),
+      permute(object, stacked = stacked, nnu = nnu, nde = nde, min_pred = min_pred, max_pred = max_pred),
       simplify = TRUE,
       cl = cl
     )
   }
 
   out <- list(
-    n = c(n_nu = n_nu, n_de = n_de),
+    n = c(nnu = nnu, nde = nde),
     nvars = ncol(nu),
     subspace_dim = object$m,
     dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(rep(c("nu", "de"), c(n_nu, n_de)))),
+                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
     SALDRD = SALDRD,
     refSALDRD = switch(test, distSALDRD, NULL),
     p_value = switch(test, mean(distSALDRD > SALDRD), NULL),

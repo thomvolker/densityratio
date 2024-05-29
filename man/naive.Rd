@@ -4,7 +4,7 @@
 \alias{naive}
 \title{Naive density ratio estimation}
 \usage{
-naive(df_numerator, df_denominator, n = 2L^11, ...)
+naive(df_numerator, df_denominator, scale = "numerator", n = 2L^11, ...)
 }
 \arguments{
 \item{df_numerator}{\code{data.frame} with exclusively numeric variables with
@@ -13,6 +13,11 @@ the numerator samples}
 \item{df_denominator}{\code{data.frame} with exclusively numeric variables
 with the denominator samples (must have the same variables as
 \code{df_denominator})}
+
+\item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+indicating whether to standardize each numeric variable according to the
+numerator means and standard deviations, the denominator means and standard
+deviations, or apply no standardization at all.}
 
 \item{n}{\code{integer} the number of equally spaced points at which the density is
 estimated. When n > 512, it is rounded up to a power of 2 during the

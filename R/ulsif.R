@@ -7,6 +7,10 @@
 #' \code{df_denominator})
 #' @param intercept \code{logical} Indicating whether to include an intercept
 #' term in the model. Defaults to \code{TRUE}.
+#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+#' indicating whether to standardize each numeric variable according to the
+#' numerator means and standard deviations, the denominator means and standard
+#' deviations, or apply no standardization at all.
 #' @param nsigma Integer indicating the number of sigma values (bandwidth
 #' parameter of the Gaussian kernel gram matrix) to use in cross-validation.
 #' @param sigma_quantile \code{NULL} or numeric vector with probabilities to
@@ -43,23 +47,26 @@
 #' ulsif(x, y)
 #' ulsif(x, y, sigma = 2, lambda = 2)
 
-ulsif <- function(df_numerator, df_denominator, intercept = TRUE, nsigma = 10,
-                  sigma_quantile = NULL, sigma = NULL, nlambda = 20,
+ulsif <- function(df_numerator, df_denominator, intercept = TRUE, scale = "numerator",
+                  nsigma = 10, sigma_quantile = NULL, sigma = NULL, nlambda = 20,
                   lambda = NULL, ncenters = 200, centers = NULL,
                   parallel = FALSE, nthreads = NULL, progressbar = TRUE) {
 
-  cl <- match.call()
-  nu <- as.matrix(df_numerator)
-  de <- as.matrix(df_denominator)
+  cl  <- match.call()
+  nu <- check.datatype(df_numerator)
+  de <- check.datatype(df_denominator)
 
-  check.dataform(nu, de)
-  centers   <- check.centers(nu, centers, ncenters)
+  check.variables(nu, de, centers)
+
+  df_centers <- check.centers(nu, centers, ncenters)
+  dat <- check.dataform(nu, de, df_centers, is.null(centers), NULL, scale)
+
   parallel  <- check.parallel(parallel, nthreads, sigma, lambda)
   nthreads  <- check.threads(parallel, nthreads)
   intercept <- check.intercept(intercept)
 
-  dist_nu <- distance(nu, centers, intercept)
-  dist_de <- distance(de, centers, intercept)
+  dist_nu <- distance(dat$nu, dat$ce, intercept)
+  dist_de <- distance(dat$de, dat$ce, intercept)
 
   sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   lambda <- check.lambda(nlambda, lambda)
@@ -76,9 +83,11 @@ ulsif <- function(df_numerator, df_denominator, intercept = TRUE, nsigma = 10,
     df_denominator = df_denominator,
     alpha = res$alpha,
     cv_score = loocv_scores,
+    scale = scale,
     sigma = sigma,
     lambda = lambda,
-    centers = centers,
+    centers = df_centers,
+    model_matrices = dat,
     alpha_opt = res$alpha[, min_score[1], min_score[2]],
     lambda_opt = lambda[min_score[2]],
     sigma_opt = sigma[min_score[1]],

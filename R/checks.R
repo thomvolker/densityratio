@@ -1,18 +1,94 @@
 #' @importFrom stats quantile
 #' @importFrom stats median
-check.dataform <- function(nu, de) {
-  # Only accept numeric input matrices (vectors/data.frames/tibbles
-  # are converted to matrices by default)
-  if (! (is.numeric(nu) & is.numeric(de))) {
-    stop("Currently only numeric data is supported.")
+#' @importFrom stats model.matrix
+#' @importFrom stats sd
+
+check.datatype <- function(data) {
+  if (is.vector(data)) data <- data.frame(x = data)
+  else data <- as.data.frame(data)
+  data
+}
+
+check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, scale) {
+
+  numvars <- which(sapply(nu, is.numeric))
+  numvars_de <- which(sapply(de, is.numeric))
+  if (!is.null(centers)) {
+    numvars_ce <- which(sapply(centers, is.numeric))
+    alldat <- rbind(nu, de, centers)
+    ind <- c(rep("nu", nrow(nu)), rep("de", nrow(de)), rep("ce", nrow(centers)))
+  } else {
+    alldat <- rbind(nu, de)
+    ind <- c(rep("nu", nrow(nu)), rep("de", nrow(de)))
   }
-  # check whether the data sets have the same set of variables
-  if (ncol(nu) != ncol(de) | !all.equal(colnames(nu), colnames(de))) {
-    stop("nu and de must contain exactly the same set of variables.")
+
+  scale <- match.arg(scale, c("numerator", "denominator", FALSE))
+
+  scaledat <- if (scale == "numerator") {
+    nu[, numvars, drop = FALSE]
+  } else if (scale == "denominator") {
+    de[, numvars, drop = FALSE]
   }
-  #
-  if ((sum(is.na(nu)) + sum(is.na(de))) > 0) {
-    stop("Your data has missing values, which cannot yet be handled.")
+
+  if (scale != FALSE) {
+    if (!nullcenters) {
+      warning("Note that you provided centers while also applying scaling to the variables. The centers are scaled accordingly.")
+    }
+
+    means <- colMeans(scaledat)
+    sds   <- sapply(scaledat, sd)
+
+    alldat[, numvars] <- scale(alldat[, numvars], center = means, scale = sds) |> as.data.frame()
+
+    if (any(sds == 0)) {
+      warning("Some variables have zero variance in the data used for scaling. These variables are removed from both the numerator and denominator data.")
+      remove_vars <- numvars[which(sds == 0)]
+      alldat <- alldat[, - remove_vars, drop = FALSE]
+    }
+  }
+
+  dat <- model.matrix( ~ ., alldat)[,-1, drop = FALSE]
+
+  if (!is.null(newdata)) {
+    newdata <- check.datatype(newdata)
+    if (scale != FALSE) {
+      newdata[, numvars] <- scale(newdata[, numvars], center = means, scale = sds) |> as.data.frame()
+    }
+    alldat <- rbind(alldat, newdata)
+    newdat <- model.matrix( ~ ., alldat)[,-1, drop = FALSE]
+    newdat <- newdat[(nrow(dat) + 1):(nrow(dat)+nrow(newdata)), , drop = FALSE]
+    dat <- newdat[,colnames(dat), drop = FALSE]
+    return(dat)
+  }
+  else {
+    dat <- list(nu = dat[ind == "nu", , drop = FALSE],
+                de = dat[ind == "de", , drop = FALSE],
+                ce = dat[ind == "ce", , drop = FALSE])
+    return(dat)
+  }
+}
+
+check.variables <- function(nu, de, ce = NULL) {
+
+  nu <- check.datatype(nu)
+  de <- check.datatype(de)
+
+  numvars_nu <- which(sapply(nu, is.numeric))
+  numvars_de <- which(sapply(de, is.numeric))
+
+  if (!all(numvars_nu == numvars_de) |
+      ncol(nu) != ncol(de) |
+      !all(colnames(nu) == colnames(de))) {
+    stop("The numerator and denominator data must contain the same variables.")
+  }
+  if (!is.null(ce)) {
+    ce <- check.datatype(ce)
+    numvars_ce <- which(sapply(ce, is.numeric))
+    if (!all(numvars_nu == numvars_ce) |
+        ncol(nu) != ncol(ce) |
+        !all(colnames(nu) == colnames(ce))) {
+      stop("The data and centers must contain the same variables.")
+    }
   }
 }
 
@@ -109,8 +185,7 @@ check.lambda <- function(nlambda, lambda) {
 check.centers <- function(nu, centers, ncenters) {
 
   if (!is.null(centers)) {
-    centers <- as.matrix(centers)
-    check.dataform(nu, centers)
+    centers <- check.datatype(centers)
   } else {
     if (!is.numeric(ncenters) | length(ncenters) != 1 | ncenters < 1) {
       stop("The 'ncenters' parameter must be a positive numeric scalar.")
@@ -118,7 +193,6 @@ check.centers <- function(nu, centers, ncenters) {
       centers <- nu
     } else if (ncenters > nrow(nu)) {
       centers <- nu
-      warning(paste0("The 'ncenters' parameter exceeds the number of numerator records. Since the centers are selected from the numerator samples, 'ncenters' is set to ", nrow(nu), ".\n"))
     } else {
       centers <- nu[sample(nrow(nu), ncenters), , drop = FALSE]
     }
@@ -350,11 +424,18 @@ check.subspace.spectral <- function(J, cv_ind_de) {
 
 check.newdata <- function(object, newdata) {
   if (!is.null(newdata)) {
-    newdata <- as.matrix(newdata)
-    check.dataform(as.matrix(object$df_numerator), newdata)
+    check.variables(object$df_numerator, newdata)
+    newdata <- check.dataform(
+      check.datatype(object$df_numerator),
+      check.datatype(object$df_denominator),
+      NULL,
+      TRUE,
+      newdata,
+      object$scale
+    )
   }
   else {
-    newdata <- as.matrix(object$df_numerator)
+    newdata <- object$model_matrices$nu
   }
   newdata
 }
