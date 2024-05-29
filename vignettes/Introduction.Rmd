@@ -1,0 +1,185 @@
+---
+title: "Introduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(densityratio)
+```
+
+# Introduction
+
+The goal of the `densityratio` package is to provide an accessible, complete and easy way to perform density ratio estimation. It includes functionality to estimate density ratios using different methods, summarize and examine the results - including visualization features.
+
+In this vignette, we guide through a full user case: how to estimate density ratios, how to examine and visualize the results, and a usecase of density ratios in practice for covariate shift adaptation.
+
+Throughout the vignette, we illustrate the functionality using the penguins dataset. We can load the dataset from the `palmerpenguins` package. After loading it, we split the data into two parts: the numerator and the denominator. For simplicity, we use a 50-50 split and we only use data with numeric variables.
+
+
+```{r}
+library(palmerpenguins)
+library(dplyr)
+library(tidyr)
+
+data <- penguins |> 
+  select(starts_with("bill") | starts_with("flipper") | starts_with("body_mass") | year) |> 
+  na.omit()
+
+set.seed(444)
+
+# Numerator and denominator have equal distributions
+index <- sample(1:nrow(data), size = nrow(data) * 0.5)
+eq_numerator <- data[index,] 
+eq_denominator <- data[-index,]
+
+# Numerator and denominator have different distributions
+prob <- data |> 
+  mutate(z = -9 + 0.0025*body_mass_g,
+         prob = 1/(1 + exp(-z))) 
+index <- sample(1:nrow(data), size = nrow(data) * 0.5, prob = prob$prob)
+dif_numerator <- data[index,]
+dif_denominator <- data[-index, ]
+```
+
+
+# Density ratio estimation
+
+A density ratio is simply a ratio of the density of two samples:
+$$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$ 
+
+The package provides functionality to estimate a density ratio using different methods, most notably without directly estimating the numerator and denominator density separately. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated
+over the entire multivariate space of the data. Subsequently, the density ratio values can be examined, or summarized in different ways. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting
+under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. 
+
+
+The package includes different methods for density ratio estimation. Each of these methods has its own function, but all the functions work similarly. The user provides two datasets (numerator and denominator), and the function returns a `densityratio` object, which can be used and examined.
+
+For instance, we can use the function `ulsif()`, which accounts for 'unconstrained least-squares importance fitting'. The function is called as follows:
+
+```{r}
+densratio_diff <- ulsif(dif_numerator, dif_denominator)
+densratio_eq <- ulsif(eq_numerator, eq_denominator)
+```
+If no extra parameters are provided, the function uses default values and, when possible, determines optimal parameters through cross-validation. Different methods are available for the resulting object.
+
+```{r}
+summary(densratio, test = TRUE)
+```
+The summary method displays information regarding estimation (e.g., optimal sigma and lambda), the Pearson divergence (a measure of discrepancy between densities), and the test results. The rest results are interpreted as follows ...ADD.
+
+Other density ratio estimation methods are available, concretely: Kullback-Leibler importance estimation procedure (`kliep()`), ratio of estimated densities (`naive()`), ratio of estimated densities after dimension reduction (`naivesubspace()`), least-squares heterodistributional subspace search (`lhss()`), and 'spectral estimation?` (`spectral()`).
+
+There is also a `print` method, and a `predict` method. The predict method can be used to predict density ratios for new data, or to get the density ratio predictions for the observed data.
+
+```{r}
+predict(densratio, data = numerator)
+print(densratio)
+```
+
+
+# Visualization methods
+
+The package includes different visualization methods to examine the density ratio results. The plots are built with `ggplot2`, and thus return a customizable `ggplot2` object. 
+
+The default `plot` method results in a histogram of the log of the density ratio values. The `plot()` method takes different arguments, so you can plot the densityratio for only some samples, using the original (and not log transformed) scale, etc. You can check them with `?plot.ulsif`.
+
+The default function is meant to given an overview of the similarity of the samples. For equal samples, the density ratio should be 1, and thus its log should be zero. Therefore, we expect the distribution to be centered around zero, and with no major differences of the distribution between numerator and denominator samples. 
+
+```{r}
+plot(densratio_eq)
+```
+
+
+In cases where the numerator and denominator samples have different densities, the density ratio values will be different from 1. We no longer expect the distribution to be centered at zero, and we expect to see differences in the distributions between the numerator and denominator samples (one having larger values than the other). Notice the change of the scale of x-axis between the next and previous plots.
+´
+```{r}
+plot(densratio_diff)
+```
+There are two other visualization functions, `plot_univariate()` and `plot_bivariate()`. The `plot_univariate()` function plots the value of the density ratio for each variable separately, against the density ratio, and see if there are any patterns. For instance, we can plot the density ratio against the values of "body mass". 
+
+There is a very clear non-linear pattern with, in general, lower values of body mass presenting lower density ratio estimates. The clarity of this pattern is unlikely in the real data, but it is what would we expected for the data: it represents exactly the way in which the probability of pertaining to the numerator data was made dependent on the body mass.
+
+```{r}
+plot_univariate(densratio_diff, vars = "body_mass_g")
+```
+We can also plot the same plot for all variables at once, allowing us to see that some (milder) relationships are present with respect to bill depth and, especially, bill length and flipper length. This is also not surprising, because this variables are correlated with body mass. Other plotting options (e.g., making separate facets for denominator and numerator samples, plotting only subesets of the data), are possible.
+
+
+```{r}
+plot_univariate(densratio_diff, grid = TRUE) 
+```
+
+
+On the other hand, the `plot_bivariate()` function plots the value of the density ratio for pairs of variables. We need to select which variables we want in the x-axis (vars1), and which ones we want in the y-axis (vars2). The function will plot a scatterplot of both variables, for each combination of variables, and color the points according to the density ratio values.
+
+```{r}
+plot_bivariate(densratio_diff, vars1 = c("bill_length_mm", "bill_depth_mm", "flipper_length_mm"), vars2 = c("flipper_length_mm", "body_mass_g", "bill_depth_mm"), grid = TRUE)
+```
+The bivariate plot gives a nice overview of how the densityratio varies on multivariate space. For instance, it is clear that lower values of body mass index are associated with lower density ratios (i.e., this values are more likely to appear in the denominator data). There is also an interesting relationship between bill depth and the densityratio. For low values of bill depth, the log of the densityratio is 1, meaning these observations are more likely to come from the numerator data. The relatioship changes depending ont he values of the other variables, etc.
+
+
+# User case: covariate shift adaptation
+
+```{r}
+library(randomForest)
+library(gbm)
+
+data <- 
+  penguins |> 
+  select(starts_with("bill") | starts_with("flipper") | starts_with("body_mass") | year | species) |> 
+  na.omit()
+
+train <- data[index,]
+test <- data[-index,]
+
+weights<-predict(densratio_diff, newdata = dif_numerator)[,,1]
+
+
+
+# Do same as randomforest, but for logistic model
+glm_train <- glm(formula = species ~ . ,
+    data = train, 
+    family = binomial)
+
+table(predict(glm_train, test, type = "response") > 0.5, test$species)
+
+glm_train_reweighted <- glm(formula = species ~ . ,
+    data = train, 
+    family = binomial,
+    weights = weights)
+
+table(predict(glm_train_reweighted, test, type = "response") > 0.5, test$species)
+
+```
+
+
+```{r}
+
+weights
+
+randomforest <- randomForest(species ~ . , train)
+predict(randomforest, test)
+
+# confusion matrix
+table(predict(randomforest, test), test$species)
+
+
+randomForest(formula = species ~ . ,
+             data = train, 
+             classwt = weights)
+```
+
+
+
+lm, randomForest, gbm
