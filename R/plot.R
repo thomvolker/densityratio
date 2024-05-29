@@ -424,7 +424,7 @@ plot_bivariate <- function(x, vars, samples = "both", grid = FALSE,
   check.var.names(vars, data)
   var_combinations <- expand.grid(vars, vars)
 
-  ext <- data.frame(dr = predict(object, newdata = data, ...),
+  ext <- data.frame(dr = predict(x, newdata = data, ...),
                     sample = c(rep("numerator", nrow(x$df_numerator)),
                                rep("denominator", nrow(x$df_denominator))))
 
