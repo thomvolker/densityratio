@@ -99,14 +99,14 @@ List spectral_dre(const arma::mat& dist_nu,
   #else
   if (parallel) {
     std::string warn = "OpenMP is not available, parallel processing is disabled.";
-    Rf_warningcall(R_NilValue, warn.c_str());
+    Rf_warningcall(R_NilValue, "%s", warn.c_str());
   }
   #endif
   Progress p(nsigma, progressbar);
 
   for (int sig = 0; sig < nsigma; sig++) {
     if(Progress::check_abort()) {
-      if (progressbar) Rprintf("%s", "\n");
+      if (progressbar) Rprintf("\n");
       Rcpp::stop("User terminated execution.");
       R_FlushConsole();
     } else {

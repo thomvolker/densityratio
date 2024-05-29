@@ -32,7 +32,7 @@ int set_threads(int nthreads) {
   if (nthreads > max_threads) {
     nthreads = max_threads;
     std::string warn = "'nthreads' exceeds the maximum number of threads to use for parallel processing; it is set to the maximum number of threads available (" + std::to_string(nthreads) + ")";
-    Rf_warningcall(R_NilValue, warn.c_str());
+    Rf_warningcall(R_NilValue, "%s", warn.c_str());
   }
   return nthreads;
 }
@@ -117,7 +117,7 @@ List compute_ulsif(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
     }
     if (stopped) {
       if (progressbar) {
-        Rprintf("%s", "\n");
+        Rprintf("\n");
       }
       Rcpp::stop("User terminated execution.");
       R_FlushConsole();
