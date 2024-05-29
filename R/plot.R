@@ -19,6 +19,7 @@
 #' @param ... Additional arguments passed on to `predict()`.
 #'
 #' @return A histogram of density ratio estimates.
+#' @importFrom utils combn
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 aes
 #' @importFrom ggplot2 position_dodge2
@@ -419,7 +420,7 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
   # Check variable names
   if (is.null(vars)) vars <- colnames(data)
   check.var.names(vars, data)
-  var_combinations <- as.data.frame(combn(vars, 2))
+  var_combinations <- as.data.frame(utils::combn(vars, 2))
 
   ext <- data.frame(dr = predict(x, newdata = data, ...),
                     sample = c(rep("numerator", nrow(x$df_numerator)),
