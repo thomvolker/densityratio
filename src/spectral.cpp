@@ -106,7 +106,7 @@ List spectral_dre(const arma::mat& dist_nu,
 
   for (int sig = 0; sig < nsigma; sig++) {
     if(Progress::check_abort()) {
-      if (progressbar) Rprintf("\n");
+      if (progressbar) Rprintf("%s", "\n");
       Rcpp::stop("User terminated execution.");
       R_FlushConsole();
     } else {

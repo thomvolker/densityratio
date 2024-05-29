@@ -90,7 +90,7 @@ List compute_ulsif(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
   #else
   if (parallel) {
     std::string warn = "OpenMP is not available, parallel processing is disabled.";
-    Rf_warningcall(R_NilValue, warn.c_str());
+    Rf_warningcall(R_NilValue, "%s", warn.c_str());
   }
   #endif
   Progress p(nsigma * nlambda, progressbar);
@@ -117,7 +117,7 @@ List compute_ulsif(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
     }
     if (stopped) {
       if (progressbar) {
-        Rprintf("\n");
+        Rprintf("%s", "\n");
       }
       Rcpp::stop("User terminated execution.");
       R_FlushConsole();
