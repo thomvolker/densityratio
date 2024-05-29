@@ -168,19 +168,11 @@ sum((predict(lm_train_reweighted, test) - test$mom_iq)^2/nrow(test))
 
 
 ```{r}
+randomforest <- randomForest(mom_iq ~ . , train)
+randomforest_reweighted <- randomForest(mom_iq ~ . , train, weights = weights)
+sum((predict(randomforest, test) - test$mom_iq)^2/nrow(test))
+sum((predict(randomforest_reweighted, test) - test$mom_iq)^2/nrow(test))
 
-weights
-
-randomforest <- randomForest(species ~ . , train)
-predict(randomforest, test)
-
-# confusion matrix
-table(predict(randomforest, test), test$species)
-
-
-randomForest(formula = species ~ . ,
-             data = train, 
-             classwt = weights)
 ```
 
 
