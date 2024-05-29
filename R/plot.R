@@ -221,7 +221,7 @@ create_univariate_plot <- function(data, ext, var, y_lab, sample.facet = TRUE){
 #' @param vars Character vector of variable names to be plotted.
 #' @param grid Logical indicating whether output should be a list of individual plots ("individual"), or one facetted plot with all variables ("assembled"). Defaults to "individual".
 #' @param sample.facet Logical indicating whether to facet the plot by sample, i.e, showing plots separate for each sample, and side to side. Defaults to FALSE.
-#' @param nrow Integer indicating the number of rows in the assembled plot. If NULL, the number of rows is automatically calculated.
+#' @param nrow.panel Integer indicating the number of rows in the assembled plot. If NULL, the number of rows is automatically calculated.
 #' @param ... Additional arguments passed to the predict() function.
 #'
 #' @return Scatter plot of density ratios and individual variables.
@@ -241,7 +241,7 @@ create_univariate_plot <- function(data, ext, var, y_lab, sample.facet = TRUE){
 
 plot_univariate <- function(x, vars = NULL, samples = "both", logscale = TRUE,
                             grid = FALSE, sample.facet = FALSE,
-                            nrow = NULL, tol = 10e-3, ...) {
+                            nrow.panel = NULL, tol = 10e-3, ...) {
 
   nu <- check.datatype(x$df_numerator)
   de <- check.datatype(x$df_denominator)
@@ -317,7 +317,7 @@ plot_univariate <- function(x, vars = NULL, samples = "both", logscale = TRUE,
 
       } else {
         plot <- plot +
-          ggplot2::facet_wrap(ggplot2::vars(variable), scales = "free_x", nrow = nrow)
+          ggplot2::facet_wrap(ggplot2::vars(variable), scales = "free_x", nrow = nrow.panel)
       }
 
   plot <- plot +
@@ -377,10 +377,10 @@ create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 #'
 #' @inheritParams plot_univariate
 #' @param logscale Logical indicating whether to plot the density ratio
-#'   estimates on a log scale. Default is TRUE.
+#'   estimates on a log scale. Default is \code{TRUE}.
 #' @param show.sample Logical indicating whether to give different shapes to
 #' observations, depending on the sample they come from (numerator or
-#' denominator). Defaults to FALSE.
+#' denominator). Defaults to \code{FALSE}.
 #' @param vars Character vector of variable names for which all pairwise
 #' bivariate plots are created
 #'
@@ -403,12 +403,8 @@ create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 #' @importFrom grid grid.newpage
 #' @importFrom grid nullGrob
 #'
-plot_bivariate <- function(x, vars, samples = "both", grid = FALSE,
+plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
                            logscale = TRUE, show.sample = NULL, tol = 10e-3, ...) {
-
-  if (length(vars) <= 1) {
-    stop("At least two variables are required for a bivariate plot.")
-  }
 
   # Check object type
   check.object.type(x)
@@ -421,8 +417,9 @@ plot_bivariate <- function(x, vars, samples = "both", grid = FALSE,
   )
 
   # Check variable names
+  if (is.null(vars)) vars <- colnames(data)
   check.var.names(vars, data)
-  var_combinations <- expand.grid(vars, vars)
+  var_combinations <- as.data.frame(combn(vars, 2))
 
   ext <- data.frame(dr = predict(x, newdata = data, ...),
                     sample = c(rep("numerator", nrow(x$df_numerator)),
@@ -448,20 +445,22 @@ plot_bivariate <- function(x, vars, samples = "both", grid = FALSE,
 
   if(!grid){
 
-  plot <- lapply(var_combinations, function(vars) create_bivariate_plot(data, ext, vars, logscale, show.sample))
+  plot <- lapply(unname(var_combinations), function(var) create_bivariate_plot(data, ext, var, logscale, show.sample))
   return(plot)
 
   } else {
 
     ext <- data.frame(data, dr = ext$dr, sample = ext$sample)
-    datlist <- lapply(var_combinations, \(x) data.frame(values.x = ext[,x[1]],
-                                              values.y = ext[,x[2]],
-                                              xvar = rep(x[1], nrow(ext)),
-                                              yvar = rep(x[2], nrow(ext)),
-                                              sample = ext[, "sample"],
-                                              dr = ext[, "dr"]))
+    datlist <- lapply(var_combinations, \(v) data.frame(values.x = ext[,v[1]],
+                                                        values.y = ext[,v[2]],
+                                                        xvar = rep(v[1], nrow(ext)),
+                                                        yvar = rep(v[2], nrow(ext)),
+                                                        sample = ext[, "sample"],
+                                                        dr = ext[, "dr"]))
 
     plot_data <- do.call(datlist, what = rbind)
+    plot_data$xvar <- factor(plot_data$xvar, levels = vars, ordered = TRUE)
+    plot_data$yvar <- factor(plot_data$yvar, levels = vars, ordered = TRUE)
 
     dr_max <- max(1, ext$dr)
     dr_min <- min(-1, ext$dr)

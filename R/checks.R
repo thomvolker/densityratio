@@ -441,8 +441,12 @@ check.newdata <- function(object, newdata) {
 }
 
 check.var.names <- function(vars, data){
-  if(!all(vars %in% names(data))) {
-  stop("Indicated variable (s) are not present in object. Check whether variable names are correct")
+  nm <- colnames(data)
+  if(!all(vars %in% nm)) {
+    stop(
+      paste0("The indicated variables are not names of columns in the data. The variables are: ",
+             paste0(nm, collapse = ", "))
+    )
   }
 }
 
