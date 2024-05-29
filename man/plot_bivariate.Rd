@@ -6,7 +6,7 @@
 \usage{
 plot_bivariate(
   x,
-  vars,
+  vars = NULL,
   samples = "both",
   grid = FALSE,
   logscale = TRUE,
@@ -28,11 +28,11 @@ bivariate plots are created}
 \item{grid}{Logical indicating whether output should be a list of individual plots ("individual"), or one facetted plot with all variables ("assembled"). Defaults to "individual".}
 
 \item{logscale}{Logical indicating whether to plot the density ratio
-estimates on a log scale. Default is TRUE.}
+estimates on a log scale. Default is \code{TRUE}.}
 
 \item{show.sample}{Logical indicating whether to give different shapes to
 observations, depending on the sample they come from (numerator or
-denominator). Defaults to FALSE.}
+denominator). Defaults to \code{FALSE}.}
 
 \item{tol}{Numeric indicating the tolerance: values below this value will be set to the tolerance value, for legibility of the plots}
 

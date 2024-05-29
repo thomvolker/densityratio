@@ -11,7 +11,7 @@ plot_univariate(
   logscale = TRUE,
   grid = FALSE,
   sample.facet = FALSE,
-  nrow = NULL,
+  nrow.panel = NULL,
   tol = 0.01,
   ...
 )
@@ -32,7 +32,7 @@ estimates on a log scale. Default is TRUE.}
 
 \item{sample.facet}{Logical indicating whether to facet the plot by sample, i.e, showing plots separate for each sample, and side to side. Defaults to FALSE.}
 
-\item{nrow}{Integer indicating the number of rows in the assembled plot. If NULL, the number of rows is automatically calculated.}
+\item{nrow.panel}{Integer indicating the number of rows in the assembled plot. If NULL, the number of rows is automatically calculated.}
 
 \item{tol}{Numeric indicating the tolerance: values below this value will be set to the tolerance value, for legibility of the plots}
 
