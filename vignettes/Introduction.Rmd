@@ -124,7 +124,13 @@ plot_univariate(densratio_diff, grid = TRUE)
 On the other hand, the `plot_bivariate()` function plots the value of the density ratio for pairs of variables. We need to select which variables we want in the x-axis (vars1), and which ones we want in the y-axis (vars2). The function will plot a scatterplot of both variables, for each combination of variables, and color the points according to the density ratio values.
 
 ```{r}
-plot_bivariate(densratio_diff, vars1 = c("bill_length_mm", "bill_depth_mm", "flipper_length_mm"), vars2 = c("flipper_length_mm", "body_mass_g", "bill_depth_mm"), grid = TRUE)
+plot_bivariate(densratio_diff, vars1 = c("bill_length_mm", "bill_depth_mm", "flipper_length_mm"), grid = TRUE)
+
+library(patchwork)
+v <- plot_bivariate(densratio_diff, vars1 = c("bill_length_mm", "bill_depth_mm", "flipper_length_mm"), vars2 = c("bill_length_mm", "body_mass_g", "year"), grid = FALSE) |> patchwork::wrap_plots(guides = "collect") & theme(plot.title = element_blank())
+
+library(ggplot2)
+names(data)
 ```
 The bivariate plot gives a nice overview of how the densityratio varies on multivariate space. For instance, it is clear that lower values of body mass index are associated with lower density ratios (i.e., this values are more likely to appear in the denominator data). There is also an interesting relationship between bill depth and the densityratio. For low values of bill depth, the log of the densityratio is 1, meaning these observations are more likely to come from the numerator data. The relatioship changes depending ont he values of the other variables, etc.
 

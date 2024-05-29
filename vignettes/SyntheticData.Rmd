@@ -1,0 +1,60 @@
+---
+title: "SyntheticData"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SyntheticData}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(densityratio)
+library(synthpop)
+library(dplyr)
+```
+
+```{r}
+# data <- read.csv(url("https://raw.githubusercontent.com/avehtari/ROS-Examples/master/KidIQ/data/kidiq.csv"))
+
+data <- readRDS("kids.rds") |> select(-mom_hs)
+  mutate(mom_hs = as.factor(mom_hs))
+
+mysyn <- syn(data)
+```
+
+```{r}
+densratio <- ulsif(mysyn$syn, data)
+class(mysyn$syn)
+```
+
+
+# Introduction
+
+Density ratios have many usages.
+One is covariate-shift.
+One is synthetic data.
+In this vignette, we demonstrate how to use it to create synthetic data.
+
+# Data
+
+Brief data description and source. Included in the vignette.
+
+# Synthetic data
+
+We use the package synthpop. We start with a deliberately wrong model.
+We examine plot_univariate(), and plot_bivariate(), and plot. We check a summary.
+
+We use the defualt model, which gives an appropriate model.
+
+# Conclusion
+
+'Stupid' example.
+
+
