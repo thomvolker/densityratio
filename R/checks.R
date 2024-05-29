@@ -439,3 +439,53 @@ check.newdata <- function(object, newdata) {
   }
   newdata
 }
+
+check.var.names <- function(vars, data){
+  if(!all(vars %in% names(data))) {
+  stop("Indicated variable (s) are not present in object. Check whether variable names are correct")
+  }
+}
+
+check.object.type <- function(object) {
+  models <- c(
+    "ulsif",
+    "kliep",
+    "lhss",
+    "spectral",
+    "naivedensityratio",
+    "naivesubspacedensityratio"
+  )
+
+  if (!attr(object, "class") %in% models) {
+    stop("Only densityratio objects can be plotted.")
+  }
+}
+
+check.logscale <- function(ext, logscale, tol){
+  if (logscale) {
+    # Convert values lower than tolerance to tol
+    negdr <- ext$dr < tol
+    ext$dr[negdr] <- tol
+    if (any(negdr)) {
+      warning(
+        paste(
+          "Negative estimated density ratios for", sum(negdr),
+          "observation(s) converted to",tol,
+          "before applying logarithmic transformation"
+        ),
+        call. = FALSE
+      )
+    }
+
+    # Apply log transformation
+    ext$dr <- log(ext$dr)
+
+    # Set y axis intercept to 0
+    ext$yintercept <- 0
+  } else {
+    # Set y axis intercept to 1
+    ext$yintercept <- 1
+  }
+  return(ext)
+}
+

@@ -32,7 +32,8 @@ LazyData: true
 Imports: 
     quadprog,
     Rcpp,
-    pbapply
+    pbapply,
+    ggplot2
 LinkingTo: 
     Rcpp,
     RcppArmadillo,
