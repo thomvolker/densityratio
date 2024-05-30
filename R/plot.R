@@ -355,12 +355,10 @@ create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 
   plot <-
     ggplot2::ggplot(data, mapping = ggplot2::aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
-    ggplot2::geom_point(ggplot2::aes(colour = ext$dr, shape = show.sample),
-               alpha = 1,
-               size = 2.0) +
+    ggplot2::geom_point(ggplot2::aes(colour = ext$dr, shape = show.sample)) +
     ggplot2::scale_colour_gradient2(low = "#00204DFF",
                            high = "#7D0000",
-                           mid = "lightyellow",
+                           mid = "navajowhite",
                            midpoint = 0,
                            limits = c(dr_min, dr_max)) +
     ggplot2::theme_bw() +
@@ -451,6 +449,10 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
 
   } else {
 
+    # Make all variables numeric to include them in a single grid-plot
+    numvars <- sapply(data, is.numeric)
+    data[,!numvars] <- sapply(data[,!numvars], \(x) x |> as.factor() |> as.numeric())
+
     ext <- data.frame(data, dr = ext$dr, sample = ext$sample)
     datlist <- lapply(var_combinations, \(v) data.frame(values.x = ext[,v[1]],
                                                         values.y = ext[,v[2]],
@@ -469,13 +471,12 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
     plot <-
       ggplot2::ggplot(plot_data, mapping = ggplot2::aes(x = values.x, y = values.y,
                                       shape = show.sample)) +
-      ggplot2::geom_point(ggplot2::aes(colour = dr),
-                 size = 2.0) +
+      ggplot2::geom_point(ggplot2::aes(colour = dr)) +
       ggplot2::facet_grid(rows = ggplot2::vars(yvar), cols = ggplot2::vars(xvar), scales = "free",
                  switch = "both") +
       ggplot2::scale_colour_gradient2(low = "#00204DFF",
                              high = "#7D0000",
-                             mid = "lightyellow",
+                             mid = "navajowhite",
                              midpoint = 0,
                              limits = c(dr_min, dr_max)) +
       ggplot2::scale_y_continuous(position = "left") +
