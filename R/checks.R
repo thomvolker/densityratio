@@ -110,7 +110,7 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
       stop("If 'sigma_quantile' is specified, the values must be larger than 0 and smaller than 1.")
     } else {
       p <- sigma_quantile
-      sigma <- quantile(dist_nu, p) |> sqrt()
+      sigma <- stats::quantile(dist_nu, p) |> sqrt()
     }
   }
   # if both sigma and sigma_quantile are not specified, specify the quantiles linearly, based on nsigma
@@ -122,10 +122,10 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
         stop("'nsigma' must be a positive scalar.")
       }
       else if (nsigma == 1) {
-        sigma <- stats::median(dist_nu)
+        sigma <- stats::median(dist_nu) |> sqrt()
       } else {
         p <- seq(0.05, 0.95, length.out = nsigma)
-        sigma <- quantile(dist_nu, p) |> sqrt()
+        sigma <- stats::quantile(dist_nu, p) |> sqrt()
       }
     }
   }
