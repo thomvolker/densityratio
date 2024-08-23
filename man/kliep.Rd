@@ -16,7 +16,7 @@ kliep(
   cv = TRUE,
   nfold = 5,
   epsilon = NULL,
-  maxit = 2000,
+  maxit = 5000,
   progressbar = TRUE
 )
 }
@@ -28,7 +28,7 @@ the numerator samples}
 with the denominator samples (must have the same variables as
 \code{df_denominator})}
 
-\item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+\item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{NULL},
 indicating whether to standardize each numeric variable according to the
 numerator means and standard deviations, the denominator means and standard
 deviations, or apply no standardization at all.}

@@ -40,15 +40,14 @@ dr.histogram <- function(x,
   # Check object type
   check.object.type(x)
 
+  nu <- check.datatype(x$df_numerator)
+  de <- check.datatype(x$df_denominator)
 
   # Create data object and estimate density ratio
-  data <- rbind(
-    check.datatype(x$df_numerator),
-    check.datatype(x$df_denominator)
-  )
+  data <- rbind(nu, de)
   ext <- data.frame(dr = predict(x, newdata = data, ...),
-                    sample = c(rep("numerator", nrow(x$df_numerator)),
-                               rep("denominator", nrow(x$df_denominator))))
+                    sample = c(rep("numerator", nrow(nu)),
+                               rep("denominator", nrow(de))))
 
   # If logscale = TRUE, transform density ratio estimates
   ext <- check.logscale(ext, logscale, tol)
@@ -256,8 +255,8 @@ plot_univariate <- function(x, vars = NULL, samples = "both", logscale = TRUE,
   # Create data object, and external object with density ratio and sample indicators
   data <- rbind(nu, de)
   ext <- data.frame(dr = predict(x, newdata = data, ...),
-                    sample = c(rep("numerator", nrow(x$df_numerator)),
-                               rep("denominator", nrow(x$df_denominator))))
+                    sample = c(rep("numerator", nrow(nu)),
+                               rep("denominator", nrow(de))))
   # Check variable names
   check.var.names(vars, data)
 
@@ -355,7 +354,8 @@ create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 
   plot <-
     ggplot2::ggplot(data, mapping = ggplot2::aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
-    ggplot2::geom_point(ggplot2::aes(colour = ext$dr, shape = show.sample)) +
+    ggplot2::geom_point(ggplot2::aes(colour = ext$dr,
+                                     shape = if (show.sample) ext$sample else NULL)) +
     ggplot2::scale_colour_gradient2(low = "#00204DFF",
                            high = "#7D0000",
                            mid = "navajowhite",
@@ -364,7 +364,7 @@ create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
     ggplot2::theme_bw() +
     ggplot2::labs(title = "Scatter plot, with density ratio mapped to colour",
          colour = "Log (Density ratio)") +
-    ggplot2::scale_shape_manual(values = c(21, 24))
+    ggplot2::scale_shape_manual(values = c(16, 17))
 
   return(plot)
 }
@@ -403,17 +403,16 @@ create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 #' @importFrom grid nullGrob
 #'
 plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
-                           logscale = TRUE, show.sample = NULL, tol = 10e-3, ...) {
+                           logscale = TRUE, show.sample = FALSE, tol = 10e-3, ...) {
 
   # Check object type
   check.object.type(x)
 
   # Create data object and estimate density ratio
 
-  data <- rbind(
-    check.datatype(x$df_numerator),
-    check.datatype(x$df_denominator)
-  )
+  nu <- check.datatype(x$df_numerator)
+  de <- check.datatype(x$df_denominator)
+  data <- rbind(nu, de)
 
   # Check variable names
   if (is.null(vars)) vars <- colnames(data)
@@ -421,8 +420,8 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
   var_combinations <- as.data.frame(utils::combn(vars, 2))
 
   ext <- data.frame(dr = predict(x, newdata = data, ...),
-                    sample = c(rep("numerator", nrow(x$df_numerator)),
-                               rep("denominator", nrow(x$df_denominator))))
+                    sample = c(rep("numerator", nrow(nu)),
+                               rep("denominator", nrow(de))))
 
   # Check if logscale is TRUE, then change ext
   ext <- check.logscale(ext, logscale, tol)
@@ -443,21 +442,18 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
   }
 
   if(!grid){
-
-  plot <- lapply(unname(var_combinations), function(var) create_bivariate_plot(data, ext, var, logscale, show.sample))
-  return(plot)
-
+    plot <- lapply(unname(var_combinations), function(var) create_bivariate_plot(data, ext, var, logscale, show.sample))
+    return(plot)
   } else {
 
     # Make all variables numeric to include them in a single grid-plot
     numvars <- sapply(data, is.numeric)
     data[,!numvars] <- sapply(data[,!numvars], \(x) x |> as.factor() |> as.numeric())
 
-    ext <- data.frame(data, dr = ext$dr, sample = ext$sample)
-    datlist <- lapply(var_combinations, \(v) data.frame(values.x = ext[,v[1]],
-                                                        values.y = ext[,v[2]],
-                                                        xvar = rep(v[1], nrow(ext)),
-                                                        yvar = rep(v[2], nrow(ext)),
+    datlist <- lapply(var_combinations, \(v) data.frame(values.x = data[,v[1]],
+                                                        values.y = data[,v[2]],
+                                                        xvar = rep(v[1], nrow(data)),
+                                                        yvar = rep(v[2], nrow(data)),
                                                         sample = ext[, "sample"],
                                                         dr = ext[, "dr"]))
 
@@ -470,7 +466,7 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
 
     plot <-
       ggplot2::ggplot(plot_data, mapping = ggplot2::aes(x = values.x, y = values.y,
-                                      shape = show.sample)) +
+                                      shape = if (show.sample) sample else NULL)) +
       ggplot2::geom_point(ggplot2::aes(colour = dr)) +
       ggplot2::facet_grid(rows = ggplot2::vars(yvar), cols = ggplot2::vars(xvar), scales = "free",
                  switch = "both") +
@@ -487,8 +483,8 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
           x = NULL,
           y = NULL,
           colour = colour_label,
-          shape = show.sample) +
-      ggplot2::scale_shape_manual(values = c(21, 24))
+          shape = if (show.sample) "Sample" else NULL) +
+      ggplot2::scale_shape_manual(values = c(16, 17))
 
   # Erase upper diagonal
   ## Create plot into a grob

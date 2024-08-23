@@ -5,7 +5,7 @@
 #' @param df_denominator \code{data.frame} with exclusively numeric variables
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
-#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{NULL},
 #' indicating whether to standardize each numeric variable according to the
 #' numerator means and standard deviations, the denominator means and standard
 #' deviations, or apply no standardization at all.
@@ -84,6 +84,7 @@ kmm <- function(df_numerator, df_denominator, scale = "numerator",
   out <- list(rhat_de = rhat_de,
               sigma = sigma,
               lambda = lambda,
+              scale = scale,
               call = cl)
   class(out) <- "kmm"
 

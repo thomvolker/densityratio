@@ -282,7 +282,8 @@ predict.naivesubspacedensityratio <- function(object, newdata = NULL, log = FALS
 
   N <- nrow(newdata)
 
-  nd_proj <- newdata %*% object$projection_matrix
+
+  nd_proj <- scale(newdata, center = object$center, scale = FALSE) %*% object$projection_matrix
 
   # work on log scale
   # log-densities

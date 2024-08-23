@@ -8,7 +8,7 @@
 #' @param m Scalar indicating the dimensionality of the reduced subspace
 #' @param intercept \code{logical} Indicating whether to include an intercept
 #' term in the model. Defaults to \code{TRUE}.
-#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{NULL},
 #' indicating whether to standardize each numeric variable according to the
 #' numerator means and standard deviations, the denominator means and standard
 #' deviations, or apply no standardization at all.
@@ -64,7 +64,7 @@ lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
 
   check.variables(nu, de, centers)
 
-  df_centers <- check.centers(nu, centers, ncenters)
+  df_centers <- check.centers(rbind(nu, de), centers, ncenters)
   dat <- check.dataform(nu, de, df_centers, is.null(centers), NULL, scale)
 
   p <- ncol(dat$nu)

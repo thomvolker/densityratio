@@ -5,7 +5,7 @@
 #' @param df_denominator \code{data.frame} with exclusively numeric variables
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
-#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+#' @param scale \code{"numerator"}, \code{"denominator"}, or \code{NULL},
 #' indicating whether to standardize each numeric variable according to the
 #' numerator means and standard deviations, the denominator means and standard
 #' deviations, or apply no standardization at all.
@@ -45,7 +45,7 @@
 kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10,
                   sigma_quantile = NULL, sigma = NULL, ncenters = 200,
                   centers = NULL, cv = TRUE, nfold = 5, epsilon = NULL,
-                  maxit = 2000, progressbar = TRUE) {
+                  maxit = 5000, progressbar = TRUE) {
 
   cl <- match.call()
   nu <- check.datatype(df_numerator)
@@ -53,7 +53,7 @@ kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10
 
   check.variables(nu, de, centers)
 
-  df_centers <- check.centers(nu, centers, ncenters)
+  df_centers <- check.centers(rbind(nu, de), centers, ncenters)
   dat <- check.dataform(nu, de, df_centers, is.null(centers), NULL, scale)
 
   nnu <- nrow(dat$nu)

@@ -6,15 +6,17 @@
 check.datatype <- function(data) {
   if (is.vector(data)) data <- data.frame(x = data)
   else data <- as.data.frame(data)
+
+  if (sum(is.na(data)) > 0) {
+    stop("Missing data can currently not be handled, please solve the missing data problem first.")
+  }
   data
 }
 
 check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, scale) {
 
   numvars <- which(sapply(nu, is.numeric))
-  numvars_de <- which(sapply(de, is.numeric))
   if (!is.null(centers)) {
-    numvars_ce <- which(sapply(centers, is.numeric))
     alldat <- rbind(nu, de, centers)
     ind <- c(rep("nu", nrow(nu)), rep("de", nrow(de)), rep("ce", nrow(centers)))
   } else {
@@ -22,15 +24,17 @@ check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, 
     ind <- c(rep("nu", nrow(nu)), rep("de", nrow(de)))
   }
 
-  scale <- match.arg(scale, c("numerator", "denominator", FALSE))
+  if (!is.null(scale)) {
+    scale <- match.arg(scale, c("numerator", "denominator"))
+  }
 
-  scaledat <- if (scale == "numerator") {
+  scaledat <- if (identical(scale, "numerator")) {
     nu[, numvars, drop = FALSE]
-  } else if (scale == "denominator") {
+  } else if (identical(scale, "denominator")) {
     de[, numvars, drop = FALSE]
   }
 
-  if (scale != FALSE) {
+  if (!is.null(scale)) {
     if (!nullcenters) {
       warning("Note that you provided centers while also applying scaling to the variables. The centers are scaled accordingly.")
     }
@@ -51,7 +55,7 @@ check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, 
 
   if (!is.null(newdata)) {
     newdata <- check.datatype(newdata)
-    if (scale != FALSE) {
+    if (!is.null(scale)) {
       newdata[, numvars] <- scale(newdata[, numvars], center = means, scale = sds) |> as.data.frame()
     }
     alldat <- rbind(alldat, newdata)
@@ -76,17 +80,21 @@ check.variables <- function(nu, de, ce = NULL) {
   numvars_nu <- which(sapply(nu, is.numeric))
   numvars_de <- which(sapply(de, is.numeric))
 
-  if (!all(numvars_nu == numvars_de) |
-      ncol(nu) != ncol(de) |
-      !all(colnames(nu) == colnames(de))) {
+  if (
+    !identical(numvars_nu, numvars_de) |
+    !identical(ncol(nu), ncol(de)) |
+    !identical(colnames(nu), colnames(de))
+  ) {
     stop("The numerator and denominator data must contain the same variables.")
   }
   if (!is.null(ce)) {
     ce <- check.datatype(ce)
     numvars_ce <- which(sapply(ce, is.numeric))
-    if (!all(numvars_nu == numvars_ce) |
-        ncol(nu) != ncol(ce) |
-        !all(colnames(nu) == colnames(ce))) {
+    if (
+      !identical(numvars_nu, numvars_ce) |
+      !identical(ncol(nu), ncol(ce)) |
+      !identical(colnames(nu), colnames(ce))
+    ) {
       stop("The data and centers must contain the same variables.")
     }
   }
@@ -110,7 +118,8 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
       stop("If 'sigma_quantile' is specified, the values must be larger than 0 and smaller than 1.")
     } else {
       p <- sigma_quantile
-      sigma <- stats::quantile(dist_nu, p) |> sqrt()
+      sigma <- stats::quantile(dist_nu, p)
+      sigma <- sqrt(sigma/2)
     }
   }
   # if both sigma and sigma_quantile are not specified, specify the quantiles linearly, based on nsigma
@@ -122,10 +131,12 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
         stop("'nsigma' must be a positive scalar.")
       }
       else if (nsigma == 1) {
-        sigma <- stats::median(dist_nu) |> sqrt()
+        sigma <- stats::median(dist_nu)
+        sigma <- sqrt(sigma/2)
       } else {
         p <- seq(0.05, 0.95, length.out = nsigma)
-        sigma <- stats::quantile(dist_nu, p) |> sqrt()
+        sigma <- stats::quantile(dist_nu, p)
+        sigma <- sqrt(sigma/2)
       }
     }
   }
@@ -182,19 +193,19 @@ check.lambda <- function(nlambda, lambda) {
   lambda
 }
 
-check.centers <- function(nu, centers, ncenters) {
+check.centers <- function(dat, centers, ncenters) {
 
   if (!is.null(centers)) {
     centers <- check.datatype(centers)
   } else {
     if (!is.numeric(ncenters) | length(ncenters) != 1 | ncenters < 1) {
       stop("The 'ncenters' parameter must be a positive numeric scalar.")
-    } else if (ncenters == nrow(nu)) {
-      centers <- nu
-    } else if (ncenters > nrow(nu)) {
-      centers <- nu
+    } else if (ncenters == nrow(dat)) {
+      centers <- dat
+    } else if (ncenters > nrow(dat)) {
+      centers <- dat
     } else {
-      centers <- nu[sample(nrow(nu), ncenters), , drop = FALSE]
+      centers <- dat[sample(nrow(dat), ncenters), , drop = FALSE]
     }
   }
   centers
@@ -424,7 +435,10 @@ check.subspace.spectral <- function(J, cv_ind_de) {
 
 check.newdata <- function(object, newdata) {
   if (!is.null(newdata)) {
-    check.variables(object$df_numerator, newdata)
+    check.variables(
+      check.datatype(object$df_numerator),
+      check.datatype(newdata)
+    )
     newdata <- check.dataform(
       check.datatype(object$df_numerator),
       check.datatype(object$df_denominator),

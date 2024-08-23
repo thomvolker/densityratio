@@ -10,7 +10,7 @@ plot_bivariate(
   samples = "both",
   grid = FALSE,
   logscale = TRUE,
-  show.sample = NULL,
+  show.sample = FALSE,
   tol = 0.01,
   ...
 )

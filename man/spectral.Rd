@@ -33,7 +33,7 @@ spectral series expansion. Defaults to 50 evenly spaced values between 1 and
 the number of denominator samples (or the largest number of samples that can
 be used as centers in the cross-validation scheme).}
 
-\item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{FALSE},
+\item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{NULL},
 indicating whether to standardize each numeric variable according to the
 numerator means and standard deviations, the denominator means and standard
 deviations, or apply no standardization at all.}

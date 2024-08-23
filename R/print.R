@@ -290,12 +290,13 @@ print.summary.spectral <- function(x, digits = max(3L, getOption("digits") - 3L)
 
 
 print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Naive density ratio\n",
-      "  Number of variables: ", ncol(as.matrix(x$df_numerator)), "\n",
-      "  Number of numerator samples: ", nrow(as.matrix(x$df_numerator)), "\n",
-      "  Number of denominator samples: ", nrow(as.matrix(x$df_denominator)), "\n", sep = "")
+      "  Number of variables: ", ncol(x$model_matrices$nu), "\n",
+      "  Number of numerator samples: ", nrow(x$model_matrices$nu), "\n",
+      "  Number of denominator samples: ", nrow(x$model_matrices$de), "\n", sep = "")
   cat("  Numerator density:")
   cat(str(unname(stats::predict(x, newdata = x$df_numerator))))
   cat("  Denominator density:")
