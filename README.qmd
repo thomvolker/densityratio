@@ -104,7 +104,7 @@ fit <- densityratio::ulsif(
   df_denominator = densityratio::denominator_data$x5,
   centers = c(densityratio::numerator_data$x5, densityratio::denominator_data$x5),
   parallel = TRUE,
-  nthreads = 14
+  nthreads = 18
 )
 
 ggplot() +
@@ -177,8 +177,6 @@ library(densityratio)
 
 head(numerator_data)
 
-set.seed(1)
-
 fit  <- ulsif(
   df_numerator = numerator_data$x5, 
   df_denominator = denominator_data$x5, 
@@ -226,10 +224,10 @@ ggplot() +
   stat_function(mapping = aes(col = "True density ratio"), 
                 fun = dratio, 
                 args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
-                size = 1) +
+                linewidth = 1) +
   theme_classic() +
   scale_color_manual(name = NULL, values = c("#de0277", "purple")) +
-  theme(legend.position = c(0.8, 0.9),
+  theme(legend.position.inside = c(0.8, 0.9),
         text = element_text(size = 20))
 ```
 
@@ -289,6 +287,7 @@ Besides `ulsif()`, the package contains several other functions to estimate a de
 
 ```{r}
 #| label: plot-methods
+#| warning: false
 #| fig-height: 6
 #| fig-width: 10
 #| out-width: 15cm
@@ -296,7 +295,6 @@ Besides `ulsif()`, the package contains several other functions to estimate a de
 #| fig-format: svg
 #| fig-align: "center"
 
-set.seed(1)
 
 fit_naive <- naive(
   df_numerator = numerator_data$x5, 
@@ -305,7 +303,8 @@ fit_naive <- naive(
 
 fit_kliep <- kliep(
   df_numerator = numerator_data$x5, 
-  df_denominator = denominator_data$x5
+  df_denominator = denominator_data$x5,
+  sigma_quantile = seq(0.1, 0.9, length.out = 5)
 )
 
 pred_naive <- predict(fit_naive, newdata = newx5)
@@ -317,10 +316,10 @@ ggplot(data = NULL, aes(x = newx5)) +
   geom_point(aes(y = pred_kliep, col = "kliep estimates")) +
   stat_function(aes(x = NULL, col = "True density ratio"), 
                 fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
-                size = 1) +
+                linewidth = 1) +
   theme_classic() +
   scale_color_manual(name = NULL, values = c("pink", "#512970","#de0277", "purple")) +
-  theme(legend.position = c(0.8, 0.9),
+  theme(legend.position.inside = c(0.8, 0.9),
         text = element_text(size = 20))
 ```
 

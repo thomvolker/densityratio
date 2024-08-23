@@ -1,4 +1,5 @@
 
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # densityratio <img src="man/figures/logo.png" align="right" alt="densratio logo" width="130"/>
@@ -81,8 +82,6 @@ head(numerator_data)
 #> 5 A     G1     1.01    2.23   2.01 
 #> 6 C     G2     1.83    0.762  3.71
 
-set.seed(1)
-
 fit  <- ulsif(
   df_numerator = numerator_data$x5, 
   df_denominator = denominator_data$x5, 
@@ -109,11 +108,11 @@ summary(fit)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.4958598
+#> Optimal sigma: 0.3726142
 #> Optimal lambda: 0.03162278
-#> Optimal kernel weights (loocv): num [1:201] 0.14182 0.01957 0.00488 0.01596 0.01461 ...
+#> Optimal kernel weights (loocv): num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.2871
+#> Pearson divergence between P(nu) and P(de): 0.2801
 #> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.
 ```
 
@@ -131,11 +130,11 @@ summary(fit, test = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.4958598
+#> Optimal sigma: 0.3726142
 #> Optimal lambda: 0.03162278
-#> Optimal kernel weights (loocv): num [1:201] 0.14182 0.01957 0.00488 0.01596 0.01461 ...
+#> Optimal kernel weights (loocv): num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.2871
+#> Pearson divergence between P(nu) and P(de): 0.2801
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
@@ -161,10 +160,10 @@ ggplot() +
   stat_function(mapping = aes(col = "True density ratio"), 
                 fun = dratio, 
                 args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
-                size = 1) +
+                linewidth = 1) +
   theme_classic() +
   scale_color_manual(name = NULL, values = c("#de0277", "purple")) +
-  theme(legend.position = c(0.8, 0.9),
+  theme(legend.position.inside = c(0.8, 0.9),
         text = element_text(size = 20))
 ```
 
@@ -206,9 +205,9 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.2254287
-#> 2                 B        1.3379850
-#> 3                 C        0.6797991
+#> 1                 A        1.3548189
+#> 2                 B        1.4198746
+#> 3                 C        0.6084215
 
 table(numerator_data$x1) / table(denominator_data$x1)
 #> 
@@ -242,11 +241,11 @@ summary(fit_all, test = TRUE, parallel = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 1.304529
-#> Optimal lambda: 0.6951928
-#> Optimal kernel weights (loocv): num [1:201] 0.13106 -0.018888 0.000864 0.059422 0.037997 ...
+#> Optimal sigma: 0.9884489
+#> Optimal lambda: 0.1623777
+#> Optimal kernel weights (loocv): num [1:201] 0.5732 0.1625 0.0957 0.0177 0.0181 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.4049
+#> Pearson divergence between P(nu) and P(de): 0.4503
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
@@ -263,7 +262,6 @@ estimate a density ratio.
   <!-- * `kmm()` estimates the density ratio for the denominator sample points only through kernel mean matching.  -->
 
 ``` r
-set.seed(1)
 
 fit_naive <- naive(
   df_numerator = numerator_data$x5, 
@@ -272,7 +270,8 @@ fit_naive <- naive(
 
 fit_kliep <- kliep(
   df_numerator = numerator_data$x5, 
-  df_denominator = denominator_data$x5
+  df_denominator = denominator_data$x5,
+  sigma_quantile = seq(0.1, 0.9, length.out = 5)
 )
 
 pred_naive <- predict(fit_naive, newdata = newx5)
@@ -284,10 +283,10 @@ ggplot(data = NULL, aes(x = newx5)) +
   geom_point(aes(y = pred_kliep, col = "kliep estimates")) +
   stat_function(aes(x = NULL, col = "True density ratio"), 
                 fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
-                size = 1) +
+                linewidth = 1) +
   theme_classic() +
   scale_color_manual(name = NULL, values = c("pink", "#512970","#de0277", "purple")) +
-  theme(legend.position = c(0.8, 0.9),
+  theme(legend.position.inside = c(0.8, 0.9),
         text = element_text(size = 20))
 ```
 
