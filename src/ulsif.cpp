@@ -50,7 +50,7 @@ double compute_ulsif_loocv(const arma::mat& Hhat, const arma::mat& hhat, const d
   B0 += B02.t() * diagmat(B02 * hhat / (nde - sum(Kde_nmin % B02, 1)));
 
   arma::mat B1  = (Knu_nmin * Binv).t();
-  arma::vec B12 = sum(Knu_nmin % B02, 1) / (nmin - sum(Kde_nmin % B02, 1));
+  arma::vec B12 = sum(Knu_nmin % B02, 1) / (nde - sum(Kde_nmin % B02, 1));
   B1 += B02.t() * diagmat(B12);
 
   arma::mat B2  = (nnu * B0 - B1) * (nde - 1) / (nde * (nnu - 1));
