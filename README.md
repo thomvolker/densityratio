@@ -270,8 +270,7 @@ fit_naive <- naive(
 
 fit_kliep <- kliep(
   df_numerator = numerator_data$x5, 
-  df_denominator = denominator_data$x5,
-  sigma_quantile = seq(0.1, 0.9, length.out = 5)
+  df_denominator = denominator_data$x5
 )
 
 pred_naive <- predict(fit_naive, newdata = newx5)
