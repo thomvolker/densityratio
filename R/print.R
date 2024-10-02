@@ -306,35 +306,6 @@ print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L
 }
 
 
-#' Print a \code{naivedensityratio} object
-#'
-#' @rdname print.naivesubspacedensityratio
-#' @method print naivesubspacedensityratio
-#' @param x Object of class \code{naivesubspacedensityratio}.
-#' @param digits Number of digits to use when printing the output.
-#' @param ... further arguments on how to format the number of digits.
-#' @return \code{invisble} The inputted \code{naivesubspacedensityratio} object.
-#' @importFrom utils str
-#' @export
-#' @seealso \code{\link{print}}, \code{\link{naivesubspace}}
-
-
-print.naivesubspacedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
-  cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
-  cat("\n")
-  cat("Naive-subspace density ratio\n",
-      "  Number of variables: ", ncol(as.matrix(x$df_numerator)), "\n",
-      "  Size of subspace: ", x$subspace_dim, "\n",
-      "  Number of numerator samples: ", nrow(as.matrix(x$df_numerator)), "\n",
-      "  Number of denominator samples: ", nrow(as.matrix(x$df_denominator)), "\n", sep="")
-  cat("  Numerator density:")
-  cat(str(unname(stats::predict(x, newdata = x$df_numerator))))
-  cat("  Denominator density:")
-  cat(str(unname(stats::predict(x, newdata = x$df_denominator))), "\n\n")
-
-  invisible(x)
-}
-
 #' Print a \code{summary.naivedensityratio} object
 #'
 #' @rdname print.summary.naivedensityratio
@@ -374,43 +345,3 @@ print.summary.naivedensityratio <- function(x, digits = max(3L, getOption("digit
   invisible(x)
 }
 
-
-#' Print a \code{summary.naivesubspacedensityratio} object
-#'
-#' @rdname print.summary.naivesubspacedensityratio
-#' @method print summary.naivesubspacedensityratio
-#' @param x Object of class \code{summary.naivesubspacedensityratio}.
-#' @param digits Number of digits to use when printing the output.
-#' @param ... further arguments on how to format the number of digits.
-#' @return \code{invisble} The inputted \code{summary.naivesubspacedensityratio} object.
-#' @importFrom utils str
-#' @seealso \code{\link{print}}, \code{\link{summary.naivesubspacedensityratio}},
-#' \code{\link{naive}}
-
-
-print.summary.naivesubspacedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
-  cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
-  cat("\n")
-  cat("Naive-subspace density ratio\n",
-      "  Number of variables: ", x$nvars, "\n",
-      "  Dimension of subspace: ", x$subspace_dim, "\n",
-      "  Number of numerator samples: ", x$n[1], "\n",
-      "  Number of denominiator samples: ", x$n[2], "\n", sep="")
-  cat("  Density ratio for numerator samples:")
-  cat(str(unname(x$dr$dr[1:x$n[1]])))
-  cat("  Density ratio for denominator samples:")
-  cat(str(unname(x$dr$dr[(x$n[1]+1):(x$n[1]+x$n[2])])), "\n\n")
-
-  cat("Squared average log density ratio difference for numerator and denominator samples (SALDRD): ",
-      paste(format(x$SALDRD, digits = digits, ...)), "\n", sep = "")
-  if (!is.null(x$p_value)) {
-    cat("Pr(P(nu)=P(de))",
-        ifelse(x$p_value < 0.001,
-               paste(" < .001"),
-               paste(" = ", format(x$p_value, digits = 3, ...))),
-        "\n\n", sep = "")
-  } else {
-    cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n", sep="")
-  }
-  invisible(x)
-}

@@ -4,7 +4,7 @@
 \alias{predict.naivedensityratio}
 \title{Obtain predicted density ratio values from a \code{naivedensityratio} object}
 \usage{
-\method{predict}{naivedensityratio}(object, newdata = NULL, log = FALSE, ...)
+\method{predict}{naivedensityratio}(object, newdata = NULL, log = FALSE, tol = 1e-06, ...)
 }
 \arguments{
 \item{object}{A \code{naive} object}
@@ -12,6 +12,8 @@
 \item{newdata}{Optional \code{matrix} new data set to compute the density}
 
 \item{log}{A logical indicating whether to return the log of the density ratio}
+
+\item{tol}{Minimal density value to avoid numerical issues}
 
 \item{...}{Additional arguments to be passed to the function}
 }

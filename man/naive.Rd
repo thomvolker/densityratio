@@ -4,7 +4,15 @@
 \alias{naive}
 \title{Naive density ratio estimation}
 \usage{
-naive(df_numerator, df_denominator, n = 2L^11, ...)
+naive(
+  df_numerator,
+  df_denominator,
+  m,
+  bw = "SJ",
+  kernel = "gaussian",
+  n = 2L^11,
+  ...
+)
 }
 \arguments{
 \item{df_numerator}{\code{data.frame} with exclusively numeric variables with
@@ -14,10 +22,25 @@ the numerator samples}
 with the denominator samples (must have the same variables as
 \code{df_denominator})}
 
-\item{n}{\code{integer} the number of equally spaced points at which the density is
-estimated. When n > 512, it is rounded up to a power of 2 during the
-calculations (as fft is used) and the final result is interpolated by
-\link[stats:approxfun]{stats::approx}. So it makes sense to specify n as a power of two.}
+\item{m}{\code{integer} Optional parameter to reduce the dimensionality of
+the data in multivariate density ratio estimation problems. If missing,
+the number of variables in the data is used. If set to an integer value
+smaller than the number of variables, the first \code{m} principal
+components are used to estimate the density ratio. If set to \code{NULL},
+the square root of the number of variables is used (for consistency with
+other methods).}
+
+\item{bw}{the smoothing bandwidth to be used. See \link[stats:density]{stats::density} for more
+information.}
+
+\item{kernel}{the kernel to be used. See \link[stats:density]{stats::density} for more
+information.}
+
+\item{n}{\code{integer} the number of equally spaced points at which the
+density is to be estimated. When n > 512, it is rounded up to a power of 2
+during the calculations (as fast Fourier transform is used) and the final
+result is interpolated by \link[stats:approxfun]{stats::approx}. So it makes sense to specify n as
+a power' of two.}
 
 \item{...}{further arguments passed to \link[stats:density]{stats::density}}
 }
@@ -27,8 +50,11 @@ calculations (as fft is used) and the final result is interpolated by
 \description{
 The naive approach creates separate kernel density estimates for
 the numerator and the denominator samples, and then evaluates their
-ratio for the denominator samples. For multivariate data, this
-approach assumes the variables are independent (naive Bayes assumption).
+ratio for the denominator samples. For multivariate data, the density ratio
+is computed after a orthogonal linear transformation, such that the new
+variables can be treated as independent. To reduce the dimensionality of
+the PCA solution, one can set the number of components by setting the
+\code{m} parameter to an integer value smaller than the number of variables.
 }
 \examples{
 x <- rnorm(100)

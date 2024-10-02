@@ -181,32 +181,13 @@ predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"
   dratio
 }
 
-#' Predict function for density object
-#'
-#' @method predict density
-#' @keywords internal
-#' @importFrom stats approx
-
-predict.density <- function(object, newdata, lambda = 1e-9, log = FALSE) {
-  if (missing(newdata)) {
-    if (isTRUE(log)) return(log(object$y)) else return(object$y)
-  }
-  if (isTRUE(log)) {
-    res <- approx(object$x, log(object$y), newdata)$y
-    res[is.na(res)] <- log(lambda)
-  } else {
-    res <- approx(object$x, object$y, newdata)$y
-    res[is.na(res)] <- lambda
-  }
-  return(res)
-}
-
 #' Obtain predicted density ratio values from a \code{naivedensityratio} object
 #' @rdname predict.naivedensityratio
 #' @method predict naivedensityratio
 #' @param object A \code{naive} object
 #' @param newdata Optional \code{matrix} new data set to compute the density
 #' @param log A logical indicating whether to return the log of the density ratio
+#' @param tol Minimal density value to avoid numerical issues
 #' @param ... Additional arguments to be passed to the function
 #'
 #' @return An array with predicted density ratio values from possibly new data,
@@ -226,85 +207,35 @@ predict.density <- function(object, newdata, lambda = 1e-9, log = FALSE) {
 #' predict(fit1, newdata = rbind(x, y))
 #' predict(fit1, newdata = rbind(x, y), log = TRUE)
 
-predict.naivedensityratio <- function(object, newdata = NULL, log = FALSE, ...) {
+predict.naivedensityratio <- function(object, newdata = NULL, log = FALSE,
+                                      tol = 1e-6, ...) {
+
   newdata <- check.newdata(object, newdata)
-  P <- ncol(newdata)
-  N <- nrow(newdata)
+  newdata_proj <- predict(object$fit, newdata) |> asplit(2)
 
-  # work on log scale
-  # log-densities
-  ld_nu <- numeric(N)
-  ld_de <- numeric(N)
+  log_densities_nu <- mapply(
+    function(density, newdata) {
+      log(stats::approx(density, xout = newdata, yleft = tol, yright = tol)$y)
+    }, object$density_numerator, newdata_proj
+  )
 
-  # just add log-densities together
-  for (p in 1:P) {
-    ld_nu <- ld_nu + predict(object$density_numerator[[p]], newdata[,p], log = TRUE)
-    ld_de <- ld_de + predict(object$density_denominator[[p]], newdata[,p], log = TRUE)
-  }
+  log_densities_de <- mapply(
+    function(kde, newdata) {
+      log(stats::approx(kde, xout = newdata, yleft = tol, yright = tol)$y)
+    }, object$density_denominator, newdata_proj
+  )
 
-  # return log-density difference (or its exponent, i.e., the density ratio)
-  ld_dif <- ld_nu - ld_de
+  densest_nu <- rowSums(log_densities_nu)
+  densest_de <- rowSums(log_densities_de)
+
   if (log)  {
-    res <- ld_dif
+    res <- densest_nu - densest_de
   } else {
-    res <- exp(ld_dif)
+    res <- exp(densest_nu - densest_de)
   }
   res
 }
 
-#' Obtain predicted density ratio values from a \code{naivesubspace} object
-#' @rdname predict.naivesubspacedensityratio
-#' @method predict naivesubspacedensityratio
-#' @param object A \code{naivesubspace} object
-#' @param newdata Optional \code{matrix} new data set to compute the density
-#' @param log A logical indicating whether to return the log of the density ratio
-#' @param ... Additional arguments to be passed to the function
-#'
-#' @return An array with predicted density ratio values from possibly new data,
-#' but otherwise the numerator samples.
-#'
-#' @keywords predict naivedensityratio
-#' @seealso \code{\link{predict}}, \code{\link{naivesubspace}}
-#'
-#' @export
-#'
-#' @examples
-#' x <- rnorm(100) |> matrix(100)
-#' y <- rnorm(200, 1, 2) |> matrix(200)
-#' fit1 <- naivesubspace(x, y)
-#' predict(fit1)
-#' predict(fit1, newdata = rbind(x, y))
-#' predict(fit1, newdata = rbind(x, y), log = TRUE)
-
-predict.naivesubspacedensityratio <- function(object, newdata = NULL, log = FALSE, ...) {
-
-  newdata <- check.newdata(object, newdata)
-
-  N <- nrow(newdata)
-
-
-  nd_proj <- scale(newdata, center = object$center, scale = FALSE) %*% object$projection_matrix
-
-  # work on log scale
-  # log-densities
-  ld_nu <- numeric(N)
-  ld_de <- numeric(N)
-
-  # just add log-densities together
-  for (p in 1:object$subspace_dim) {
-    ld_nu <- ld_nu + predict(object$density_numerator[[p]], nd_proj[,p], log = TRUE)
-    ld_de <- ld_de + predict(object$density_denominator[[p]], nd_proj[,p], log = TRUE)
-  }
-
-  # return log-density difference (or its exponent, i.e., the density ratio)
-  ld_dif <- ld_nu - ld_de
-  if (log)  {
-    res <- ld_dif
-  } else {
-    res <- exp(ld_dif)
-  }
-  res
-}
 
 #' Extract parameters
 #' @keywords internal
