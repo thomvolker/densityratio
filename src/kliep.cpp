@@ -35,7 +35,7 @@ arma::vec kliep_compute_alpha(const arma::mat& Phi, const arma::vec& phibar, con
 
   alpha += phibar_corr * as_scalar(1 - arma::dot(phibar, alpha));
   alpha.elem(find(alpha < 0)).zeros();
-  alpha /= dot(phibar, phibar);
+  alpha /= dot(phibar, alpha);
   score = mean(log(Phi * alpha));
 
   for(int eps = 0; eps < nepsilon; eps++) {
@@ -49,13 +49,11 @@ arma::vec kliep_compute_alpha(const arma::mat& Phi, const arma::vec& phibar, con
       while(!conv) {
         iter++;
         Phi_alpha = Phi * alpha;
-        Phi_alpha.replace(0, sqrt(datum::eps));
         alpha_new = alpha + (e * Phi.t()) * (1 / (Phi_alpha));
         alpha_new += phibar_corr * as_scalar(1 - arma::dot(phibar, alpha_new));
         alpha_new.elem(find(alpha_new < 0)).zeros();
         alpha_new /= dot(phibar, alpha_new);
         Phi_alpha_new = Phi * alpha_new;
-        Phi_alpha_new.replace(0, sqrt(datum::eps));
         s_new = mean(log((Phi_alpha_new)));
         if (s_new <= score || iter == maxit) {
           conv = true;
