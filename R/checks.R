@@ -51,7 +51,7 @@ check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, 
     }
   }
 
-  dat <- model.matrix( ~ ., alldat)[,-1, drop = FALSE]
+  dat <- model.matrix( ~ . - 1, alldat)
 
   if (!is.null(newdata)) {
     newdata <- check.datatype(newdata)
@@ -59,7 +59,7 @@ check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, 
       newdata[, numvars] <- scale(newdata[, numvars], center = means, scale = sds) |> as.data.frame()
     }
     alldat <- rbind(alldat, newdata)
-    newdat <- model.matrix( ~ ., alldat)[,-1, drop = FALSE]
+    newdat <- model.matrix( ~ . - 1, alldat)
     newdat <- newdat[(nrow(dat) + 1):(nrow(dat)+nrow(newdata)), , drop = FALSE]
     dat <- newdat[,colnames(dat), drop = FALSE]
     return(dat)
@@ -297,9 +297,6 @@ check.nfold <- function(cv, nfold, sigma, n) {
     } else if (nfold < 2 | nfold > n) {
       stop(paste0("'nfold' must be at least 2 and at most ", n, ", given the number of observations"))
     } else {
-      if (length(sigma) == 1) {
-        warning("Only a single 'sigma' value is specified, while cross-validation serves to optimize 'sigma'.\n")
-      }
       cv_ind <- sample(rep_len(0:(nfold-1), n))
     }
   }
