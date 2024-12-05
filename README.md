@@ -1,5 +1,4 @@
 
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # densityratio <img src="man/figures/logo.png" align="right" alt="densratio logo" width="130"/>
@@ -29,8 +28,7 @@ over the entire multivariate space of the data. Subsequently, the
 density ratio values can be used to summarize the dissimilarity between
 the two distributions in a discrepancy measure.
 
-<img src="man/figures/README-unnamed-chunk-3-1.svg" style="width:15cm"
-data-fig-align="center" />
+<img src="man/figures/README-densities-1.png" width="15cm" style="display: block; margin: auto;" />
 
 ### Features
 
@@ -52,7 +50,7 @@ data-fig-align="center" />
 ## Installation
 
 You can install the development version of `densityratio` from
-[R-universe](https://r-universe.dev/search/) with:
+[R-universe](https://r-universe.dev/search) with:
 
 ``` r
 install.packages('densityratio', repos = 'https://thomvolker.r-universe.dev')
@@ -69,6 +67,7 @@ five variables.
 ### Minimal example
 
 ``` r
+
 library(densityratio)
 
 head(numerator_data)
@@ -150,6 +149,7 @@ these variables, we can obtain the estimated density ratio using
 `predict()`.
 
 ``` r
+
 # obtain predictions for the numerator samples
 
 newx5 <- seq(from = -3, to = 6, by = 0.05)
@@ -167,8 +167,7 @@ ggplot() +
         text = element_text(size = 20))
 ```
 
-<img src="man/figures/README-plot-univ-1.svg" style="width:15cm"
-data-fig-align="center" />
+<img src="man/figures/README-plot-univ-1.png" width="15cm" style="display: block; margin: auto;" />
 
 ### Scaling
 
@@ -187,6 +186,7 @@ variables types. However, note that internally, these variables are
 one-hot encoded, which can lead to a high-dimensional feature-space.
 
 ``` r
+
 summary(numerator_data$x1)
 #>   A   B   C 
 #> 351 339 310
@@ -205,9 +205,9 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.3548189
-#> 2                 B        1.4198746
-#> 3                 C        0.6084215
+#> 1                 A        1.3005360
+#> 2                 B        1.3574809
+#> 3                 C        0.6379142
 
 table(numerator_data$x1) / table(denominator_data$x1)
 #> 
@@ -241,11 +241,11 @@ summary(fit_all, test = TRUE, parallel = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.9884489
+#> Optimal sigma: 1.065369
 #> Optimal lambda: 0.1623777
-#> Optimal kernel weights (loocv): num [1:201] 0.5732 0.1625 0.0957 0.0177 0.0181 ...
+#> Optimal kernel weights (loocv): num [1:201] 0.5691 0.1511 0.0959 0.0118 0.0149 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.4503
+#> Pearson divergence between P(nu) and P(de): 0.4629
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
@@ -289,8 +289,7 @@ ggplot(data = NULL, aes(x = newx5)) +
         text = element_text(size = 20))
 ```
 
-<img src="man/figures/README-plot-methods-1.svg" style="width:15cm"
-data-fig-align="center" />
+<img src="man/figures/README-plot-methods-1.png" width="15cm" style="display: block; margin: auto;" />
 
 The figure directly shows that `ulsif()` and `kliep()` come rather close
 to the true density ratio function in this example, and outperform the

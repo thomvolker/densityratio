@@ -1,6 +1,7 @@
 ---
-format: gfm
-default-image-extension: ""
+output: 
+  github_document:
+    html_preview: false
 ---
 
 ```{r, include=FALSE}
@@ -13,9 +14,8 @@ knitr::opts_chunk$set(
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r}
-#| label: logo
-#| include: false
+```{r, logo, include=FALSE}
+
 library(hexSticker)
 library(ggplot2)
 
@@ -48,7 +48,7 @@ hexSticker::sticker(
         scale_color_manual(name = NULL, values = c("#d8e5e8"), labels = scales::parse_format()) +
         theme(panel.background = element_rect(fill = 'transparent'),
               plot.background = element_rect(fill = "transparent"),
-              legend.position = c(0.6, 0.58),
+              legend.position = c(1.02, 0.53),
               legend.text = element_text(colour = "white", size = 24)) +
         guides(color = guide_legend(override.aes = list(linetype = 0))) +
         xlim(-5, 8.6),
@@ -76,16 +76,7 @@ This package provides functionality to directly estimate a density ratio
 $$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$
 without estimating the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.
 
-```{r}
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-height: 6
-#| fig-width: 10
-#| out-width: 15cm
-#| fig-dpi: 500
-#| fig-format: svg
-#| fig-align: center
+```{r, densities, echo=FALSE,message=FALSE,warning=FALSE,fig.height=6,fig.width=10,out.width="15cm",fig.dpi=500,fig.format="png",fig.align="center"}
 
 set.seed(1)
 library(ggplot2)
@@ -159,7 +150,7 @@ ggplot() +
 
 ## Installation
 
-You can install the development version of `densityratio` from [R-universe](https://r-universe.dev/search/) with:
+You can install the development version of `densityratio` from [R-universe](https://r-universe.dev/search) with:
 
 ``` r
 install.packages('densityratio', repos = 'https://thomvolker.r-universe.dev')
@@ -171,8 +162,8 @@ The package contains several functions to estimate the density ratio between the
 
 ### Minimal example
 
-```{r}
-#| label: example-univ
+```{r, example-univ}
+
 library(densityratio)
 
 head(numerator_data)
@@ -189,13 +180,13 @@ class(fit)
 
 We can ask for the `summary()` of the estimated density ratio object, that contains the optimal kernel weights (optimized using cross-validation) and a measure of discrepancy between the numerator and denominator densities.
 
-```{r}
+```{r, summary-univ}
 summary(fit)
 ```
 
 To formally evaluate whether the numerator and denominator densities differ significantly, you can perform a two-sample homogeneity test as follows.
 
-```{r}
+```{r, summary-univ-test}
 summary(fit, test = TRUE)
 ```
 
@@ -205,14 +196,7 @@ The `ulsif`-object also contains the (hyper-)parameters used in estimating the d
 Using these variables, we can obtain the estimated density ratio using `predict()`.
 
 
-```{r}
-#| label: plot-univ
-#| fig-height: 6
-#| fig-width: 10
-#| out-width: 15cm
-#| fig-dpi: 500
-#| fig-format: svg
-#| fig-align: "center"
+```{r, plot-univ, fig.height=6, fig.width=10, out.width="15cm", fig.dpi=500, fig.format="png", fig.align="center"}
 
 # obtain predictions for the numerator samples
 
@@ -241,8 +225,7 @@ By default, all functions in the `densityratio` package standardize the data to 
 All of the functions in the `densityratio` package accept categorical variables types. However, note that internally, these variables are one-hot encoded, which can lead to a high-dimensional feature-space. 
 
 
-```{r}
-#| error: true
+```{r, cat-data}
 
 summary(numerator_data$x1)
 summary(denominator_data$x1)
@@ -267,7 +250,7 @@ This transformation can give a reasonable estimate of the ratio of proportions i
 
 After transforming all variables to numeric variables, it is possible to calculate the density ratio over the entire multivariate space of the data.
 
-```{r}
+```{r, full-data-example}
 fit_all <- ulsif(
   df_numerator = numerator_data,
   df_denominator = denominator_data
@@ -285,16 +268,7 @@ Besides `ulsif()`, the package contains several other functions to estimate a de
 * `kliep()` estimates the density ratio directly through the Kullback-Leibler importance estimation procedure.
 <!-- * `kmm()` estimates the density ratio for the denominator sample points only through kernel mean matching.  -->
 
-```{r}
-#| label: plot-methods
-#| warning: false
-#| fig-height: 6
-#| fig-width: 10
-#| out-width: 15cm
-#| fig-dpi: 500
-#| fig-format: svg
-#| fig-align: "center"
-
+```{r, plot-methods, warning=FALSE, fig.height=6, fig.width=10, out.width="15cm", fig.dpi=500, fig.format="png", fig.align="center"}
 
 fit_naive <- naive(
   df_numerator = numerator_data$x5, 
