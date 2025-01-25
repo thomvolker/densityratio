@@ -142,29 +142,4 @@ permute.naivedensityratio <- function(object, stacked, nnu, nde, min_pred, max_p
   (mean(pmin(max_pred, pmax(min_pred, pred_nu))) - mean(pmin(max_pred, pmax(min_pred, pred_de))))^2
 }
 
-#' Single permutation statistic of \code{naivesubspacedensityratio} object
-#' @rdname permute
-#' @param object \code{naivesubspacedensityratio} object
-#' @param stacked \code{matrix} with stacked numerator and denominator samples
-#' @param nnu Scalar with numerator sample size
-#' @param nde Scalar with denominator sample size
-#' @param min_pred Minimum value of the predicted density ratio
-#' @param max_pred Maximum value of the predicted density ratio
-#' @return permutation statistic for a single permutation of the data
-#' @method permute naivesubspacedensityratio
-#' @importFrom stats predict
-#' @importFrom stats update
 
-permute.naivesubspacedensityratio <- function(object, stacked, nnu, nde, min_pred, max_pred) {
-  ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
-  r <- stats::update(
-    object = object,
-    df_numerator = stacked[ind, ],
-    df_denominator = stacked[!ind, ],
-  )
-
-  pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE]))
-  pred_de <- c(stats::predict(r, newdata = stacked[!ind, , drop = FALSE]))
-
-  (mean(pmin(max_pred, pmax(min_pred, pred_nu))) - mean(pmin(max_pred, pmax(min_pred, pred_de))))^2
-}
