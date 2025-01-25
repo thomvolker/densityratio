@@ -57,12 +57,23 @@ the PCA solution, one can set the number of components by setting the
 \code{m} parameter to an integer value smaller than the number of variables.
 }
 \examples{
-x <- rnorm(100)
-y <- rnorm(200, 1, 2)
-
-naive(x, y)
-naive(x, y, bw = 2)
-
+set.seed(123)
+# Fit model
+dr <- naive(numerator_small, denominator_small)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
+# Fit model with custom parameters
+naive(numerator_small, denominator_small, m=2, kernel="epanechnikov")
 }
 \seealso{
 \code{\link[stats:density]{stats::density()}}

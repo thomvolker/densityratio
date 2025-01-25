@@ -40,12 +40,7 @@
 #' @return \code{ulsif}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal weights.
 #'
-#' @examples
-#' set.seed(1)
-#' x <- rnorm(100) |> matrix(100)
-#' y <- rnorm(200, 1, 2) |> matrix(200)
-#' ulsif(x, y)
-#' ulsif(x, y, sigma = 2, lambda = 2)
+#' @example inst/examples/ulsif-example.R
 
 ulsif <- function(df_numerator, df_denominator, intercept = TRUE, scale = "numerator",
                   nsigma = 10, sigma_quantile = NULL, sigma = NULL, nlambda = 20,

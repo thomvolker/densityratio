@@ -31,12 +31,22 @@ but otherwise the numerator samples.
 Obtain predicted density ratio values from a \code{lhss} object
 }
 \examples{
-x <- rnorm(100) |> matrix(50)
-y <- rnorm(200, 1, 2) |> matrix(100)
-fit1 <- lhss(x, y, m = 1)
-predict(fit1)
-predict(fit1, newdata = rbind(x, y))
-predict(fit1, newdata = rbind(x, y), sigma = 2)
+set.seed(123)
+# Fit model
+dr <- lhss(numerator_small, denominator_small,
+           nsigma = 5, nlambda = 5, ncenters = 50)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
 }
 \seealso{
 \code{\link{predict}}, \code{\link{lhss}}

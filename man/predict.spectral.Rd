@@ -30,14 +30,6 @@ but otherwise the numerator samples.
 \description{
 Obtain predicted density ratio values from a \code{spectral} object
 }
-\examples{
-x <- rnorm(100) |> matrix(100)
-y <- rnorm(200, 1, 2) |> matrix(200)
-fit1 <- spectral(x, y)
-predict(fit1)
-predict(fit1, newdata = rbind(x, y))
-predict(fit1, newdata = rbind(x, y), sigma = 2, J = 10)
-}
 \seealso{
 \code{\link{predict}}, \code{\link{spectral}}
 }

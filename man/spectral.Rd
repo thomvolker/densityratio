@@ -79,11 +79,23 @@ density ratio using optimal sigma and optimal spectral series expansion.
 Spectral series based density ratio estimation
 }
 \examples{
-set.seed(1)
-x <- rnorm(100) |> matrix(100)
-y <- rnorm(200, 1, 2) |> matrix(200)
-spectral(x, y)
-spectral(x, y, sigma = 2)
+set.seed(123)
+# Fit model
+dr <- spectral(numerator_small, denominator_small)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
+# Fit model with custom parameters
+spectral(numerator_small, denominator_small, sigma = 2)
 }
 \references{
 Izbicki, R., Lee, A. & Schafer, C. (2014). High-Dimensional

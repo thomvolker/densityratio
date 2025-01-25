@@ -7,7 +7,6 @@
 \alias{permute.lhss}
 \alias{permute.spectral}
 \alias{permute.naivedensityratio}
-\alias{permute.naivesubspacedensityratio}
 \title{Single permutation}
 \usage{
 permute(object, ...)
@@ -21,11 +20,9 @@ permute(object, ...)
 \method{permute}{spectral}(object, stacked, nnu, nde, ...)
 
 \method{permute}{naivedensityratio}(object, stacked, nnu, nde, min_pred, max_pred)
-
-\method{permute}{naivesubspacedensityratio}(object, stacked, nnu, nde, min_pred, max_pred)
 }
 \arguments{
-\item{object}{\code{naivesubspacedensityratio} object}
+\item{object}{\code{naivedensityratio} object}
 
 \item{...}{Additional arguments to pass through to specific permute functions.}
 
@@ -51,8 +48,6 @@ permutation statistic for a single permutation of the data
 permutation statistic for a single permutation of the data
 
 permutation statistic for a single permutation of the data
-
-permutation statistic for a single permutation of the data
 }
 \description{
 Single permutation
@@ -66,6 +61,4 @@ Single permutation statistic of \code{lhss} object
 Single permutation statistic of \code{spectral} object
 
 Single permutation statistic of \code{naivedensityratio} object
-
-Single permutation statistic of \code{naivesubspacedensityratio} object
 }

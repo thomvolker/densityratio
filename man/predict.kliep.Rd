@@ -23,12 +23,25 @@ but otherwise the numerator samples.
 Obtain predicted density ratio values from a \code{kliep} object
 }
 \examples{
-x <- rnorm(100) |> matrix(100)
-y <- rnorm(200, 1, 2) |> matrix(200)
-fit1 <- kliep(x, y)
-predict(fit1)
-predict(fit1, newdata = rbind(x, y))
-predict(fit1, newdata = rbind(x, y), sigma = 2)
+set.seed(123)
+# Fit model
+dr <- kliep(numerator_small, denominator_small)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
+# Fit model with custom parameters
+kliep(numerator_small, denominator_small,
+      nsigma = 20, ncenters = 100, nfold = 20,
+      epsilon = 10^{3:-5}, maxit = 1000)
 }
 \seealso{
 \code{\link{predict}}, \code{\link{kliep}}

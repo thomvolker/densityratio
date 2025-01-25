@@ -88,9 +88,21 @@ density ratio using optimal sigma, optimal lambda and optimal weights.
 Least-squares heterodistributional subspace search
 }
 \examples{
-set.seed(1)
-N <- 250
-X <- cbind(rnorm(N), rnorm(N, 0, 0.5))
-Y <- cbind(rnorm(N), sample(rep(c(-1, 1), times = N/2)) + rnorm(N))
-out <- lhss(X, Y, m = 1, ncenters = 100)
+set.seed(123)
+# Fit model
+dr <- naive(numerator_small, denominator_small)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
+# Fit model with custom parameters
+naive(numerator_small, denominator_small, m=2, kernel="epanechnikov")
 }

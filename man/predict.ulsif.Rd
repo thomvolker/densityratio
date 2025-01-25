@@ -31,12 +31,23 @@ but otherwise the numerator samples.
 Obtain predicted density ratio values from a \code{ulsif} object
 }
 \examples{
-x <- rnorm(100) |> matrix(100)
-y <- rnorm(200, 1, 2) |> matrix(200)
-fit1 <- ulsif(x, y)
-predict(fit1)
-predict(fit1, newdata = rbind(x, y))
-predict(fit1, newdata = rbind(x, y), sigma = 2, lambda = 3)
+set.seed(123)
+# Fit model
+dr <- ulsif(numerator_small, denominator_small)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
+# Fit model with custom parameters
+ulsif(numerator_small, denominator_small, sigma = 2, lambda = 2)
 }
 \seealso{
 \code{\link{predict}}, \code{\link{ulsif}}
