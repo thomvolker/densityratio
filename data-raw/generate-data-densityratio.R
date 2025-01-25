@@ -28,4 +28,16 @@ denominator_data <- tibble(
   x5 = rnorm(n, 3, 2)
 ) |> select(-x3means)
 
-usethis::use_data(numerator_data, denominator_data, overwrite = TRUE)
+numerator_small <- numerator_data |>
+  select(x1 = x3, x2 = x4, x3 = x5) |>
+  slice(1:50)
+
+denominator_small <- denominator_data |>
+  select(x1 = x3, x2 = x4, x3 = x5) |>
+  slice(1:100)
+
+usethis::use_data(numerator_data, denominator_data,
+                  numerator_small, denominator_small,
+                  overwrite = TRUE)
+
+
