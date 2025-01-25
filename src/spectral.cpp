@@ -54,7 +54,7 @@ arma::rowvec spectral_cv_loss(const arma::mat& Knu,
     arma::mat psitest_nu = compute_psihat(Knu.submat(idx_test_nu, idx_train_de), EigVecs, EigVals, maxJ, ncol);
     arma::mat psitest_de = compute_psihat(Kde.submat(idx_test_de, idx_train_de), EigVecs, EigVals, maxJ, ncol);
 
-    for (int j = 0; j < J.size(); j++) {
+    for (arma::uword j = 0; j < J.size(); j++) {
       int start = maxJ - J(j);
       arma::vec beta_nu = psitest_nu.cols(start, maxJ-1) * betatilde.subvec(start, maxJ-1);
       arma::vec beta_de = psitest_de.cols(start, maxJ-1) * betatilde.subvec(start, maxJ-1);
@@ -81,7 +81,6 @@ List spectral_dre(const arma::mat& dist_nu,
                   int nthreads,
                   const bool& progressbar) {
 
-  int nnu = dist_nu.n_rows;
   int ncol = dist_de.n_cols;
   int nsigma = sigma.size();
   int nsubspace = J.size();
