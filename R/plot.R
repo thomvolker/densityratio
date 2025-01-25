@@ -97,7 +97,8 @@ dr.histogram <- function(x,
 #' @return A histogram of density ratio estimates.
 #' @method plot ulsif
 #' @export
-#'
+#' @example inst/examples/ulsif-example.R
+
 plot.ulsif <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
                        bins = NULL, tol = 10e-3, ...) {
   dr.histogram(x, samples = samples, logscale = logscale, binwidth = binwidth,
@@ -109,7 +110,8 @@ plot.ulsif <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
 #' @return A histogram of density ratio estimates.
 #' @method plot kliep
 #' @export
-#'
+#' @example inst/examples/kliep-example.R
+
 
 plot.kliep <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
                        bins = NULL, tol = 10e-3, ...) {
@@ -121,7 +123,8 @@ plot.kliep <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
 #' @return A histogram of density ratio estimates.
 #' @method plot spectral
 #' @export
-#'
+#' @example inst/examples/spectral-example.R
+
 
 plot.spectral <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
                        bins = NULL, tol = 10e-3, ...) {
@@ -133,7 +136,9 @@ plot.spectral <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
 #' @return A histogram of density ratio estimates.
 #' @method plot lhss
 #' @export
-#'
+#' @example inst/examples/lhss-example.R
+
+
 plot.lhss <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
                        bins = NULL, tol = 10e-3, ...) {
   dr.histogram(x, samples = samples, logscale = logscale, binwidth = binwidth,
@@ -144,21 +149,10 @@ plot.lhss <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
 #' @return A histogram of density ratio estimates.
 #' @method plot naivedensityratio
 #' @export
-#'
+#' @example inst/examples/naive-example.R
+
 plot.naivedensityratio <- function(x, samples = "both", logscale = TRUE,
                                    binwidth = NULL, bins = NULL, tol = 10e-3, ...) {
-  dr.histogram(x, samples = samples, logscale = logscale, binwidth = binwidth,
-               bins = bins, tol = tol)
-}
-
-#' @rdname dr.histogram
-#' @return A histogram of density ratio estimates.
-#' @method plot naivesubspacedensityratio
-#' @export
-#'
-plot.naivesubspacedensityratio <- function(x, samples = "both", logscale = TRUE,
-                                           binwidth = NULL, bins = NULL,
-                                           tol = 10e-3, ...) {
   dr.histogram(x, samples = samples, logscale = logscale, binwidth = binwidth,
                bins = bins, tol = tol)
 }
@@ -191,7 +185,8 @@ create_univariate_plot <- function(data, ext, var, y_lab, sample.facet = TRUE){
   y_min <- min(-2, ext$dr)
 
   plot <-
-    ggplot2::ggplot(data, ggplot2::aes(x = .data[[var]], y = ext$dr)) +
+    ggplot2::ggplot(data, ggplot2::aes(x = !!quote(.data[[var]]),
+                                       y = !!quote(ext$dr))) +
     ggplot2::geom_point(ggplot2::aes(col = ext$sample),
                alpha = .6) +
     ggplot2::theme_bw() +
@@ -238,6 +233,8 @@ create_univariate_plot <- function(data, ext, var, y_lab, sample.facet = TRUE){
 #' @importFrom ggplot2 facet_wrap
 #' @importFrom ggplot2 facet_grid
 #'
+#' @export
+#' @example inst/examples/ulsif-example.R
 
 plot_univariate <- function(x, vars = NULL, samples = "both", logscale = TRUE,
                             grid = FALSE, sample.facet = FALSE,
@@ -345,7 +342,7 @@ plot_univariate <- function(x, vars = NULL, samples = "both", logscale = TRUE,
 #' @importFrom ggplot2 scale_shape_manual
 #' @importFrom ggplot2 theme_bw
 #' @importFrom ggplot2 labs
-#'
+
 create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 
 
@@ -353,7 +350,7 @@ create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
   dr_min <- ifelse(logscale, min(-2, ext$dr), min(exp(-2), ext$dr))
 
   plot <-
-    ggplot2::ggplot(data, mapping = ggplot2::aes(x = .data[[vars[1]]], y = .data[[vars[2]]])) +
+    ggplot2::ggplot(data, mapping = ggplot2::aes(x = !!quote(.data[[vars[1]]]), y = !!quote(.data[[vars[2]]]))) +
     ggplot2::geom_point(ggplot2::aes(colour = ext$dr,
                                      shape = if (show.sample) ext$sample else NULL)) +
     ggplot2::scale_colour_gradient2(low = "#00204DFF",
@@ -401,7 +398,9 @@ create_bivariate_plot  <- function(data, ext, vars, logscale, show.sample){
 #' @importFrom grid grid.draw
 #' @importFrom grid grid.newpage
 #' @importFrom grid nullGrob
-#'
+#' @example inst/examples/ulsif-example.R
+
+
 plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
                            logscale = TRUE, show.sample = FALSE, tol = 10e-3, ...) {
 
@@ -465,10 +464,10 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
     dr_min <- min(-1, ext$dr)
 
     plot <-
-      ggplot2::ggplot(plot_data, mapping = ggplot2::aes(x = values.x, y = values.y,
+      ggplot2::ggplot(plot_data, mapping = ggplot2::aes(x = !!quote(values.x), y = !!quote(values.y),
                                       shape = if (show.sample) sample else NULL)) +
-      ggplot2::geom_point(ggplot2::aes(colour = dr)) +
-      ggplot2::facet_grid(rows = ggplot2::vars(yvar), cols = ggplot2::vars(xvar), scales = "free",
+      ggplot2::geom_point(ggplot2::aes(colour = !!quote(dr))) +
+      ggplot2::facet_grid(rows = ggplot2::vars(!!quote(yvar)), cols = ggplot2::vars(!!quote(xvar)), scales = "free",
                  switch = "both") +
       ggplot2::scale_colour_gradient2(low = "#00204DFF",
                              high = "#7D0000",
@@ -491,8 +490,9 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
   grob <- ggplot2::ggplotGrob(plot)
 
   ## Create name of empty panels in the upper diagonal
-  empty_panels <- expand.grid(seq(1:length(vars)), seq(1:length(vars))) |>
-    subset(Var2 > Var1)
+  empty_panels <- expand.grid(seq(1:length(vars)), seq(1:length(vars)))
+  empty_panels <- empty_panels[empty_panels$Var2 > empty_panels$Var1,,drop=FALSE]
+
   empty_panels$panel <- paste0("panel-", empty_panels$Var1, "-", empty_panels$Var2)
 
   # Delete panels in upper diagonal, based in their index
