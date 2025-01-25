@@ -9,6 +9,8 @@
 #' @importFrom utils str
 #' @export
 #' @seealso \code{\link{print}}, \code{\link{ulsif}}
+#' @example inst/examples/ulsif-example.R
+
 
 
 print.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
@@ -40,6 +42,8 @@ print.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
 #' @seealso \code{\link{print}}, \code{\link{summary.ulsif}}, \code{\link{ulsif}}
 #'
 #' @export
+#' @example inst/examples/ulsif-example.R
+
 
 print.summary.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
@@ -77,6 +81,8 @@ print.summary.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), .
 #' @importFrom utils str
 #' @export
 #' @seealso \code{\link{print}}, \code{\link{kliep}}
+#' @example inst/examples/kliep-example.R
+
 
 print.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
@@ -113,6 +119,8 @@ print.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
 #' @seealso \code{\link{print}}, \code{\link{summary.kliep}}, \code{\link{kliep}}
 #'
 #' @export
+#' @example inst/examples/kliep-example.R
+
 
 print.summary.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
@@ -150,6 +158,7 @@ print.summary.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), .
 #' @importFrom utils str
 #' @export
 #' @seealso \code{\link{print}}, \code{\link{lhss}}
+#' @example inst/examples/lhss-example.R
 
 print.lhss <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
@@ -181,6 +190,7 @@ print.lhss <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
 #' @seealso \code{\link{print}}, \code{\link{summary.lhss}}, \code{\link{lhss}}
 #'
 #' @export
+#' @example inst/examples/lhss-example.R
 
 print.summary.lhss <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
@@ -218,6 +228,8 @@ print.summary.lhss <- function(x, digits = max(3L, getOption("digits") - 3L), ..
 #' @importFrom utils str
 #' @export
 #' @seealso \code{\link{print}}, \code{\link{spectral}}
+#' @example inst/examples/spectral-example.R
+
 
 
 print.spectral <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
@@ -250,6 +262,8 @@ print.spectral <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
 #' @seealso \code{\link{print}}, \code{\link{summary.spectral}}, \code{\link{spectral}}
 #'
 #' @export
+#' @example inst/examples/spectral-example.R
+
 
 print.summary.spectral <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
@@ -287,6 +301,7 @@ print.summary.spectral <- function(x, digits = max(3L, getOption("digits") - 3L)
 #' @importFrom utils str
 #' @export
 #' @seealso \code{\link{print}}, \code{\link{naive}}
+#' @example inst/examples/naive-example.R
 
 
 print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
@@ -317,6 +332,7 @@ print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L
 #' @importFrom utils str
 #' @seealso \code{\link{print}}, \code{\link{summary.naivedensityratio}},
 #' \code{\link{naive}}
+#' @example inst/examples/naive-example.R
 
 
 print.summary.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {

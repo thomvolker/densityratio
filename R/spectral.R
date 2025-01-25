@@ -43,17 +43,10 @@
 #' Density Ratio Estimation with Extensions to Approximate Likelihood Computation.
 #' <i>Proceedings of Machine Learning Research</i> 33:420-429. Available from
 #' <https://proceedings.mlr.press/v33/izbicki14.html>.
-
-
 #' @return \code{spectral}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal spectral series expansion.
 #'
-#' @examples
-#' set.seed(1)
-#' x <- rnorm(100) |> matrix(100)
-#' y <- rnorm(200, 1, 2) |> matrix(200)
-#' spectral(x, y)
-#' spectral(x, y, sigma = 2)
+#' @example inst/examples/spectral-example.R
 
 spectral <- function(df_numerator, df_denominator, J = NULL, scale = "numerator",
                      nsigma = 10, sigma_quantile = NULL, sigma = NULL,

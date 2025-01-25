@@ -15,13 +15,7 @@
 #'
 #' @export
 #'
-#' @examples
-#' x <- rnorm(100) |> matrix(100)
-#' y <- rnorm(200, 1, 2) |> matrix(200)
-#' fit1 <- ulsif(x, y)
-#' predict(fit1)
-#' predict(fit1, newdata = rbind(x, y))
-#' predict(fit1, newdata = rbind(x, y), sigma = 2, lambda = 3)
+#' @example inst/examples/ulsif-example.R
 
 predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), lambda = c("lambdaopt", "all"), ...) {
 
@@ -59,14 +53,8 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
 #' @seealso \code{\link{predict}}, \code{\link{kliep}}
 #'
 #' @export
-#'
-#' @examples
-#' x <- rnorm(100) |> matrix(100)
-#' y <- rnorm(200, 1, 2) |> matrix(200)
-#' fit1 <- kliep(x, y)
-#' predict(fit1)
-#' predict(fit1, newdata = rbind(x, y))
-#' predict(fit1, newdata = rbind(x, y), sigma = 2)
+#' @example inst/examples/kliep-example.R
+
 
 predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), ...) {
 
@@ -101,14 +89,8 @@ predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
 #' @seealso \code{\link{predict}}, \code{\link{lhss}}
 #'
 #' @export
-#'
-#' @examples
-#' x <- rnorm(100) |> matrix(50)
-#' y <- rnorm(200, 1, 2) |> matrix(100)
-#' fit1 <- lhss(x, y, m = 1)
-#' predict(fit1)
-#' predict(fit1, newdata = rbind(x, y))
-#' predict(fit1, newdata = rbind(x, y), sigma = 2)
+#' @example inst/examples/lhss-example.R
+
 
 predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), lambda = c("lambdaopt", "all"), ...) {
 
@@ -150,14 +132,6 @@ predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), l
 #' @seealso \code{\link{predict}}, \code{\link{spectral}}
 #'
 #' @export
-#'
-#' @examples
-#' x <- rnorm(100) |> matrix(100)
-#' y <- rnorm(200, 1, 2) |> matrix(200)
-#' fit1 <- spectral(x, y)
-#' predict(fit1)
-#' predict(fit1, newdata = rbind(x, y))
-#' predict(fit1, newdata = rbind(x, y), sigma = 2, J = 10)
 
 predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"),
                              J = c("Jopt", "all"), ...) {
@@ -198,14 +172,8 @@ predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"
 #' @importFrom stats predict
 #'
 #' @export
-#'
-#' @examples
-#' x <- rnorm(100) |> matrix(100)
-#' y <- rnorm(200, 1, 2) |> matrix(200)
-#' fit1 <- naive(x, y)
-#' predict(fit1)
-#' predict(fit1, newdata = rbind(x, y))
-#' predict(fit1, newdata = rbind(x, y), log = TRUE)
+#' @example inst/examples/naive-example.R
+
 
 predict.naivedensityratio <- function(object, newdata = NULL, log = FALSE,
                                       tol = 1e-6, ...) {

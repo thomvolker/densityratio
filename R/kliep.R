@@ -34,13 +34,7 @@
 #' @return \code{kliep}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal weights.
 #'
-#' @examples
-#' set.seed(1)
-#' x <- rnorm(100) |> matrix(100)
-#' y <- rnorm(200, 1, 2) |> matrix(200)
-#' kliep(x, y)
-#' kliep(x, y, nsigma = 20, ncenters = 100, nfold = 20, epsilon = 10^{3:-5}, maxit = 1000)
-#'
+#' @example inst/examples/kliep-example.R
 
 kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10,
                   sigma_quantile = NULL, sigma = NULL, ncenters = 200,

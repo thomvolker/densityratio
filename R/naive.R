@@ -37,14 +37,10 @@
 #'
 #' @seealso [stats::density()]
 #'
-#' @examples
-#' x <- rnorm(100)
-#' y <- rnorm(200, 1, 2)
-#'
-#' naive(x, y)
-#' naive(x, y, bw = 2)
-#'
 #' @export
+#' @example inst/examples/naive-example.R
+
+
 naive <- function(df_numerator, df_denominator, m, bw = "SJ",
                   kernel = "gaussian", n = 2L^11, ...) {
   cl <- match.call()
