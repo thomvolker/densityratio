@@ -7,7 +7,6 @@
 \alias{plot.spectral}
 \alias{plot.lhss}
 \alias{plot.naivedensityratio}
-\alias{plot.naivesubspacedensityratio}
 \title{A histogram of density ratio estimates}
 \usage{
 dr.histogram(
@@ -69,16 +68,6 @@ dr.histogram(
   tol = 0.01,
   ...
 )
-
-\method{plot}{naivesubspacedensityratio}(
-  x,
-  samples = "both",
-  logscale = TRUE,
-  binwidth = NULL,
-  bins = NULL,
-  tol = 0.01,
-  ...
-)
 }
 \arguments{
 \item{x}{Density ratio object created with e.g., \code{\link[=kliep]{kliep()}}, \code{\link[=ulsif]{ulsif()}},
@@ -112,11 +101,97 @@ A histogram of density ratio estimates.
 A histogram of density ratio estimates.
 
 A histogram of density ratio estimates.
-
-A histogram of density ratio estimates.
 }
 \description{
 Creates a histogram of the density ratio estimates. Useful to understand the
 distribution of estimated density ratios in each sample, or compare it among
 samples. It is the default plotting method for density ratio objects.
+}
+\examples{
+set.seed(123)
+# Fit model
+dr <- ulsif(numerator_small, denominator_small)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
+# Fit model with custom parameters
+ulsif(numerator_small, denominator_small, sigma = 2, lambda = 2)
+set.seed(123)
+# Fit model
+dr <- kliep(numerator_small, denominator_small)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
+# Fit model with custom parameters
+kliep(numerator_small, denominator_small,
+      nsigma = 20, ncenters = 100, nfold = 20,
+      epsilon = 10^{3:-5}, maxit = 1000)
+set.seed(123)
+# Fit model
+dr <- spectral(numerator_small, denominator_small)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
+# Fit model with custom parameters
+spectral(numerator_small, denominator_small, sigma = 2)
+set.seed(123)
+# Fit model
+dr <- lhss(numerator_small, denominator_small,
+           nsigma = 5, nlambda = 5, ncenters = 50)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
+set.seed(123)
+# Fit model
+dr <- naive(numerator_small, denominator_small)
+# Inspect model object
+dr
+# Obtain summary of model object
+summary(dr)
+# Plot model object
+plot(dr)
+# Plot density ratio for each variable individually
+plot_univariate(dr)
+# Plot density ratio for each pair of variables
+plot_bivariate(dr)
+# Predict density ratio and inspect first 6 predictions
+head(predict(dr))
+# Fit model with custom parameters
+naive(numerator_small, denominator_small, m=2, kernel="epanechnikov")
 }
