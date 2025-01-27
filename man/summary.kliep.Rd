@@ -10,7 +10,7 @@ test for homogeneity of the numerator and denominator samples}
   test = FALSE,
   n_perm = 100,
   parallel = FALSE,
-  cl = NULL,
+  cluster = NULL,
   min_pred = 1e-06,
   ...
 )
@@ -25,9 +25,9 @@ of the numerator and denominator samples.}
 
 \item{parallel}{\code{logical} indicating to run the permutation test in parallel}
 
-\item{cl}{\code{NULL} or a cluster object created by \code{makeCluster}. If
-\code{NULL} and \code{parallel = TRUE}, it uses the number of available cores
-minus 1.}
+\item{cluster}{\code{NULL} or a cluster object created by \code{makeCluster}.
+If \code{NULL} and \code{parallel = TRUE}, it uses the number of available
+cores minus 1.}
 
 \item{min_pred}{Scalar indicating the minimum value for the predicted density
 ratio values (used in the divergence statistic) to avoid negative density

@@ -5,7 +5,14 @@
 \title{Extract summary from \code{ulsif} object, including two-sample significance
 test for homogeneity of the numerator and denominator samples}
 \usage{
-\method{summary}{ulsif}(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, ...)
+\method{summary}{ulsif}(
+  object,
+  test = FALSE,
+  n_perm = 100,
+  parallel = FALSE,
+  cluster = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{Object of class \code{ulsif}}
@@ -17,9 +24,9 @@ of the numerator and denominator samples.}
 
 \item{parallel}{\code{logical} indicating to run the permutation test in parallel}
 
-\item{cl}{\code{NULL} or a cluster object created by \code{makeCluster}. If
-\code{NULL} and \code{parallel = TRUE}, it uses the number of available cores
-minus 1.}
+\item{cluster}{\code{NULL} or a cluster object created by \code{makeCluster}.
+If \code{NULL} and \code{parallel = TRUE}, it uses the number of available
+cores minus 1.}
 
 \item{...}{further arguments passed to or from other methods.}
 }

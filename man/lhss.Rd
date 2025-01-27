@@ -18,8 +18,6 @@ lhss(
   ncenters = 200,
   centers = NULL,
   maxit = 200,
-  parallel = FALSE,
-  nthreads = NULL,
   progressbar = TRUE
 )
 }
@@ -68,13 +66,6 @@ matrix. Defaults to all numerator samples.}
 default, the matrix \code{nu} is used as the matrix with Gaussian centers.}
 
 \item{maxit}{Maximum number of iterations in the updating scheme.}
-
-\item{parallel}{logical indicating whether to use parallel processing in the
-cross-validation scheme.}
-
-\item{nthreads}{\code{NULL} or integer indicating the number of threads to
-use for parallel processing. If parallel processing is enabled, it defaults
-to the number of available threads minus one.}
 
 \item{progressbar}{Logical indicating whether or not to display a progressbar.}
 }
