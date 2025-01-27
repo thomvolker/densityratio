@@ -9,126 +9,121 @@
 #' indicating whether to standardize each numeric variable according to the
 #' numerator means and standard deviations, the denominator means and standard
 #' deviations, or apply no standardization at all.
-#' @param method Character string containing the method used for kernel mean
-#' matching. Currently, \code{method = "unconstrained"} and
-#' \code{method = "constrained"} are supported.
+#' @param constrained \code{logical} equals \code{FALSE} to use unconstrained
+#' optimization, \code{TRUE} to use constrained optimization. Defaults to
+#' \code{FALSE}.
+#' @param nsigma Integer indicating the number of sigma values (bandwidth
+#' parameter of the Gaussian kernel gram matrix) to use in cross-validation.
+#' @param sigma_quantile \code{NULL} or numeric vector with probabilities to
+#' calculate the quantiles of the distance matrix to obtain sigma values. If
+#' \code{NULL}, \code{nsigma} values between \code{0.25} and \code{0.75} are
+#' used.
 #' @param sigma \code{NULL} or a scalar value to determine the bandwidth of the
-#' Gaussian kernel gram matrix. If \code{NULL}, \code{sigma} is the median Euclidean
-#' interpoint distance.
-#' @param lambda \code{NULL} or a scalar value to determine the regularization
-#' imposed on the Gaussian kernel gram matrix of the denominator samples. If
-#' \code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.
-#' @importFrom quadprog solve.QP
+#' Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
+#' \code{0.25} and \code{0.75} are used.
+#' @param ncenters Maximum number of Gaussian centers in the kernel gram
+#' matrix. Defaults to all numerator samples.
+#' @param centers Option to specify the Gaussian samples manually.
+#' @param cv Logical indicating whether or not to do cross-validation
+#' @param nfold Number of cross-validation folds used in order to calculate the
+#' optimal \code{sigma} value (default is 5-fold cv).
+#' @param parallel logical indicating whether to use parallel processing in the
+#' cross-validation scheme.
+#' @param nthreads \code{NULL} or integer indicating the number of threads to
+#' use for parallel processing. If parallel processing is enabled, it defaults
+#' to the number of available threads minus one.
+#' @param progressbar Logical indicating whether or not to display a progressbar.
+#' @param osqp_settings Optional: settings to pass to the \code{osqp} solver for
+#' constrained optimization.
+#' @param cluster Optional: a cluster object to use for parallel processing,
+#' see \code{parallel::makeCluster}.
+#' @importFrom stats predict
+#' @importFrom pbapply pblapply
+#' @importFrom parallel detectCores makeCluster stopCluster
+#' @importFrom osqp solve_osqp osqpSettings
+
 #' @export
 #'
-#' @return \code{kmm} returns \code{rhat_de}, the estimated density ratio for
-#' the denominator samples.
+#' @return \code{kmm}-object, containing all information to calculate the
+#' density ratio using optimal sigma and optimal weights.
 #'
-#' @examples
-#' x <- rnorm(100) |> matrix(100)
-#' y <- rnorm(200, 1, 2) |> matrix(200)
-#' kmm(x, y)
-#' kmm(x, y, sigma = 2, lambda = 2)
-#'
+#' @example inst/examples/kmm-example.R
+
+# TODO: implement cross-validation, out-of-sample prediction, print and
+# summary functions and plot functions
 
 kmm <- function(df_numerator, df_denominator, scale = "numerator",
-                method = "unconstrained", sigma = NULL, lambda = NULL) {
+                constrained = FALSE, nsigma = 10, sigma_quantile = NULL,
+                sigma = NULL, ncenters = 200, centers = NULL, cv = TRUE,
+                nfold = 5, parallel = FALSE, nthreads = NULL,
+                progressbar = TRUE, osqp_settings = NULL, cluster = NULL) {
 
   cl <- match.call()
-
   nu <- check.datatype(df_numerator)
   de <- check.datatype(df_denominator)
 
   check.variables(nu, de)
 
-  dat <- check.dataform(nu, de, de, TRUE, NULL, scale)
+  df_centers <- check.centers(rbind(nu, de), centers, ncenters)
+  dat <- check.dataform(nu, de, df_centers, is.null(centers), NULL, scale)
 
-  methods <- c("unconstrained", "constrained")
+  Dd <- distance(dat$de, dat$ce, FALSE)
+  sigma <- check.sigma(nsigma, sigma_quantile, sigma, Dd)
 
-  # TODO: checks not implemented because currently cross-validation is not an option
-  # in Kernel mean matching. This is something for the future.
-
-  if (length(method) > 1 | !method %in% methods) {
-    stop(paste("Method must be a single method: constrained or unconstrained"))
-  }
-  if (!is.null(sigma)) {
-    if (!is.numeric(sigma) | length(sigma) > 1) {
-      stop("If provided, sigma must be a scalar")
+  parallel <- check.parallel(parallel, nthreads, sigma)
+  if (parallel && constrained) {
+    if (is.null(cluster) && is.null(nthreads)) {
+      nthreads <- parallel::detectCores() - 1
+      cluster <- parallel::makeCluster(nthreads)
+    } else if (is.null(cluster) && !is.null(nthreads)) {
+      cluster <- parallel::makeCluster(nthreads)
     }
+    on.exit(parallel::stopCluster(cluster))
   }
-  if (!is.null(lambda)) {
-    if (!is.numeric(lambda) | length(lambda) > 1) {
-      stop("Only scalar values for lambda are currently accepted")
+
+  cv_ind_nu <- check.nfold(cv, nfold, sigma, nrow(dat$nu))
+  cv_ind_de <- check.nfold(cv, nfold, sigma, nrow(dat$de))
+
+  if (is.null(osqp_settings)) {
+    osqp_settings <- osqp::osqpSettings(verbose = FALSE)
+  }
+  if (constrained) {
+    if(!progressbar) {
+      pbapply::pboptions(type = "none")
     }
+    constrained_out <- pbapply::pblapply(sigma, function(s) {
+      compute_kmm(dat$nu, dat$de, dat$ce, Dd, s, cv_ind_nu, cv_ind_de,
+                  parallel = FALSE, nthreads = 0, progressbar = FALSE,
+                  constrained = TRUE, settings = osqp_settings)
+    }, cl = cluster)
+    res <- list(
+      alpha = do.call(cbind, constrained_out |> lapply(function(x) x$alpha)),
+      loss = sapply(constrained_out, function(x) x$loss)
+    )
   } else {
-    lambda <- sqrt(nrow(dat$nu) + nrow(dat$de))
+    nthreads <- check.threads(parallel, nthreads)
+    res <- compute_kmm(dat$nu, dat$de, dat$ce, Dd, sigma, cv_ind_nu, cv_ind_de,
+                       parallel, nthreads, progressbar, constrained, osqp_settings)
   }
 
-  distdede <- distance(dat$de, dat$de, FALSE)
-  distdenu <- distance(dat$de, dat$nu, FALSE)
-  if (is.null(sigma)) {
-    sigma <- stats::median(distdede[distdede > 0])
-  }
+  out <- list(
+    df_numerator = df_numerator,
+    df_denominator = df_denominator,
+    alpha = res$alpha,
+    cv_score = switch(cv, res$loss, NULL),
+    scale = scale,
+    sigma = sigma,
+    centers = df_centers,
+    model_matrices = dat,
+    nfold = switch(cv, max(cv_ind_nu) + 1, NULL),
+    constrained = constrained,
+    alpha_opt = switch(cv, res$alpha[,which.min(res$loss), drop = FALSE], NULL),
+    sigma_opt = switch(cv, sigma[which.min(res$loss)], NULL),
+    call = cl
+  )
 
-
-  Kdede <- kernel_gaussian(distdede, sigma = sigma)
-  Kdenu <- kernel_gaussian(distdenu, sigma = sigma)
-
-  if (method == "unconstrained") {
-    rhat_de <- .kmm_unconstrained(Kdede, Kdenu, lambda)
-  }
-  if (method == "constrained") {
-    rhat_de <- .kmm_constrained(Kdede, Kdenu, lambda)
-  }
-
-  out <- list(rhat_de = rhat_de,
-              sigma = sigma,
-              lambda = lambda,
-              scale = scale,
-              call = cl)
   class(out) <- "kmm"
-
   out
-
-}
-
-.kmm_unconstrained <- function(Kdede, Kdenu, lambda) {
-  nnu <- ncol(Kdenu)
-  nde <- nrow(Kdede)
-  nde/nnu * solve(Kdede + lambda*diag(nde), Kdenu %*% rep(1, nnu))
-}
-
-.kmm_constrained <- function(Kdede, Kdenu, lambda) {
-
-  # We impose that the density ratio multiplied with the denominator density
-  # should integrate to 1 (up to some error eps), that the density ratio is
-  # positive everywhere, and that the density ratio is constrained to be
-  # smaller than some large positive scalar (here chosen to be 10000)
-
-  nnu <- ncol(Kdenu)
-  nde <- nrow(Kdede)
-  one <- rep(1, nnu)
-  # Constraints that make sure that the density ratio with denominator density
-  # integrates to one, and the second parts sets the boundaries
-  A <- cbind(rep(-1, nde),
-             rep(1,  nde),
-             diag(1,  nde, nde),
-             diag(-1, nde, nde))
-
-  # Bounds with respect to the integration
-  eps <- (sqrt(nde) - 1) / (sqrt(nde))
-
-  # Second part of constraints, t(A) %*% r >= b
-  b <- c(-nde * (eps + 1),
-         nde * (eps - 1),
-         rep(0, nde),
-         -rep(1000, nde))
-
-  # Solve the optimization problem
-  quadprog::solve.QP(Dmat = Kdede + lambda*diag(nde),
-                     dvec = Kdenu %*% one,
-                     Amat = A,
-                     bvec = b)$solution
 }
 
 

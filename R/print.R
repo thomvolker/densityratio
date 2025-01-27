@@ -23,8 +23,8 @@ print.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat(str(unname(x$sigma)))
   cat("\nRegularization parameter (lambda):")
   cat(str(unname(x$lambda)))
-  cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
-      "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
+  cat("\nOptimal sigma (loocv): ", paste(format(x$sigma_opt, digits, ...)), "\n",
+      "Optimal lambda (loocv): ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
   cat("Optimal kernel weights (loocv):")
   cat(str(unname(x$alpha_opt)), "\n")
   invisible(x)
@@ -54,7 +54,7 @@ print.summary.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), .
 
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
       "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
-  cat("Optimal kernel weights (loocv):")
+  cat("Optimal kernel weights:")
   cat(str(unname(x$alpha_opt)), "\n")
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
@@ -129,11 +129,85 @@ print.summary.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), .
       "  Kernel type: Gaussian with L2 norm distances\n",
       "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
 
-  cat("Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
-      "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
-  cat("Optimal kernel weights (loocv):")
+  cat("Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n", sep = "")
+  cat("Optimal kernel weights:")
   cat(str(unname(x$alpha_opt)), "\n")
   cat("Kullback-Leibler divergence between P(nu) and P(de): ", paste(format(x$UKL, digits = digits, ...)), "\n", sep = "")
+  if (!is.null(x$p_value)) {
+    cat("Pr(P(nu)=P(de))",
+        ifelse(x$p_value < 0.001,
+               paste(" < .001"),
+               paste(" = ", format(x$p_value, digits = 3, ...))),
+        "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
+        "\n\n", sep = "")
+  } else {
+    cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
+  }
+  invisible(x)
+}
+
+#' Print a \code{kmm} object
+#'
+#' @rdname print.kmm
+#' @method print kmm
+#' @param x Object of class \code{kmm}.
+#' @param digits Number of digits to use when printing the output.
+#' @param ... further arguments on how to format the number of digits.
+#' @return \code{invisble} The inputted \code{kmm} object.
+#' @importFrom utils str
+#' @export
+#' @seealso \code{\link{print}}, \code{\link{kmm}}
+#' @example inst/examples/kmm-example.R
+
+
+print.kmm <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
+  cat("\n")
+  cat("Kernel Information:\n",
+      "  Kernel type: Gaussian with L2 norm distances\n",
+      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+  cat("  sigma:")
+  cat(str(unname(x$sigma)))
+  if (!is.null(x$cv_score)) {
+    cat("\nOptimal sigma (", paste(x$nfold), "-fold cv): ", paste(format(x$sigma_opt, digits = digits, ...), collapse = "  "), "\n", sep = "")
+    cat("Optimal kernel weights (", paste(x$nfold), "-fold cv): ", sep = "")
+    cat(str(unname(x$alpha_opt)))
+  } else {
+    cat("\nOptimal sigma: NULL (no cross-validation)\n", sep = "")
+    cat("Optimal kernel weights: NULL (no cross-validation)\n", sep = "")
+  }
+  cat("\nOptimization parameters:\n", sep = "")
+  cat("  Optimization method: ", ifelse(x$constrained, "Constrained", "Unconstrained"), "\n")
+  cat("\n")
+  invisible(x)
+}
+
+#' Print a \code{summary.kmm} object
+#'
+#' @rdname print.summary.kmm
+#' @method print summary.kmm
+#' @param x Object of class \code{summary.kmm}.
+#' @param digits Number of digits to use when printing the output.
+#' @param ... further arguments on how to format the number of digits.
+#' @return \code{invisble} The inputted \code{summary.kmm} object.
+#' @importFrom utils str
+#' @seealso \code{\link{print}}, \code{\link{summary.kmm}}, \code{\link{kmm}}
+#'
+#' @export
+#' @example inst/examples/kmm-example.R
+
+
+print.summary.kmm <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
+  cat("\n")
+  cat("Kernel Information:\n",
+      "  Kernel type: Gaussian with L2 norm distances\n",
+      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+
+  cat("Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n", sep = "")
+  cat("Optimal kernel weights:")
+  cat(str(unname(x$alpha_opt)), "\n")
+  cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
         ifelse(x$p_value < 0.001,
@@ -245,7 +319,7 @@ print.spectral <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat(str(unname(x$J)))
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
       "Optimal subspace: ", paste(format(x$J_opt, digits, ...)), "\n", sep = "")
-  cat("Optimal kernel weights (loocv):")
+  cat("Optimal kernel weights (cv):")
   cat(str(unname(x$alpha_opt)), "\n")
   invisible(x)
 }
@@ -274,7 +348,7 @@ print.summary.spectral <- function(x, digits = max(3L, getOption("digits") - 3L)
 
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
       "Optimal subspace: ", paste(format(x$J_opt, digits, ...)), "\n", sep = "")
-  cat("Optimal kernel weights (loocv):")
+  cat("Optimal kernel weights (cv):")
   cat(str(unname(x$alpha_opt)), "\n")
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {

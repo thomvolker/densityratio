@@ -43,6 +43,22 @@ compute_kliep <- function(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progr
     .Call(`_densityratio_compute_kliep`, dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
 }
 
+kmm_compute_alpha <- function(Kdn, Kdd, Kd, nnu, nde) {
+    .Call(`_densityratio_kmm_compute_alpha`, Kdn, Kdd, Kd, nnu, nde)
+}
+
+kmm_constrained_alpha <- function(Kdn, Kdd, Kd, nnu, nde, settings) {
+    .Call(`_densityratio_kmm_constrained_alpha`, Kdn, Kdd, Kd, nnu, nde, settings)
+}
+
+kmm_cv_loss <- function(Kdn, Kdd, Kd, Kn, nfolds, cv_ind_nu, cv_ind_de, constrained, settings) {
+    .Call(`_densityratio_kmm_cv_loss`, Kdn, Kdd, Kd, Kn, nfolds, cv_ind_nu, cv_ind_de, constrained, settings)
+}
+
+compute_kmm <- function(nu, de, ce, Dd, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar, constrained, settings) {
+    .Call(`_densityratio_compute_kmm`, nu, de, ce, Dd, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar, constrained, settings)
+}
+
 make_UV <- function(U) {
     .Call(`_densityratio_make_UV`, U)
 }
@@ -51,8 +67,8 @@ get_sigma_lhss <- function(dist, sigma, quantiles) {
     .Call(`_densityratio_get_sigma_lhss`, dist, sigma, quantiles)
 }
 
-lhss_compute_alpha <- function(nu, de, ce, symmetric, m, intercept, sigma, quantiles, lambda, maxit, parallel, nthreads, progressbar) {
-    .Call(`_densityratio_lhss_compute_alpha`, nu, de, ce, symmetric, m, intercept, sigma, quantiles, lambda, maxit, parallel, nthreads, progressbar)
+lhss_compute_alpha <- function(nu, de, ce, symmetric, m, intercept, sigma, quantiles, lambda, maxit, progressbar) {
+    .Call(`_densityratio_lhss_compute_alpha`, nu, de, ce, symmetric, m, intercept, sigma, quantiles, lambda, maxit, progressbar)
 }
 
 compute_psihat <- function(K, Evecs, Evals, maxJ, ncol) {

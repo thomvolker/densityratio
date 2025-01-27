@@ -121,6 +121,19 @@ plot.kliep <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
 
 #' @rdname dr.histogram
 #' @return A histogram of density ratio estimates.
+#' @method plot kmm
+#' @export
+#' @example inst/examples/kmm-example.R
+
+
+plot.kmm <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
+                     bins = NULL, tol = 10e-3, ...) {
+  dr.histogram(x, samples = samples, logscale = logscale, binwidth = binwidth,
+               bins = bins, tol = tol)
+}
+
+#' @rdname dr.histogram
+#' @return A histogram of density ratio estimates.
 #' @method plot spectral
 #' @export
 #' @example inst/examples/spectral-example.R

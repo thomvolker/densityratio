@@ -227,12 +227,12 @@ check.symmetric <- function(nu, centers) {
   symmetric
 }
 
-check.parallel <- function(parallel, nthreads, sigma, lambda) {
+check.parallel <- function(parallel, nthreads, iterator) {
   if (!is.logical(parallel)) {
     stop("'parallel' must be either 'TRUE' or 'FALSE'")
   }
-  if (parallel & length(lambda) == 1) {
-    warning("Parallel processing only works for multiple 'lambda' values.\n")
+  if (parallel & length(iterator) == 1) {
+    warning("No argument to parallelize over.\n")
     parallel <- FALSE
   }
   if (is.numeric(nthreads)) {
@@ -465,6 +465,7 @@ check.object.type <- function(object) {
   models <- c(
     "ulsif",
     "kliep",
+    "kmm",
     "lhss",
     "spectral",
     "naivedensityratio",

@@ -4,6 +4,7 @@
 \alias{permute}
 \alias{permute.ulsif}
 \alias{permute.kliep}
+\alias{permute.kmm}
 \alias{permute.lhss}
 \alias{permute.spectral}
 \alias{permute.naivedensityratio}
@@ -14,6 +15,8 @@ permute(object, ...)
 \method{permute}{ulsif}(object, stacked, nnu, nde, ...)
 
 \method{permute}{kliep}(object, stacked, nnu, nde, min_pred = sqrt(.Machine$double.eps), ...)
+
+\method{permute}{kmm}(object, stacked, nnu, nde, ...)
 
 \method{permute}{lhss}(object, stacked, nnu, nde, ...)
 
@@ -48,6 +51,8 @@ permutation statistic for a single permutation of the data
 permutation statistic for a single permutation of the data
 
 permutation statistic for a single permutation of the data
+
+permutation statistic for a single permutation of the data
 }
 \description{
 Single permutation
@@ -55,6 +60,8 @@ Single permutation
 Single permutation statistic of \code{ulsif} object
 
 Single permutation statistic of \code{kliep} object
+
+Single permutation statistic of \code{kmm} object
 
 Single permutation statistic of \code{lhss} object
 

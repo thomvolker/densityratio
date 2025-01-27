@@ -94,6 +94,78 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// kmm_compute_alpha
+arma::vec kmm_compute_alpha(const arma::mat& Kdn, const arma::mat& Kdd, const arma::mat& Kd, const int nnu, const int nde);
+RcppExport SEXP _densityratio_kmm_compute_alpha(SEXP KdnSEXP, SEXP KddSEXP, SEXP KdSEXP, SEXP nnuSEXP, SEXP ndeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kdn(KdnSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kdd(KddSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kd(KdSEXP);
+    Rcpp::traits::input_parameter< const int >::type nnu(nnuSEXP);
+    Rcpp::traits::input_parameter< const int >::type nde(ndeSEXP);
+    rcpp_result_gen = Rcpp::wrap(kmm_compute_alpha(Kdn, Kdd, Kd, nnu, nde));
+    return rcpp_result_gen;
+END_RCPP
+}
+// kmm_constrained_alpha
+arma::vec kmm_constrained_alpha(const arma::mat& Kdn, const arma::mat& Kdd, const arma::mat& Kd, const int nnu, const int nde, const List settings);
+RcppExport SEXP _densityratio_kmm_constrained_alpha(SEXP KdnSEXP, SEXP KddSEXP, SEXP KdSEXP, SEXP nnuSEXP, SEXP ndeSEXP, SEXP settingsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kdn(KdnSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kdd(KddSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kd(KdSEXP);
+    Rcpp::traits::input_parameter< const int >::type nnu(nnuSEXP);
+    Rcpp::traits::input_parameter< const int >::type nde(ndeSEXP);
+    Rcpp::traits::input_parameter< const List >::type settings(settingsSEXP);
+    rcpp_result_gen = Rcpp::wrap(kmm_constrained_alpha(Kdn, Kdd, Kd, nnu, nde, settings));
+    return rcpp_result_gen;
+END_RCPP
+}
+// kmm_cv_loss
+double kmm_cv_loss(const arma::mat& Kdn, const arma::mat& Kdd, const arma::mat& Kd, const arma::mat& Kn, const int& nfolds, const arma::uvec& cv_ind_nu, const arma::uvec& cv_ind_de, bool constrained, List settings);
+RcppExport SEXP _densityratio_kmm_cv_loss(SEXP KdnSEXP, SEXP KddSEXP, SEXP KdSEXP, SEXP KnSEXP, SEXP nfoldsSEXP, SEXP cv_ind_nuSEXP, SEXP cv_ind_deSEXP, SEXP constrainedSEXP, SEXP settingsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kdn(KdnSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kdd(KddSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kd(KdSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kn(KnSEXP);
+    Rcpp::traits::input_parameter< const int& >::type nfolds(nfoldsSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_nu(cv_ind_nuSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_de(cv_ind_deSEXP);
+    Rcpp::traits::input_parameter< bool >::type constrained(constrainedSEXP);
+    Rcpp::traits::input_parameter< List >::type settings(settingsSEXP);
+    rcpp_result_gen = Rcpp::wrap(kmm_cv_loss(Kdn, Kdd, Kd, Kn, nfolds, cv_ind_nu, cv_ind_de, constrained, settings));
+    return rcpp_result_gen;
+END_RCPP
+}
+// compute_kmm
+List compute_kmm(const arma::mat& nu, const arma::mat& de, const arma::mat& ce, const arma::mat& Dd, const arma::vec& sigma, const arma::uvec& cv_ind_nu, const arma::uvec& cv_ind_de, const bool& parallel, int nthreads, const bool& progressbar, const bool& constrained, const List settings);
+RcppExport SEXP _densityratio_compute_kmm(SEXP nuSEXP, SEXP deSEXP, SEXP ceSEXP, SEXP DdSEXP, SEXP sigmaSEXP, SEXP cv_ind_nuSEXP, SEXP cv_ind_deSEXP, SEXP parallelSEXP, SEXP nthreadsSEXP, SEXP progressbarSEXP, SEXP constrainedSEXP, SEXP settingsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type de(deSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type ce(ceSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Dd(DdSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_nu(cv_ind_nuSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_de(cv_ind_deSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type parallel(parallelSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type progressbar(progressbarSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type constrained(constrainedSEXP);
+    Rcpp::traits::input_parameter< const List >::type settings(settingsSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_kmm(nu, de, ce, Dd, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar, constrained, settings));
+    return rcpp_result_gen;
+END_RCPP
+}
 // make_UV
 arma::mat make_UV(const arma::mat& U);
 RcppExport SEXP _densityratio_make_UV(SEXP USEXP) {
@@ -119,8 +191,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // lhss_compute_alpha
-List lhss_compute_alpha(arma::mat nu, arma::mat de, arma::mat ce, bool symmetric, int m, bool intercept, arma::vec sigma, bool quantiles, arma::vec lambda, int maxit, bool parallel, int nthreads, bool progressbar);
-RcppExport SEXP _densityratio_lhss_compute_alpha(SEXP nuSEXP, SEXP deSEXP, SEXP ceSEXP, SEXP symmetricSEXP, SEXP mSEXP, SEXP interceptSEXP, SEXP sigmaSEXP, SEXP quantilesSEXP, SEXP lambdaSEXP, SEXP maxitSEXP, SEXP parallelSEXP, SEXP nthreadsSEXP, SEXP progressbarSEXP) {
+List lhss_compute_alpha(arma::mat nu, arma::mat de, arma::mat ce, bool symmetric, int m, bool intercept, arma::vec sigma, bool quantiles, arma::vec lambda, int maxit, bool progressbar);
+RcppExport SEXP _densityratio_lhss_compute_alpha(SEXP nuSEXP, SEXP deSEXP, SEXP ceSEXP, SEXP symmetricSEXP, SEXP mSEXP, SEXP interceptSEXP, SEXP sigmaSEXP, SEXP quantilesSEXP, SEXP lambdaSEXP, SEXP maxitSEXP, SEXP progressbarSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -134,10 +206,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type quantiles(quantilesSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
-    Rcpp::traits::input_parameter< bool >::type parallel(parallelSEXP);
-    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
     Rcpp::traits::input_parameter< bool >::type progressbar(progressbarSEXP);
-    rcpp_result_gen = Rcpp::wrap(lhss_compute_alpha(nu, de, ce, symmetric, m, intercept, sigma, quantiles, lambda, maxit, parallel, nthreads, progressbar));
+    rcpp_result_gen = Rcpp::wrap(lhss_compute_alpha(nu, de, ce, symmetric, m, intercept, sigma, quantiles, lambda, maxit, progressbar));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -262,9 +332,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_densityratio_make_phibar", (DL_FUNC) &_densityratio_make_phibar, 2},
     {"_densityratio_kliep_compute_alpha", (DL_FUNC) &_densityratio_kliep_compute_alpha, 7},
     {"_densityratio_compute_kliep", (DL_FUNC) &_densityratio_compute_kliep, 7},
+    {"_densityratio_kmm_compute_alpha", (DL_FUNC) &_densityratio_kmm_compute_alpha, 5},
+    {"_densityratio_kmm_constrained_alpha", (DL_FUNC) &_densityratio_kmm_constrained_alpha, 6},
+    {"_densityratio_kmm_cv_loss", (DL_FUNC) &_densityratio_kmm_cv_loss, 9},
+    {"_densityratio_compute_kmm", (DL_FUNC) &_densityratio_compute_kmm, 12},
     {"_densityratio_make_UV", (DL_FUNC) &_densityratio_make_UV, 1},
     {"_densityratio_get_sigma_lhss", (DL_FUNC) &_densityratio_get_sigma_lhss, 3},
-    {"_densityratio_lhss_compute_alpha", (DL_FUNC) &_densityratio_lhss_compute_alpha, 13},
+    {"_densityratio_lhss_compute_alpha", (DL_FUNC) &_densityratio_lhss_compute_alpha, 11},
     {"_densityratio_compute_psihat", (DL_FUNC) &_densityratio_compute_psihat, 5},
     {"_densityratio_spectral_cv_loss", (DL_FUNC) &_densityratio_spectral_cv_loss, 9},
     {"_densityratio_spectral_dre", (DL_FUNC) &_densityratio_spectral_dre, 9},

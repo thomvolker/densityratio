@@ -7,9 +7,9 @@
 #' of the numerator and denominator samples.
 #' @param n_perm Scalar indicating number of permutation samples
 #' @param parallel \code{logical} indicating to run the permutation test in parallel
-#' @param cl \code{NULL} or a cluster object created by \code{makeCluster}. If
-#' \code{NULL} and \code{parallel = TRUE}, it uses the number of available cores
-#' minus 1.
+#' @param cluster \code{NULL} or a cluster object created by \code{makeCluster}.
+#' If \code{NULL} and \code{parallel = TRUE}, it uses the number of available
+#' cores minus 1.
 #' @param ... further arguments passed to or from other methods.
 #' @return Summary of the fitted density ratio model
 #' @method summary ulsif
@@ -22,7 +22,7 @@
 
 
 
-summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, ...) {
+summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, ...) {
 
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
@@ -30,10 +30,10 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
   nnu <- nrow(nu)
   nde <- nrow(de)
 
-  if (parallel & is.null(cl)) {
+  if (parallel & is.null(cluster)) {
     ncores <- parallel::detectCores() - 1
-    cl <- parallel::makeCluster(ncores)
-    on.exit(parallel::stopCluster(cl))
+    cluster <- parallel::makeCluster(ncores)
+    on.exit(parallel::stopCluster(cluster))
   }
 
   pred_nu <- c(stats::predict(object, newdata = object$df_numerator))
@@ -45,7 +45,7 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
       n_perm,
       permute(object, stacked = stacked, nnu = nnu, nde = nde),
       simplify = TRUE,
-      cl = cl
+      cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
     recPE <- 1/(2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
@@ -79,9 +79,9 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
 #' of the numerator and denominator samples.
 #' @param n_perm Scalar indicating number of permutation samples
 #' @param parallel \code{logical} indicating to run the permutation test in parallel
-#' @param cl \code{NULL} or a cluster object created by \code{makeCluster}. If
-#' \code{NULL} and \code{parallel = TRUE}, it uses the number of available cores
-#' minus 1.
+#' @param cluster \code{NULL} or a cluster object created by \code{makeCluster}.
+#' If \code{NULL} and \code{parallel = TRUE}, it uses the number of available
+#' cores minus 1.
 #' @param min_pred Scalar indicating the minimum value for the predicted density
 #' ratio values (used in the divergence statistic) to avoid negative density
 #' ratio values.
@@ -96,7 +96,7 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
 #' @example inst/examples/kliep-example.R
 
 
-summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, min_pred = 1e-6, ...) {
+summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, min_pred = 1e-6, ...) {
 
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
@@ -104,10 +104,10 @@ summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
   nnu <- nrow(nu)
   nde <- nrow(de)
 
-  if (parallel & is.null(cl)) {
+  if (parallel & is.null(cluster)) {
     ncores <- parallel::detectCores() - 1
-    cl <- parallel::makeCluster(ncores)
-    on.exit(parallel::stopCluster(cl))
+    cluster <- parallel::makeCluster(ncores)
+    on.exit(parallel::stopCluster(cluster))
   }
 
   pred_nu <- c(stats::predict(object, newdata = nu))
@@ -119,7 +119,7 @@ summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
       n_perm,
       permute(object, stacked = stacked, nnu = nnu, nde = nde),
       simplify = TRUE,
-      cl = cl
+      cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
     recUKL <- mean(log(pmax(sqrt(.Machine$double.eps), c(stats::predict(rec, newdata = de)))))
@@ -141,28 +141,33 @@ summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
   out
 }
 
-#' Extract summary from \code{lhss} object, including two-sample significance
+#' Extract summary from \code{kmm} object, including two-sample significance
 #' test for homogeneity of the numerator and denominator samples
 #'
-#' @rdname summary.lhss
-#' @param object Object of class \code{lhss}
+#' @rdname summary.kmm
+#' @param object Object of class \code{kmm}
 #' @param test logical indicating whether to statistically test for homogeneity
 #' of the numerator and denominator samples.
 #' @param n_perm Scalar indicating number of permutation samples
 #' @param parallel \code{logical} indicating to run the permutation test in parallel
-#' @param cl \code{NULL} or a cluster object created by \code{makeCluster}. If
+#' @param cluster \code{NULL} or a cluster object created by \code{makeCluster}. If
 #' \code{NULL} and \code{parallel = TRUE}, it uses the number of available cores
 #' minus 1.
+#' @param min_pred Scalar indicating the minimum value for the predicted density
+#' ratio values (used in the divergence statistic) to avoid negative density
+#' ratio values.
 #' @param ... further arguments passed to or from other methods.
 #' @return Summary of the fitted density ratio model
-#' @method summary lhss
+#' @method summary kmm
 #' @importFrom stats predict
 #' @importFrom pbapply pbreplicate
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @export
-#' @example inst/examples/lhss-example.R
+#'
+#' @example inst/examples/kmm-example.R
 
-summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, ...) {
+
+summary.kmm <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, min_pred = 1e-6, ...) {
 
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
@@ -170,10 +175,10 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
   nnu <- nrow(nu)
   nde <- nrow(de)
 
-  if (parallel & is.null(cl)) {
+  if (parallel & is.null(cluster)) {
     ncores <- parallel::detectCores() - 1
-    cl <- parallel::makeCluster(ncores)
-    on.exit(parallel::stopCluster(cl))
+    cluster <- parallel::makeCluster(ncores)
+    on.exit(parallel::stopCluster(cluster))
   }
 
   pred_nu <- c(stats::predict(object, newdata = nu))
@@ -185,7 +190,73 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
       n_perm,
       permute(object, stacked = stacked, nnu = nnu, nde = nde),
       simplify = TRUE,
-      cl = cl
+      cl = cluster
+    )
+    rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
+    recPE <- 1/(2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
+      1/nnu * sum(c(stats::predict(rec, newdata = nu))) + 1/2  }
+
+  out <- list(
+    alpha_opt  = object$alpha_opt,
+    sigma_opt  = object$sigma_opt,
+    centers    = object$centers,
+    dr = data.frame(dr = c(pred_nu, pred_de),
+                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
+    PE = obsPE,
+    PErec = switch(test, recPE, NULL),
+    refPE = switch(test, distPE, NULL),
+    p_value = switch(test, min(1, 2 * mean(distPE > max(obsPE, recPE))), NULL),
+    call = object$call
+  )
+  class(out) <- "summary.kmm"
+  out
+}
+
+#' Extract summary from \code{lhss} object, including two-sample significance
+#' test for homogeneity of the numerator and denominator samples
+#'
+#' @rdname summary.lhss
+#' @param object Object of class \code{lhss}
+#' @param test logical indicating whether to statistically test for homogeneity
+#' of the numerator and denominator samples.
+#' @param n_perm Scalar indicating number of permutation samples
+#' @param parallel \code{logical} indicating to run the permutation test in parallel
+#' @param cluster \code{NULL} or a cluster object created by \code{makeCluster}.
+#' If \code{NULL} and \code{parallel = TRUE}, it uses the number of available
+#' cores minus 1.
+#' @param ... further arguments passed to or from other methods.
+#' @return Summary of the fitted density ratio model
+#' @method summary lhss
+#' @importFrom stats predict
+#' @importFrom pbapply pbreplicate
+#' @importFrom parallel detectCores makeCluster stopCluster
+#' @export
+#' @example inst/examples/lhss-example.R
+
+summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, ...) {
+
+  nu <- check.datatype(object$df_numerator)
+  de <- check.datatype(object$df_denominator)
+  stacked <- rbind(nu, de)
+  nnu <- nrow(nu)
+  nde <- nrow(de)
+
+  if (parallel & is.null(cluster)) {
+    ncores <- parallel::detectCores() - 1
+    cluster <- parallel::makeCluster(ncores)
+    on.exit(parallel::stopCluster(cluster))
+  }
+
+  pred_nu <- c(stats::predict(object, newdata = nu))
+  pred_de <- c(stats::predict(object, newdata = de))
+
+  obsPE  <- 1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  if (test) {
+    distPE <- pbapply::pbreplicate(
+      n_perm,
+      permute(object, stacked = stacked, nnu = nnu, nde = nde),
+      simplify = TRUE,
+      cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
     recPE <- 1/(2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
@@ -218,9 +289,9 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
 #' of the numerator and denominator samples.
 #' @param n_perm Scalar indicating number of permutation samples
 #' @param parallel \code{logical} indicating to run the permutation test in parallel
-#' @param cl \code{NULL} or a cluster object created by \code{makeCluster}. If
-#' \code{NULL} and \code{parallel = TRUE}, it uses the number of available cores
-#' minus 1.
+#' @param cluster \code{NULL} or a cluster object created by \code{makeCluster}.
+#' If \code{NULL} and \code{parallel = TRUE}, it uses the number of available
+#' cores minus 1.
 #' @param ... further arguments passed to or from other methods.
 #' @return Summary of the fitted density ratio model
 #' @method summary spectral
@@ -231,7 +302,7 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
 #' @example inst/examples/spectral-example.R
 
 
-summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, ...) {
+summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, ...) {
 
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
@@ -239,10 +310,10 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
   nnu <- nrow(nu)
   nde <- nrow(de)
 
-  if (parallel & is.null(cl)) {
+  if (parallel & is.null(cluster)) {
     ncores <- parallel::detectCores() - 1
-    cl <- parallel::makeCluster(ncores)
-    on.exit(parallel::stopCluster(cl))
+    cluster <- parallel::makeCluster(ncores)
+    on.exit(parallel::stopCluster(cluster))
   }
 
   pred_nu <- c(stats::predict(object, newdata = nu, min_pred = sqrt(.Machine$double.eps)))
@@ -254,7 +325,7 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
       n_perm,
       permute(object, stacked = stacked, nnu = nnu, nde = nde, min_pred = sqrt(.Machine$double.eps)),
       simplify = TRUE,
-      cl = cl
+      cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
     recPE <- 1/(2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
@@ -287,9 +358,9 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
 #' of the numerator and denominator samples.
 #' @param n_perm Scalar indicating number of permutation samples
 #' @param parallel \code{logical} indicating to run the permutation test in parallel
-#' @param cl \code{NULL} or a cluster object created by \code{makeCluster}. If
-#' \code{NULL} and \code{parallel = TRUE}, it uses the number of available cores
-#' minus 1.
+#' @param cluster \code{NULL} or a cluster object created by \code{makeCluster}.
+#' If \code{NULL} and \code{parallel = TRUE}, it uses the number of available
+#' cores minus 1.
 #' @param ... further arguments passed to or from other methods.
 #' @return Summary of the fitted density ratio model
 #' @method summary naivedensityratio
@@ -299,7 +370,7 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
 #' @export
 #' @example inst/examples/naive-example.R
 
-summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl = NULL, ...) {
+summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, ...) {
 
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
@@ -309,10 +380,10 @@ summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parall
   nnu <- nrow(nu)
   nde <- nrow(de)
 
-  if (parallel & is.null(cl)) {
+  if (parallel & is.null(cluster)) {
     ncores <- parallel::detectCores() - 1
-    cl <- parallel::makeCluster(ncores)
-    on.exit(parallel::stopCluster(cl))
+    cluster <- parallel::makeCluster(ncores)
+    on.exit(parallel::stopCluster(cluster))
   }
 
   pred_nu <- c(stats::predict(object, newdata = nu))
@@ -327,7 +398,7 @@ summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parall
       n_perm,
       permute(object, stacked = stacked, nnu = nnu, nde = nde, min_pred = min_pred, max_pred = max_pred),
       simplify = TRUE,
-      cl = cl
+      cl = cluster
     )
   }
 

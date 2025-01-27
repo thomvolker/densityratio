@@ -73,6 +73,41 @@ predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
   dratio
 }
 
+#' Obtain predicted density ratio values from a \code{kmm} object
+#' @rdname predict.kmm
+#' @method predict kmm
+#' @param object A \code{kmm} object
+#' @param newdata Optional \code{matrix} new data set to compute the density
+#' @param sigma A scalar with the Gaussian kernel width
+#' @param ... Additional arguments to be passed to the function
+#'
+#' @return An array with predicted density ratio values from possibly new data,
+#' but otherwise the numerator samples.
+#'
+#' @keywords predict kmm
+#' @seealso \code{\link{predict}}, \code{\link{kmm}}
+#'
+#' @export
+#' @example inst/examples/kmm-example.R
+
+
+predict.kmm <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), ...) {
+
+  newsigma <- check.sigma.predict(object, sigma)
+  newdata  <- check.newdata(object, newdata)
+
+  alpha <- extract_params(object, sigma = newsigma, ...)
+  nsigma <- ncol(alpha)
+  dratio <- matrix(0, nrow(newdata), nsigma)
+  intercept <- nrow(object$alpha) > nrow(object$centers)
+
+  for (i in 1:nsigma) {
+    K <- distance(newdata, object$model_matrices$ce, intercept) |> kernel_gaussian(newsigma[i])
+    dratio[, i] <- K %*% alpha[, i]
+  }
+  dratio
+}
+
 #' Obtain predicted density ratio values from a \code{lhss} object
 #' @rdname predict.lhss
 #' @method predict lhss
@@ -226,6 +261,13 @@ extract_params.kliep <- function(object, sigma, ...) {
   }
   alpha
 }
+
+#' Obtain parameters from a \code{kmm} object
+#'
+#' @method extract_params kmm
+#' @keywords internal
+
+extract_params.kmm <- extract_params.kliep
 
 #' Obtain parameters from a \code{ulsif} object
 #'

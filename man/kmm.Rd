@@ -8,9 +8,19 @@ kmm(
   df_numerator,
   df_denominator,
   scale = "numerator",
-  method = "unconstrained",
+  constrained = FALSE,
+  nsigma = 10,
+  sigma_quantile = NULL,
   sigma = NULL,
-  lambda = NULL
+  ncenters = 200,
+  centers = NULL,
+  cv = TRUE,
+  nfold = 5,
+  parallel = FALSE,
+  nthreads = NULL,
+  progressbar = TRUE,
+  osqp_settings = NULL,
+  cluster = NULL
 )
 }
 \arguments{
@@ -26,21 +36,50 @@ indicating whether to standardize each numeric variable according to the
 numerator means and standard deviations, the denominator means and standard
 deviations, or apply no standardization at all.}
 
-\item{method}{Character string containing the method used for kernel mean
-matching. Currently, \code{method = "unconstrained"} and
-\code{method = "constrained"} are supported.}
+\item{constrained}{\code{logical} equals \code{FALSE} to use unconstrained
+optimization, \code{TRUE} to use constrained optimization. Defaults to
+\code{FALSE}.}
+
+\item{nsigma}{Integer indicating the number of sigma values (bandwidth
+parameter of the Gaussian kernel gram matrix) to use in cross-validation.}
+
+\item{sigma_quantile}{\code{NULL} or numeric vector with probabilities to
+calculate the quantiles of the distance matrix to obtain sigma values. If
+\code{NULL}, \code{nsigma} values between \code{0.25} and \code{0.75} are
+used.}
 
 \item{sigma}{\code{NULL} or a scalar value to determine the bandwidth of the
-Gaussian kernel gram matrix. If \code{NULL}, \code{sigma} is the median Euclidean
-interpoint distance.}
+Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
+\code{0.25} and \code{0.75} are used.}
 
-\item{lambda}{\code{NULL} or a scalar value to determine the regularization
-imposed on the Gaussian kernel gram matrix of the denominator samples. If
-\code{NULL}, \code{lambda} is chosen to be \eqn{\sqrt{N}}.}
+\item{ncenters}{Maximum number of Gaussian centers in the kernel gram
+matrix. Defaults to all numerator samples.}
+
+\item{centers}{Option to specify the Gaussian samples manually.}
+
+\item{cv}{Logical indicating whether or not to do cross-validation}
+
+\item{nfold}{Number of cross-validation folds used in order to calculate the
+optimal \code{sigma} value (default is 5-fold cv).}
+
+\item{parallel}{logical indicating whether to use parallel processing in the
+cross-validation scheme.}
+
+\item{nthreads}{\code{NULL} or integer indicating the number of threads to
+use for parallel processing. If parallel processing is enabled, it defaults
+to the number of available threads minus one.}
+
+\item{progressbar}{Logical indicating whether or not to display a progressbar.}
+
+\item{osqp_settings}{Optional: settings to pass to the \code{osqp} solver for
+constrained optimization.}
+
+\item{cluster}{Optional: a cluster object to use for parallel processing,
+see \code{parallel::makeCluster}.}
 }
 \value{
-\code{kmm} returns \code{rhat_de}, the estimated density ratio for
-the denominator samples.
+\code{kmm}-object, containing all information to calculate the
+density ratio using optimal sigma and optimal weights.
 }
 \description{
 Kernel mean matching approach to density ratio estimation
@@ -48,23 +87,21 @@ Kernel mean matching approach to density ratio estimation
 \examples{
 set.seed(123)
 # Fit model
-# dr <- kmm(numerator_small, denominator_small)
+dr <- kmm(numerator_small, denominator_small)
 # Inspect model object
-# TODO: write print method for kmm
-# dr
+dr
 # Obtain summary of model object
-# TODO: write summary method for kmm
-# summary(dr)
+summary(dr)
 # Plot model object
-# TODO: write plot methods for kmm
-# plot(dr)
+plot(dr)
 # Plot density ratio for each variable individually
-# plot_univariate(dr)
+plot_univariate(dr)
 # Plot density ratio for each pair of variables
-# plot_bivariate(dr)
+plot_bivariate(dr)
 # Predict density ratio and inspect first 6 predictions
-# TODO: Write predict method for kmm
-# head(predict(dr))
+head(predict(dr))
 # Fit model with custom parameters
-# kmm(numerator_small, denominator_small, method = "constrained")
+kmm(numerator_small, denominator_small,
+    nsigma = 20, ncenters = 100, nfold = 20,
+    constrained = TRUE, parallel = TRUE, nthreads = 2)
 }
