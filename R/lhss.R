@@ -32,11 +32,6 @@
 #' \code{de} that are used as Gaussian centers in the kernel Gram matrix. By
 #' default, the matrix \code{nu} is used as the matrix with Gaussian centers.
 #' @param maxit Maximum number of iterations in the updating scheme.
-#' @param parallel logical indicating whether to use parallel processing in the
-#' cross-validation scheme.
-#' @param nthreads \code{NULL} or integer indicating the number of threads to
-#' use for parallel processing. If parallel processing is enabled, it defaults
-#' to the number of available threads minus one.
 #' @param progressbar Logical indicating whether or not to display a progressbar.
 #' @export
 #' @return \code{lhss}-object, containing all information to calculate the
@@ -50,8 +45,7 @@
 lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
                  scale = "numerator", nsigma = 10, sigma_quantile = NULL,
                  sigma = NULL, nlambda = 10, lambda = NULL, ncenters = 200,
-                 centers = NULL, maxit = 200, parallel = FALSE, nthreads = NULL,
-                 progressbar = TRUE) {
+                 centers = NULL, maxit = 200, progressbar = TRUE) {
 
   cl <- match.call()
   nu <- check.datatype(df_numerator)
@@ -65,8 +59,6 @@ lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
   p <- ncol(dat$nu)
 
   symmetric      <- check.symmetric(dat$nu, dat$ce)
-  parallel       <- check.parallel(parallel, nthreads, sigma, lambda)
-  nthreads       <- check.threads(parallel, nthreads)
   sigma_quantile <- check.sigma_quantile.lhss(nsigma, sigma, sigma_quantile)
   sigma          <- if (is.null(sigma_quantile)) sigma else sigma_quantile
   is_quantile    <- !is.null(sigma_quantile)
@@ -75,8 +67,7 @@ lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
   maxit          <- check.maxit(maxit)
 
   res <- lhss_compute_alpha(dat$nu, dat$de, dat$ce, symmetric, m, intercept, sigma,
-                            is_quantile, lambda, maxit, parallel, nthreads,
-                            progressbar)
+                            is_quantile, lambda, maxit, progressbar)
 
   colnames(res$loocv) <- names(lambda) <- paste0("lambda", 1:length(lambda))
   rownames(res$loocv) <- names(sigma) <- paste0("sigma", 1:length(sigma))

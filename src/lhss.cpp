@@ -37,7 +37,6 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
                         int m, bool intercept,
                         arma::vec sigma, bool quantiles,
                         arma::vec lambda, int maxit,
-                        bool parallel, int nthreads,
                         bool progressbar) {
 
   // initialize objects
@@ -87,16 +86,6 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
   arma::mat sigmaopt(nsigma, nlambda);
   arma::mat loocv(nsigma, nlambda);
   arma::cube Umat(p, m, nsigma * nlambda);
-
-  // set number of threads
-  // if (parallel) {
-  //   #ifdef _OPENMP
-  //   nthreads = set_threads(nthreads);
-  //   #else
-  //   std::string warn = "OpenMP is not available, parallel processing is disabled.";
-  //   Rf_warningcall(R_NilValue, warn.c_str());
-  //   #endif
-  // }
 
   // initialize progressbar
   Progress prog(nsigma * nlambda, progressbar);
