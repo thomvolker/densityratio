@@ -65,11 +65,12 @@ spectral <- function(df_numerator, df_denominator, J = NULL, scale = "numerator"
   df_centers <- de[ind, , drop = FALSE]
   dat <- check.dataform(nu, de, df_centers, TRUE, NULL, scale)
 
-  #parallel  <- check.parallel(parallel, nthreads, sigma, lambda)
-  nthreads  <- check.threads(parallel, nthreads)
   cv_ind_nu <- check.nfold(cv, nfold, sigma, nnu)
   cv_ind_de <- check.nfold(cv, nfold, sigma, ncenters)
   J         <- check.subspace.spectral(J, cv_ind_de)
+
+  parallel  <- check.parallel(parallel, nthreads, unique(cv_ind_nu))
+  nthreads  <- check.threads(parallel, nthreads)
 
   dist_nu <- distance(dat$nu, dat$ce, FALSE)
   dist_de <- distance(dat$ce, dat$ce, FALSE)
