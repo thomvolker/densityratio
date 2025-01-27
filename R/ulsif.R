@@ -56,8 +56,6 @@ ulsif <- function(df_numerator, df_denominator, intercept = TRUE, scale = "numer
   df_centers <- check.centers(rbind(nu, de), centers, ncenters)
   dat <- check.dataform(nu, de, df_centers, is.null(centers), NULL, scale)
 
-  parallel  <- check.parallel(parallel, nthreads, sigma, lambda)
-  nthreads  <- check.threads(parallel, nthreads)
   intercept <- check.intercept(intercept)
 
   dist_nu <- distance(dat$nu, dat$ce, intercept)
@@ -65,6 +63,9 @@ ulsif <- function(df_numerator, df_denominator, intercept = TRUE, scale = "numer
 
   sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   lambda <- check.lambda(nlambda, lambda)
+
+  parallel  <- check.parallel(parallel, nthreads, lambda)
+  nthreads  <- check.threads(parallel, nthreads)
 
   res <- compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar)
   loocv_scores <- res$loocv_score
