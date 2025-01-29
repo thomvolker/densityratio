@@ -12,7 +12,7 @@ spectral(
   nsigma = 10,
   sigma_quantile = NULL,
   sigma = NULL,
-  ncenters = nrow(df_denominator),
+  ncenters = NULL,
   cv = TRUE,
   nfold = 10,
   parallel = FALSE,
@@ -53,7 +53,7 @@ Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
 \item{ncenters}{integer If smaller than the number of denominator observations,
 an approximation to the eigenvector expansion based on only ncenters samples
 is performed, instead of the full expansion. This can be useful for large
-datasets.}
+datasets. Defaults to \code{NULL}, such that all denominator samples are used.}
 
 \item{cv}{logical indicating whether to use cross-validation to determine the
 optimal sigma value and the optimal number of eigenvectors.}

@@ -25,7 +25,7 @@
 #' @param ncenters integer If smaller than the number of denominator observations,
 #' an approximation to the eigenvector expansion based on only ncenters samples
 #' is performed, instead of the full expansion. This can be useful for large
-#' datasets.
+#' datasets. Defaults to \code{NULL}, such that all denominator samples are used.
 #' @param cv logical indicating whether to use cross-validation to determine the
 #' optimal sigma value and the optimal number of eigenvectors.
 #' @param nfold Integer indicating the number of folds to use in the
@@ -50,8 +50,8 @@
 
 spectral <- function(df_numerator, df_denominator, J = NULL, scale = "numerator",
                      nsigma = 10, sigma_quantile = NULL, sigma = NULL,
-                     ncenters = nrow(df_denominator), cv = TRUE, nfold = 10,
-                     parallel = FALSE, nthreads = NULL, progressbar = TRUE) {
+                     ncenters = NULL, cv = TRUE, nfold = 10, parallel = FALSE,
+                     nthreads = NULL, progressbar = TRUE) {
 
   cl  <- match.call()
   nu  <- check.datatype(df_numerator)
@@ -60,9 +60,9 @@ spectral <- function(df_numerator, df_denominator, J = NULL, scale = "numerator"
   check.variables(nu, de)
   nnu <- nrow(nu)
   nde <- nrow(de)
+  if (is.null(ncenters)) ncenters <- nde
 
-  ind <- if (ncenters < nde) sample(nde, ncenters) else seq_len(nde)
-  df_centers <- de[ind, , drop = FALSE]
+  df_centers <- check.centers(de, NULL, ncenters)
   dat <- check.dataform(nu, de, df_centers, TRUE, NULL, scale)
 
   cv_ind_nu <- check.nfold(cv, nfold, sigma, nnu)
