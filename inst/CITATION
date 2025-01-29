@@ -1,9 +1,14 @@
 bibentry(
-  "Misc",
-  author = "Thom Benjamin Volker",
-  title = "densityratio: Distribution comparison through density ratio estimation",
-  version = "0.0.1",
-  year = "2024",
-  url = "https://github.com/thomvolker/densityratio",
-  doi = "10.5281/zenodo.13881689"
+    "Misc",
+    author = c(
+        person("Thom Benjamin", "Volker", email = "thombenjaminvolker@gmail.com", role = c("aut", "cre", "cph"),
+               comment = c(ORCID = "0000-0002-2408-7820")),
+        person("Carlos", "Gonzalez Poses", role = "ctb"),
+        person("Erik-Jan", "van Kesteren", role = "ctb")
+    ),
+    title = "densityratio: Distribution comparison through density ratio estimation",
+    version = "0.0.1",
+    year = "2024",
+    url = "https://github.com/thomvolker/densityratio",
+    doi = "10.5281/zenodo.13881689"
 )
