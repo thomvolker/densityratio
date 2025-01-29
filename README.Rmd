@@ -280,8 +280,10 @@ fit_kliep <- kliep(
   df_denominator = denominator_data$x5
 )
 
+
 pred_naive <- predict(fit_naive, newdata = newx5)
 pred_kliep <- predict(fit_kliep, newdata = newx5)
+
 
 ggplot(data = NULL, aes(x = newx5)) +
   geom_point(aes(y = pred, col = "ulsif estimates")) +

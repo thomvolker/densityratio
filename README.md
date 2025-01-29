@@ -109,7 +109,7 @@ summary(fit)
 #> 
 #> Optimal sigma: 0.3726142
 #> Optimal lambda: 0.03162278
-#> Optimal kernel weights (loocv): num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
+#> Optimal kernel weights: num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
 #>  
 #> Pearson divergence between P(nu) and P(de): 0.2801
 #> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.
@@ -131,7 +131,7 @@ summary(fit, test = TRUE)
 #> 
 #> Optimal sigma: 0.3726142
 #> Optimal lambda: 0.03162278
-#> Optimal kernel weights (loocv): num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
+#> Optimal kernel weights: num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
 #>  
 #> Pearson divergence between P(nu) and P(de): 0.2801
 #> Pr(P(nu)=P(de)) < .001
@@ -243,7 +243,7 @@ summary(fit_all, test = TRUE, parallel = TRUE)
 #> 
 #> Optimal sigma: 1.065369
 #> Optimal lambda: 0.1623777
-#> Optimal kernel weights (loocv): num [1:201] 0.5691 0.1511 0.0959 0.0118 0.0149 ...
+#> Optimal kernel weights: num [1:201] 0.5691 0.1511 0.0959 0.0118 0.0149 ...
 #>  
 #> Pearson divergence between P(nu) and P(de): 0.4629
 #> Pr(P(nu)=P(de)) < .001
@@ -273,8 +273,10 @@ fit_kliep <- kliep(
   df_denominator = denominator_data$x5
 )
 
+
 pred_naive <- predict(fit_naive, newdata = newx5)
 pred_kliep <- predict(fit_kliep, newdata = newx5)
+
 
 ggplot(data = NULL, aes(x = newx5)) +
   geom_point(aes(y = pred, col = "ulsif estimates")) +
