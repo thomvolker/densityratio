@@ -68,5 +68,21 @@ NULL
 
 NULL
 
-
-
+#' insurance
+#'
+#' Insurance data that is openly available (e.g., on
+#' \href{Kaggle}{https://www.kaggle.com/datasets/mirichoi0218/insurance}).
+#'
+#' @name insurance
+#' @docType data
+#' @format A data frame with 1338 rows and 7 columns:
+#' \describe{
+#'   \item{age}{Age of the insured (continuous)}
+#'   \item{sex}{Sex of the insured (binary)}
+#'   \item{bmi}{Body mass index of the insured (continuous)}
+#'   \item{children}{Number of children/dependents covered by the insurance (integer)}
+#'   \item{smoker}{Whether the insured is a smoker (binary)}
+#'   \item{region}{The region in which the insured lives (categorical)}
+#'   \item{charges}{The medical costs billed by the insurance (continuous)}
+#' }
+#' @keywords data datasets insurance
