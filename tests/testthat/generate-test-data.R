@@ -2,13 +2,13 @@
 set.seed(45)
 N <- 200
 P_max <- 100
-S_denominator <- rWishart(1, P_max, diag(P_max))[,,1]
-test_df_numerator_max <- data.frame(matrix(rnorm(N*P_max), N))
-test_df_denominator_max <- data.frame(matrix(rnorm(N*P_max), N) %*% chol(S_denominator))
-test_df_numerator_10   <- test_df_numerator_max[, 1:10]
+S_denominator <- rWishart(1, P_max, diag(P_max))[, , 1]
+test_df_numerator_max <- data.frame(matrix(rnorm(N * P_max), N))
+test_df_denominator_max <- data.frame(matrix(rnorm(N * P_max), N) %*% chol(S_denominator))
+test_df_numerator_10 <- test_df_numerator_max[, 1:10]
 test_df_denominator_10 <- test_df_denominator_max[, 1:10]
-test_df_numerator_1    <- test_df_numerator_max[, 1, drop = FALSE]
-test_df_denominator_1  <- test_df_denominator_max[, 1, drop = FALSE]
+test_df_numerator_1 <- test_df_numerator_max[, 1, drop = FALSE]
+test_df_denominator_1 <- test_df_denominator_max[, 1, drop = FALSE]
 
 # get some test values in here
 # the density ratio at 0 should be greater than the density ratio at -10

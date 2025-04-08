@@ -20,4 +20,3 @@ test_that("high-dimensional naive estimation and prediction works", {
   pred <- predict(dr, test_df_newdata_max)
   expect_gt(pred[1], pred[2])
 })
-
