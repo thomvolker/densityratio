@@ -17,14 +17,18 @@ print.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Kernel Information:\n",
-      "  Kernel type: Gaussian with L2 norm distances\n",
-      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+    "  Kernel type: Gaussian with L2 norm distances\n",
+    "  Number of kernels: ", paste0(nrow(x$centers)), "\n",
+    sep = ""
+  )
   cat("  sigma:")
   cat(str(unname(x$sigma)))
   cat("\nRegularization parameter (lambda):")
   cat(str(unname(x$lambda)))
   cat("\nOptimal sigma (loocv): ", paste(format(x$sigma_opt, digits, ...)), "\n",
-      "Optimal lambda (loocv): ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
+    "Optimal lambda (loocv): ", paste(format(x$lambda_opt, digits, ...)), "\n",
+    sep = ""
+  )
   cat("Optimal kernel weights (loocv):")
   cat(str(unname(x$alpha_opt)), "\n")
   invisible(x)
@@ -49,21 +53,28 @@ print.summary.ulsif <- function(x, digits = max(3L, getOption("digits") - 3L), .
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Kernel Information:\n",
-      "  Kernel type: Gaussian with L2 norm distances\n",
-      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+    "  Kernel type: Gaussian with L2 norm distances\n",
+    "  Number of kernels: ", paste0(nrow(x$centers)), "\n",
+    sep = ""
+  )
 
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
-      "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
+    "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n",
+    sep = ""
+  )
   cat("Optimal kernel weights:")
   cat(str(unname(x$alpha_opt)), "\n")
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
-        ifelse(x$p_value < 0.001,
-               paste(" < .001"),
-               paste(" = ", format(x$p_value, digits = 3, ...))),
-        "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
-        "\n\n", sep = "")
+      ifelse(x$p_value < 0.001,
+        paste(" < .001"),
+        paste(" = ", format(x$p_value, digits = 3, ...))
+      ),
+      "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
+      "\n\n",
+      sep = ""
+    )
   } else {
     cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
   }
@@ -88,8 +99,10 @@ print.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Kernel Information:\n",
-      "  Kernel type: Gaussian with L2 norm distances\n",
-      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+    "  Kernel type: Gaussian with L2 norm distances\n",
+    "  Number of kernels: ", paste0(nrow(x$centers)), "\n",
+    sep = ""
+  )
   cat("  sigma:")
   cat(str(unname(x$sigma)))
   if (!is.null(x$cv_score)) {
@@ -126,8 +139,10 @@ print.summary.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), .
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Kernel Information:\n",
-      "  Kernel type: Gaussian with L2 norm distances\n",
-      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+    "  Kernel type: Gaussian with L2 norm distances\n",
+    "  Number of kernels: ", paste0(nrow(x$centers)), "\n",
+    sep = ""
+  )
 
   cat("Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n", sep = "")
   cat("Optimal kernel weights:")
@@ -135,11 +150,14 @@ print.summary.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), .
   cat("Kullback-Leibler divergence between P(nu) and P(de): ", paste(format(x$UKL, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
-        ifelse(x$p_value < 0.001,
-               paste(" < .001"),
-               paste(" = ", format(x$p_value, digits = 3, ...))),
-        "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
-        "\n\n", sep = "")
+      ifelse(x$p_value < 0.001,
+        paste(" < .001"),
+        paste(" = ", format(x$p_value, digits = 3, ...))
+      ),
+      "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
+      "\n\n",
+      sep = ""
+    )
   } else {
     cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
   }
@@ -164,8 +182,10 @@ print.kmm <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Kernel Information:\n",
-      "  Kernel type: Gaussian with L2 norm distances\n",
-      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+    "  Kernel type: Gaussian with L2 norm distances\n",
+    "  Number of kernels: ", paste0(nrow(x$centers)), "\n",
+    sep = ""
+  )
   cat("  sigma:")
   cat(str(unname(x$sigma)))
   if (!is.null(x$cv_score)) {
@@ -201,8 +221,10 @@ print.summary.kmm <- function(x, digits = max(3L, getOption("digits") - 3L), ...
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Kernel Information:\n",
-      "  Kernel type: Gaussian with L2 norm distances\n",
-      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+    "  Kernel type: Gaussian with L2 norm distances\n",
+    "  Number of kernels: ", paste0(nrow(x$centers)), "\n",
+    sep = ""
+  )
 
   cat("Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n", sep = "")
   cat("Optimal kernel weights:")
@@ -210,11 +232,14 @@ print.summary.kmm <- function(x, digits = max(3L, getOption("digits") - 3L), ...
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
-        ifelse(x$p_value < 0.001,
-               paste(" < .001"),
-               paste(" = ", format(x$p_value, digits = 3, ...))),
-        "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
-        "\n\n", sep = "")
+      ifelse(x$p_value < 0.001,
+        paste(" < .001"),
+        paste(" = ", format(x$p_value, digits = 3, ...))
+      ),
+      "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
+      "\n\n",
+      sep = ""
+    )
   } else {
     cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
   }
@@ -238,15 +263,19 @@ print.lhss <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Kernel Information:\n",
-      "  Kernel type: Gaussian with L2 norm distances\n",
-      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+    "  Kernel type: Gaussian with L2 norm distances\n",
+    "  Number of kernels: ", paste0(nrow(x$centers)), "\n",
+    sep = ""
+  )
   cat("  sigma:")
   cat(str(unname(x$sigma)))
   cat("\nRegularization parameter (lambda):")
   cat(str(unname(x$lambda)))
   cat("\nSubspace dimension (m): ", x$m, "\n", sep = "")
   cat("Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
-      "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
+    "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n",
+    sep = ""
+  )
   cat("Optimal kernel weights (loocv):")
   cat(str(unname(x$alpha_opt)), "\n")
   invisible(x)
@@ -270,21 +299,28 @@ print.summary.lhss <- function(x, digits = max(3L, getOption("digits") - 3L), ..
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Kernel Information:\n",
-      "  Kernel type: Gaussian with L2 norm distances\n",
-      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+    "  Kernel type: Gaussian with L2 norm distances\n",
+    "  Number of kernels: ", paste0(nrow(x$centers)), "\n",
+    sep = ""
+  )
   cat("\nSubspace dimension (m): ", x$m, "\n", sep = "")
   cat("Optimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
-      "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n", sep = "")
+    "Optimal lambda: ", paste(format(x$lambda_opt, digits, ...)), "\n",
+    sep = ""
+  )
   cat("Optimal kernel weights (loocv):")
   cat(str(unname(x$alpha_opt)), "\n")
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
-        ifelse(x$p_value < 0.001,
-               paste(" < .001"),
-               paste(" = ", format(x$p_value, digits = 3, ...))),
-        "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
-        "\n\n", sep = "")
+      ifelse(x$p_value < 0.001,
+        paste(" < .001"),
+        paste(" = ", format(x$p_value, digits = 3, ...))
+      ),
+      "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
+      "\n\n",
+      sep = ""
+    )
   } else {
     cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
   }
@@ -310,15 +346,19 @@ print.spectral <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Kernel Information:\n",
-      "  Kernel type: Gaussian with L2 norm distances\n",
-      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+    "  Kernel type: Gaussian with L2 norm distances\n",
+    "  Number of kernels: ", paste0(nrow(x$centers)), "\n",
+    sep = ""
+  )
   cat("  sigma:")
   cat(str(unname(x$sigma)))
   cat("\n")
   cat("\nSubspace dimension (J):")
   cat(str(unname(x$J)))
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
-      "Optimal subspace: ", paste(format(x$J_opt, digits, ...)), "\n", sep = "")
+    "Optimal subspace: ", paste(format(x$J_opt, digits, ...)), "\n",
+    sep = ""
+  )
   cat("Optimal kernel weights (cv):")
   cat(str(unname(x$alpha_opt)), "\n")
   invisible(x)
@@ -343,21 +383,28 @@ print.summary.spectral <- function(x, digits = max(3L, getOption("digits") - 3L)
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Kernel Information:\n",
-      "  Kernel type: Gaussian with L2 norm distances\n",
-      "  Number of kernels: ", paste0(nrow(x$centers)), "\n", sep = "")
+    "  Kernel type: Gaussian with L2 norm distances\n",
+    "  Number of kernels: ", paste0(nrow(x$centers)), "\n",
+    sep = ""
+  )
 
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
-      "Optimal subspace: ", paste(format(x$J_opt, digits, ...)), "\n", sep = "")
+    "Optimal subspace: ", paste(format(x$J_opt, digits, ...)), "\n",
+    sep = ""
+  )
   cat("Optimal kernel weights (cv):")
   cat(str(unname(x$alpha_opt)), "\n")
   cat("Pearson divergence between P(nu) and P(de): ", paste(format(x$PE, digits = digits, ...)), "\n", sep = "")
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
-        ifelse(x$p_value < 0.001,
-               paste(" < .001"),
-               paste(" = ", format(x$p_value, digits = 3, ...))),
-        "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
-        "\n\n", sep = "")
+      ifelse(x$p_value < 0.001,
+        paste(" < .001"),
+        paste(" = ", format(x$p_value, digits = 3, ...))
+      ),
+      "\nBonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).",
+      "\n\n",
+      sep = ""
+    )
   } else {
     cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
   }
@@ -379,13 +426,14 @@ print.summary.spectral <- function(x, digits = max(3L, getOption("digits") - 3L)
 
 
 print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
-
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Naive density ratio\n",
-      "  Number of variables: ", ncol(x$model_matrices$nu), "\n",
-      "  Number of numerator samples: ", nrow(x$model_matrices$nu), "\n",
-      "  Number of denominator samples: ", nrow(x$model_matrices$de), "\n", sep = "")
+    "  Number of variables: ", ncol(x$model_matrices$nu), "\n",
+    "  Number of numerator samples: ", nrow(x$model_matrices$nu), "\n",
+    "  Number of denominator samples: ", nrow(x$model_matrices$de), "\n",
+    sep = ""
+  )
   cat("  Numerator density:")
   cat(str(unname(stats::predict(x, newdata = x$df_numerator))))
   cat("  Denominator density:")
@@ -406,6 +454,8 @@ print.naivedensityratio <- function(x, digits = max(3L, getOption("digits") - 3L
 #' @importFrom utils str
 #' @seealso \code{\link{print}}, \code{\link{summary.naivedensityratio}},
 #' \code{\link{naive}}
+#'
+#' @export
 #' @example inst/examples/naive-example.R
 
 
@@ -413,25 +463,31 @@ print.summary.naivedensityratio <- function(x, digits = max(3L, getOption("digit
   cat("\nCall:\n", paste0(deparse(x$call)), "\n", sep = "")
   cat("\n")
   cat("Naive density ratio estimate:\n",
-      "  Number of variables: ", x$nvars, "\n",
-      "  Number of numerator samples: ", x$n[1], "\n",
-      "  Number of denominator samples: ", x$n[2], "\n", sep="")
+    "  Number of variables: ", x$nvars, "\n",
+    "  Number of numerator samples: ", x$n[1], "\n",
+    "  Number of denominator samples: ", x$n[2], "\n",
+    sep = ""
+  )
   cat("  Density ratio for numerator samples:")
   cat(str(unname(x$dr$dr[1:x$n[1]])))
   cat("  Density ratio for denominator samples:")
-  cat(str(unname(x$dr$dr[(x$n[1]+1):(x$n[1]+x$n[2])])), "\n\n")
+  cat(str(unname(x$dr$dr[(x$n[1] + 1):(x$n[1] + x$n[2])])), "\n\n")
 
   cat("Squared average log density ratio difference for numerator and denominator samples (SALDRD): ",
-      paste(format(x$SALDRD, digits = digits, ...)), "\n", sep = "")
+    paste(format(x$SALDRD, digits = digits, ...)), "\n",
+    sep = ""
+  )
   if (!is.null(x$p_value)) {
     cat("Pr(P(nu)=P(de))",
-        ifelse(x$p_value < 0.001,
-               paste(" < .001"),
-               paste(" = ", format(x$p_value, digits = 3, ...))),
-        "\n\n", sep = "")
+      ifelse(x$p_value < 0.001,
+        paste(" < .001"),
+        paste(" = ", format(x$p_value, digits = 3, ...))
+      ),
+      "\n\n",
+      sep = ""
+    )
   } else {
     cat("For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.\n\n")
   }
   invisible(x)
 }
-
