@@ -57,7 +57,6 @@ kmm <- function(df_numerator, df_denominator, scale = "numerator",
                 sigma = NULL, ncenters = 200, centers = NULL, cv = TRUE,
                 nfold = 5, parallel = FALSE, nthreads = NULL,
                 progressbar = TRUE, osqp_settings = NULL, cluster = NULL) {
-
   cl <- match.call()
   nu <- check.datatype(df_numerator)
   de <- check.datatype(df_denominator)
@@ -88,13 +87,14 @@ kmm <- function(df_numerator, df_denominator, scale = "numerator",
     osqp_settings <- osqp::osqpSettings(verbose = FALSE)
   }
   if (constrained) {
-    if(!progressbar) {
+    if (!progressbar) {
       pbapply::pboptions(type = "none")
     }
     constrained_out <- pbapply::pblapply(sigma, function(s) {
       compute_kmm(dat$nu, dat$de, dat$ce, Dd, s, cv_ind_nu, cv_ind_de,
-                  parallel = FALSE, nthreads = 0, progressbar = FALSE,
-                  constrained = TRUE, settings = osqp_settings)
+        parallel = FALSE, nthreads = 0, progressbar = FALSE,
+        constrained = TRUE, settings = osqp_settings
+      )
     }, cl = cluster)
     res <- list(
       alpha = do.call(cbind, constrained_out |> lapply(function(x) x$alpha)),
@@ -102,28 +102,40 @@ kmm <- function(df_numerator, df_denominator, scale = "numerator",
     )
   } else {
     nthreads <- check.threads(parallel, nthreads)
-    res <- compute_kmm(dat$nu, dat$de, dat$ce, Dd, sigma, cv_ind_nu, cv_ind_de,
-                       parallel, nthreads, progressbar, constrained, osqp_settings)
+    res <- compute_kmm(
+      dat$nu, dat$de, dat$ce, Dd, sigma, cv_ind_nu, cv_ind_de,
+      parallel, nthreads, progressbar, constrained, osqp_settings
+    )
   }
 
   out <- list(
     df_numerator = df_numerator,
     df_denominator = df_denominator,
     alpha = res$alpha,
-    cv_score = switch(cv, res$loss, NULL),
+    cv_score = switch(cv,
+      res$loss,
+      NULL
+    ),
     scale = scale,
     sigma = sigma,
     centers = df_centers,
     model_matrices = dat,
-    nfold = switch(cv, max(cv_ind_nu) + 1, NULL),
+    nfold = switch(cv,
+      max(cv_ind_nu) + 1,
+      NULL
+    ),
     constrained = constrained,
-    alpha_opt = switch(cv, res$alpha[,which.min(res$loss), drop = FALSE], NULL),
-    sigma_opt = switch(cv, sigma[which.min(res$loss)], NULL),
+    alpha_opt = switch(cv,
+      res$alpha[, which.min(res$loss), drop = FALSE],
+      NULL
+    ),
+    sigma_opt = switch(cv,
+      sigma[which.min(res$loss)],
+      NULL
+    ),
     call = cl
   )
 
   class(out) <- "kmm"
   out
 }
-
-

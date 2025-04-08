@@ -40,7 +40,6 @@ kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10
                   sigma_quantile = NULL, sigma = NULL, ncenters = 200,
                   centers = NULL, cv = TRUE, nfold = 5, epsilon = NULL,
                   maxit = 5000, progressbar = TRUE) {
-
   cl <- match.call()
   nu <- check.datatype(df_numerator)
   de <- check.datatype(df_denominator)
@@ -55,10 +54,10 @@ kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10
   dist_nu <- distance(dat$nu, dat$ce)
   dist_de <- distance(dat$de, dat$ce)
 
-  sigma   <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
+  sigma <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   epsilon <- check.epsilon(epsilon)
-  maxit   <- check.maxit(maxit)
-  cv_ind  <- check.nfold(cv, nfold, sigma, nnu)
+  maxit <- check.maxit(maxit)
+  cv_ind <- check.nfold(cv, nfold, sigma, nnu)
 
   res <- compute_kliep(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
   rownames(res$cv_score) <- names(sigma) <- paste0("sigma", 1:length(sigma))
@@ -69,16 +68,28 @@ kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10
     df_numerator = df_numerator,
     df_denominator = df_denominator,
     alpha = res$alpha,
-    cv_score = switch(cv, res$cv_score, NULL),
+    cv_score = switch(cv,
+      res$cv_score,
+      NULL
+    ),
     scale = scale,
     sigma = sigma,
     centers = df_centers,
     model_matrices = dat,
-    nfold = switch(cv, max(cv_ind) + 1, NULL),
+    nfold = switch(cv,
+      max(cv_ind) + 1,
+      NULL
+    ),
     epsilon = epsilon,
     maxit = maxit,
-    alpha_opt = switch(cv, res$alpha[, which.max(res$cv_score), drop = FALSE], NULL),
-    sigma_opt = switch(cv, sigma[which.max(res$cv_score)], NULL),
+    alpha_opt = switch(cv,
+      res$alpha[, which.max(res$cv_score), drop = FALSE],
+      NULL
+    ),
+    sigma_opt = switch(cv,
+      sigma[which.max(res$cv_score)],
+      NULL
+    ),
     call = cl
   )
   class(out) <- "kliep"

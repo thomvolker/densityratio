@@ -34,7 +34,7 @@ permute.ulsif <- function(object, stacked, nnu, nde, ...) {
   pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE]))
   pred_de <- c(stats::predict(r, newdata = stacked[!ind, , drop = FALSE]))
 
-  1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
 }
 
 #' Single permutation statistic of \code{kliep} object
@@ -86,7 +86,7 @@ permute.kmm <- function(object, stacked, nnu, nde, ...) {
   pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE]))
   pred_de <- c(stats::predict(r, newdata = stacked[!ind, , drop = FALSE]))
 
-  1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
 }
 
 #' Single permutation statistic of \code{lhss} object
@@ -112,7 +112,7 @@ permute.lhss <- function(object, stacked, nnu, nde, ...) {
   pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE]))
   pred_de <- c(stats::predict(r, newdata = stacked[!ind, , drop = FALSE]))
 
-  1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
 }
 
 #' Single permutation statistic of \code{spectral} object
@@ -138,7 +138,7 @@ permute.spectral <- function(object, stacked, nnu, nde, ...) {
   pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE]))
   pred_de <- c(stats::predict(r, newdata = stacked[!ind, , drop = FALSE]))
 
-  1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
 }
 
 #' Single permutation statistic of \code{naivedensityratio} object
@@ -167,5 +167,3 @@ permute.naivedensityratio <- function(object, stacked, nnu, nde, min_pred, max_p
 
   (mean(pmin(max_pred, pmax(min_pred, pred_nu))) - mean(pmin(max_pred, pmax(min_pred, pred_de))))^2
 }
-
-

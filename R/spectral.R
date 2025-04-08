@@ -52,10 +52,9 @@ spectral <- function(df_numerator, df_denominator, J = NULL, scale = "numerator"
                      nsigma = 10, sigma_quantile = NULL, sigma = NULL,
                      ncenters = NULL, cv = TRUE, nfold = 10, parallel = FALSE,
                      nthreads = NULL, progressbar = TRUE) {
-
-  cl  <- match.call()
-  nu  <- check.datatype(df_numerator)
-  de  <- check.datatype(df_denominator)
+  cl <- match.call()
+  nu <- check.datatype(df_numerator)
+  de <- check.datatype(df_denominator)
 
   check.variables(nu, de)
   nnu <- nrow(nu)
@@ -67,18 +66,20 @@ spectral <- function(df_numerator, df_denominator, J = NULL, scale = "numerator"
 
   cv_ind_nu <- check.nfold(cv, nfold, sigma, nnu)
   cv_ind_de <- check.nfold(cv, nfold, sigma, ncenters)
-  J         <- check.subspace.spectral(J, cv_ind_de)
+  J <- check.subspace.spectral(J, cv_ind_de)
 
-  parallel  <- check.parallel(parallel, nthreads, unique(cv_ind_nu))
-  nthreads  <- check.threads(parallel, nthreads)
+  parallel <- check.parallel(parallel, nthreads, unique(cv_ind_nu))
+  nthreads <- check.threads(parallel, nthreads)
 
   dist_nu <- distance(dat$nu, dat$ce, FALSE)
   dist_de <- distance(dat$ce, dat$ce, FALSE)
 
-  sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
+  sigma <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
 
-  res <- spectral_dre(dist_nu, dist_de, J, sigma, cv_ind_nu, cv_ind_de,
-                      parallel, nthreads, progressbar)
+  res <- spectral_dre(
+    dist_nu, dist_de, J, sigma, cv_ind_nu, cv_ind_de,
+    parallel, nthreads, progressbar
+  )
 
   # Order eigenvalues and eigenvectors from largest to smallest
   # note that armadillo orders them from smallest to largest

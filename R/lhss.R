@@ -46,7 +46,6 @@ lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
                  scale = "numerator", nsigma = 10, sigma_quantile = NULL,
                  sigma = NULL, nlambda = 10, lambda = NULL, ncenters = 200,
                  centers = NULL, maxit = 200, progressbar = TRUE) {
-
   cl <- match.call()
   nu <- check.datatype(df_numerator)
   de <- check.datatype(df_denominator)
@@ -58,23 +57,27 @@ lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
 
   p <- ncol(dat$nu)
 
-  symmetric      <- check.symmetric(dat$nu, dat$ce)
+  symmetric <- check.symmetric(dat$nu, dat$ce)
   sigma_quantile <- check.sigma_quantile.lhss(nsigma, sigma, sigma_quantile)
-  sigma          <- if (is.null(sigma_quantile)) sigma else sigma_quantile
-  is_quantile    <- !is.null(sigma_quantile)
-  lambda         <- check.lambda(nlambda, lambda)
-  m              <- check.subspace(m, p)
-  maxit          <- check.maxit(maxit)
+  sigma <- if (is.null(sigma_quantile)) sigma else sigma_quantile
+  is_quantile <- !is.null(sigma_quantile)
+  lambda <- check.lambda(nlambda, lambda)
+  m <- check.subspace(m, p)
+  maxit <- check.maxit(maxit)
 
-  res <- lhss_compute_alpha(dat$nu, dat$de, dat$ce, symmetric, m, intercept, sigma,
-                            is_quantile, lambda, maxit, progressbar)
+  res <- lhss_compute_alpha(
+    dat$nu, dat$de, dat$ce, symmetric, m, intercept, sigma,
+    is_quantile, lambda, maxit, progressbar
+  )
 
   colnames(res$loocv) <- names(lambda) <- paste0("lambda", 1:length(lambda))
   rownames(res$loocv) <- names(sigma) <- paste0("sigma", 1:length(sigma))
   dimnames(res$sigmaopt) <- dimnames(res$loocv)
   dimnames(res$alpha) <- list(NULL, names(sigma), names(lambda))
-  U <- array(res$Uopt, dim = c(p, m, length(sigma), length(lambda)),
-             dimnames = list(NULL, NULL, names(sigma), names(lambda)))
+  U <- array(res$Uopt,
+    dim = c(p, m, length(sigma), length(lambda)),
+    dimnames = list(NULL, NULL, names(sigma), names(lambda))
+  )
   min_score <- arrayInd(which.min(res$loocv), dim(res$loocv))
 
   out <- list(
@@ -93,7 +96,7 @@ lhss <- function(df_numerator, df_denominator, m = NULL, intercept = TRUE,
     alpha_opt = res$alpha[, min_score[1], min_score[2]],
     lambda_opt = lambda[min_score[2]],
     sigma_opt = res$sigmaopt[min_score[1], min_score[2]],
-    U_opt = U[,,min_score[1], min_score[2], drop = FALSE],
+    U_opt = U[, , min_score[1], min_score[2], drop = FALSE],
     call = cl
   )
   class(out) <- "lhss"

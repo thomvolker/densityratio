@@ -4,8 +4,11 @@
 #' @importFrom stats sd
 
 check.datatype <- function(data) {
-  if (is.vector(data)) data <- data.frame(x = data)
-  else data <- as.data.frame(data)
+  if (is.vector(data)) {
+    data <- data.frame(x = data)
+  } else {
+    data <- as.data.frame(data)
+  }
 
   if (sum(is.na(data)) > 0) {
     stop("Missing data can currently not be handled, please solve the missing data problem first.")
@@ -14,7 +17,6 @@ check.datatype <- function(data) {
 }
 
 check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, scale) {
-
   numvars <- which(sapply(nu, is.numeric))
   if (!is.null(centers)) {
     alldat <- rbind(nu, de, centers)
@@ -40,18 +42,18 @@ check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, 
     }
 
     means <- colMeans(scaledat)
-    sds   <- sapply(scaledat, sd)
+    sds <- sapply(scaledat, sd)
 
     alldat[, numvars] <- scale(alldat[, numvars], center = means, scale = sds) |> as.data.frame()
 
     if (any(sds == 0)) {
       warning("Some variables have zero variance in the data used for scaling. These variables are removed from both the numerator and denominator data.")
       remove_vars <- numvars[which(sds == 0)]
-      alldat <- alldat[, - remove_vars, drop = FALSE]
+      alldat <- alldat[, -remove_vars, drop = FALSE]
     }
   }
 
-  dat <- model.matrix( ~ . - 1, alldat)
+  dat <- model.matrix(~ . - 1, alldat)
 
   if (!is.null(newdata)) {
     newdata <- check.datatype(newdata)
@@ -59,21 +61,21 @@ check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, 
       newdata[, numvars] <- scale(newdata[, numvars], center = means, scale = sds) |> as.data.frame()
     }
     alldat <- rbind(alldat, newdata)
-    newdat <- model.matrix( ~ . - 1, alldat)
-    newdat <- newdat[(nrow(dat) + 1):(nrow(dat)+nrow(newdata)), , drop = FALSE]
-    dat <- newdat[,colnames(dat), drop = FALSE]
+    newdat <- model.matrix(~ . - 1, alldat)
+    newdat <- newdat[(nrow(dat) + 1):(nrow(dat) + nrow(newdata)), , drop = FALSE]
+    dat <- newdat[, colnames(dat), drop = FALSE]
     return(dat)
-  }
-  else {
-    dat <- list(nu = dat[ind == "nu", , drop = FALSE],
-                de = dat[ind == "de", , drop = FALSE],
-                ce = dat[ind == "ce", , drop = FALSE])
+  } else {
+    dat <- list(
+      nu = dat[ind == "nu", , drop = FALSE],
+      de = dat[ind == "de", , drop = FALSE],
+      ce = dat[ind == "ce", , drop = FALSE]
+    )
     return(dat)
   }
 }
 
 check.variables <- function(nu, de, ce = NULL) {
-
   nu <- check.datatype(nu)
   de <- check.datatype(de)
 
@@ -82,8 +84,8 @@ check.variables <- function(nu, de, ce = NULL) {
 
   if (
     !identical(numvars_nu, numvars_de) |
-    !identical(ncol(nu), ncol(de)) |
-    !identical(colnames(nu), colnames(de))
+      !identical(ncol(nu), ncol(de)) |
+      !identical(colnames(nu), colnames(de))
   ) {
     stop("The numerator and denominator data must contain the same variables.")
   }
@@ -92,8 +94,8 @@ check.variables <- function(nu, de, ce = NULL) {
     numvars_ce <- which(sapply(ce, is.numeric))
     if (
       !identical(numvars_nu, numvars_ce) |
-      !identical(ncol(nu), ncol(ce)) |
-      !identical(colnames(nu), colnames(ce))
+        !identical(ncol(nu), ncol(ce)) |
+        !identical(colnames(nu), colnames(ce))
     ) {
       stop("The data and centers must contain the same variables.")
     }
@@ -119,7 +121,7 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
     } else {
       p <- sigma_quantile
       sigma <- stats::quantile(dist_nu, p)
-      sigma <- sqrt(sigma/2)
+      sigma <- sqrt(sigma / 2)
     }
   }
   # if both sigma and sigma_quantile are not specified, specify the quantiles linearly, based on nsigma
@@ -129,14 +131,13 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
     } else {
       if (nsigma < 1) {
         stop("'nsigma' must be a positive scalar.")
-      }
-      else if (nsigma == 1) {
+      } else if (nsigma == 1) {
         sigma <- stats::median(dist_nu)
-        sigma <- sqrt(sigma/2)
+        sigma <- sqrt(sigma / 2)
       } else {
         p <- seq(0.05, 0.95, length.out = nsigma)
         sigma <- stats::quantile(dist_nu, p)
-        sigma <- sqrt(sigma/2)
+        sigma <- sqrt(sigma / 2)
       }
     }
   }
@@ -151,7 +152,7 @@ check.sigma_quantile.lhss <- function(nsigma, sigma, sigma_quantile) {
   if (!is.null(sigma)) {
     if (!is.numeric(sigma) | !is.null(dim(sigma))) {
       stop("If 'sigma' is specified it must be a numeric scalar or vector.")
-    } else{
+    } else {
       p <- NULL
     }
   } else if (!is.null(sigma_quantile)) {
@@ -168,8 +169,7 @@ check.sigma_quantile.lhss <- function(nsigma, sigma, sigma_quantile) {
     } else {
       if (nsigma < 1) {
         stop("'nsigma' must be a positive scalar.")
-      }
-      else if (nsigma == 1) {
+      } else if (nsigma == 1) {
         p <- 0.5
       } else {
         p <- seq(0.05, 0.95, length.out = nsigma)
@@ -194,7 +194,6 @@ check.lambda <- function(nlambda, lambda) {
 }
 
 check.centers <- function(dat, centers, ncenters) {
-
   if (!is.null(centers)) {
     centers <- check.datatype(centers)
   } else {
@@ -219,7 +218,7 @@ check.intercept <- function(intercept) {
 }
 
 check.symmetric <- function(nu, centers) {
-  if(isTRUE(all.equal(nu, centers))) {
+  if (isTRUE(all.equal(nu, centers))) {
     symmetric <- TRUE
   } else {
     symmetric <- FALSE
@@ -243,11 +242,9 @@ check.parallel <- function(parallel, nthreads, iterator) {
   }
 
   parallel
-
 }
 
 check.threads <- function(parallel, nthreads) {
-
   if (!parallel) {
     if (!is.null(nthreads)) {
       warning("Specifying 'nthreads' has no use without setting 'parallel = TRUE'.\n")
@@ -257,10 +254,10 @@ check.threads <- function(parallel, nthreads) {
     if (is.null(nthreads)) {
       nthreads <- 0
     } else {
-      if(!is.numeric(nthreads) | !(length(nthreads) == 1)) {
+      if (!is.numeric(nthreads) | !(length(nthreads) == 1)) {
         stop("If parallel processing is enabled, nthreads must be NULL or a positive integer.")
       }
-      if(nthreads < 1) {
+      if (nthreads < 1) {
         nthreads <- 1
         warning("You specified a negative number of threads, 'nthreads' is set to 1.\n")
       }
@@ -275,20 +272,21 @@ check.epsilon <- function(epsilon) {
       stop("'eps' must be either NULL, a numeric scalar or a numeric vector.")
     }
   } else {
-    epsilon <- 10^{1:-5}
+    epsilon <- 10^{
+      1:-5
+    }
   }
   epsilon
 }
 
 check.maxit <- function(maxit) {
-  if(maxit < 0) {
+  if (maxit < 0) {
     stop("'maxit' must be a positive scalar")
   }
   maxit
 }
 
 check.nfold <- function(cv, nfold, sigma, n) {
-
   if (!cv) {
     cv_ind <- rep(0, n)
   } else {
@@ -297,7 +295,7 @@ check.nfold <- function(cv, nfold, sigma, n) {
     } else if (nfold < 2 | nfold > n) {
       stop(paste0("'nfold' must be at least 2 and at most ", n, ", given the number of observations"))
     } else {
-      cv_ind <- sample(rep_len(0:(nfold-1), n))
+      cv_ind <- sample(rep_len(0:(nfold - 1), n))
     }
   }
   cv_ind
@@ -332,27 +330,35 @@ check.lambdasigma.predict <- function(object, sigma, lambda, lambdaind) {
   if (is.character(sigma)) {
     sigma <- match.arg(sigma, c("sigmaopt", "all"))
     if (sigma == "sigmaopt") { # Extract optimal sigma based on cv score for every lambda
-      sigmaind <- sapply(lambdaind, \(i) which.min(object$cv_score[,i]))
+      sigmaind <- sapply(lambdaind, \(i) which.min(object$cv_score[, i]))
       lambdasigmaind <- matrix(c(lambdaind, sigmaind), ncol = 2)
     } else if (sigma == "all") { # Extract all sigma values for every lambda
       sigmaind <- seq_len(nrow(object$sigma))
-      lambdasigmaind <- matrix(c(rep(lambdaind, each = length(sigmaind)),
-                                 rep(sigmaind, nlambda)),
-                               ncol = 2)
-      lambdasigmaind[is.na(lambdasigmaind[,1]), 2] <- NA
+      lambdasigmaind <- matrix(
+        c(
+          rep(lambdaind, each = length(sigmaind)),
+          rep(sigmaind, nlambda)
+        ),
+        ncol = 2
+      )
+      lambdasigmaind[is.na(lambdasigmaind[, 1]), 2] <- NA
     }
   } else if (is.numeric(sigma) & is.vector(sigma)) {
-    sigmaind <- lapply(lambdaind, \(i) match(sigma, object$sigma[,i]))
-    lambdasigmaind <- matrix(c(rep(lambdaind, each = length(unlist(sigmaind))/length(lambdaind)),
-                               unlist(sigmaind)),
-                             ncol = 2)
+    sigmaind <- lapply(lambdaind, \(i) match(sigma, object$sigma[, i]))
+    lambdasigmaind <- matrix(
+      c(
+        rep(lambdaind, each = length(unlist(sigmaind)) / length(lambdaind)),
+        unlist(sigmaind)
+      ),
+      ncol = 2
+    )
   } else {
     stop("'sigma' should be one of 'sigmaopt', 'all' or a numeric scalar or vector with values to use as sigma parameter")
   }
-  lambdanew <- rep(lambda, each = nrow(lambdasigmaind)/nlambda)
-  sigmanew  <- sapply(1:nrow(lambdasigmaind), \(i) {
-    if (is.numeric(sigma) & is.na(lambdasigmaind[i,2])) {
-      return(sigma[(i-1) %% length(sigma) + 1])
+  lambdanew <- rep(lambda, each = nrow(lambdasigmaind) / nlambda)
+  sigmanew <- sapply(1:nrow(lambdasigmaind), \(i) {
+    if (is.numeric(sigma) & is.na(lambdasigmaind[i, 2])) {
+      return(sigma[(i - 1) %% length(sigma) + 1])
     } else {
       return(object$sigma[lambdasigmaind[i, 2], lambdasigmaind[i, 1]])
     }
@@ -397,10 +403,10 @@ check.J.predict <- function(object, J) {
 }
 
 check.subspace <- function(m, P) {
-  if(is.null(m)) {
+  if (is.null(m)) {
     m <- floor(sqrt(P))
   } else {
-    if(!is.numeric(m)) {
+    if (!is.numeric(m)) {
       stop("The dimension of the subspace 'm' must be 'NULL', an integer value, or an integer vector.")
     } else {
       if (any(m %% 1 != 0)) stop("The dimension of the subspace 'm' must be 'NULL', an integer value or an integer vector.")
@@ -411,10 +417,10 @@ check.subspace <- function(m, P) {
 }
 
 check.subspace.spectral <- function(J, cv_ind_de) {
-
   ncenters <- ifelse(all(cv_ind_de == 0),
-                     length(cv_ind_de),
-                     length(cv_ind_de) - max(table(cv_ind_de)))
+    length(cv_ind_de),
+    length(cv_ind_de) - max(table(cv_ind_de))
+  )
 
   if (is.null(J)) {
     J <- seq(1, ncenters, length.out = 50)
@@ -444,19 +450,20 @@ check.newdata <- function(object, newdata) {
       newdata,
       object$scale
     )
-  }
-  else {
+  } else {
     newdata <- object$model_matrices$nu
   }
   newdata
 }
 
-check.var.names <- function(vars, data){
+check.var.names <- function(vars, data) {
   nm <- colnames(data)
-  if(!all(vars %in% nm)) {
+  if (!all(vars %in% nm)) {
     stop(
-      paste0("The indicated variables are not names of columns in the data. The variables are: ",
-             paste0(nm, collapse = ", "))
+      paste0(
+        "The indicated variables are not names of columns in the data. The variables are: ",
+        paste0(nm, collapse = ", ")
+      )
     )
   }
 }
@@ -477,7 +484,7 @@ check.object.type <- function(object) {
   }
 }
 
-check.logscale <- function(ext, logscale, tol){
+check.logscale <- function(ext, logscale, tol) {
   if (logscale) {
     # Convert values lower than tolerance to tol
     negdr <- ext$dr < tol
@@ -486,7 +493,7 @@ check.logscale <- function(ext, logscale, tol){
       warning(
         paste(
           "Negative estimated density ratios for", sum(negdr),
-          "observation(s) converted to",tol,
+          "observation(s) converted to", tol,
           "before applying logarithmic transformation"
         ),
         call. = FALSE
@@ -504,4 +511,3 @@ check.logscale <- function(ext, logscale, tol){
   }
   return(ext)
 }
-

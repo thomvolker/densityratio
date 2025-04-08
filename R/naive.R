@@ -78,4 +78,3 @@ naive <- function(df_numerator, df_denominator, m, bw = "SJ",
   class(out) <- c("naivedensityratio")
   return(out)
 }
-

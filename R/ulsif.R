@@ -46,8 +46,7 @@ ulsif <- function(df_numerator, df_denominator, intercept = TRUE, scale = "numer
                   nsigma = 10, sigma_quantile = NULL, sigma = NULL, nlambda = 20,
                   lambda = NULL, ncenters = 200, centers = NULL,
                   parallel = FALSE, nthreads = NULL, progressbar = TRUE) {
-
-  cl  <- match.call()
+  cl <- match.call()
   nu <- check.datatype(df_numerator)
   de <- check.datatype(df_denominator)
 
@@ -61,17 +60,17 @@ ulsif <- function(df_numerator, df_denominator, intercept = TRUE, scale = "numer
   dist_nu <- distance(dat$nu, dat$ce, intercept)
   dist_de <- distance(dat$de, dat$ce, intercept)
 
-  sigma  <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
+  sigma <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   lambda <- check.lambda(nlambda, lambda)
 
-  parallel  <- check.parallel(parallel, nthreads, lambda)
-  nthreads  <- check.threads(parallel, nthreads)
+  parallel <- check.parallel(parallel, nthreads, lambda)
+  nthreads <- check.threads(parallel, nthreads)
 
   res <- compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar)
   loocv_scores <- res$loocv_score
   colnames(loocv_scores) <- names(lambda) <- paste0("lambda", 1:length(lambda))
-  rownames(loocv_scores) <- names(sigma)  <- paste0("sigma", 1:length(sigma))
-  dimnames(res$alpha)    <- list(NULL, names(sigma), names(lambda))
+  rownames(loocv_scores) <- names(sigma) <- paste0("sigma", 1:length(sigma))
+  dimnames(res$alpha) <- list(NULL, names(sigma), names(lambda))
   min_score <- arrayInd(which.min(loocv_scores), dim(loocv_scores))
 
   out <- list(

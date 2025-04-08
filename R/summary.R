@@ -23,7 +23,6 @@
 
 
 summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, ...) {
-
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
   stacked <- rbind(nu, de)
@@ -39,7 +38,7 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
   pred_nu <- c(stats::predict(object, newdata = object$df_numerator))
   pred_de <- c(stats::predict(object, newdata = object$df_denominator))
 
-  obsPE  <- 1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  obsPE <- 1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
   if (test) {
     distPE <- pbapply::pbreplicate(
       n_perm,
@@ -48,21 +47,32 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
       cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
-    recPE <- 1/(2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
-      1/nnu * sum(c(stats::predict(rec, newdata = nu))) + 1/2
+    recPE <- 1 / (2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
+      1 / nnu * sum(c(stats::predict(rec, newdata = nu))) + 1 / 2
   }
 
   out <- list(
-    alpha_opt  = object$alpha_opt,
-    sigma_opt  = object$sigma_opt,
+    alpha_opt = object$alpha_opt,
+    sigma_opt = object$sigma_opt,
     lambda_opt = object$lambda_opt,
-    centers    = object$centers,
-    dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
+    centers = object$centers,
+    dr = data.frame(
+      dr = c(pred_nu, pred_de),
+      group = factor(rep(c("nu", "de"), c(nnu, nde)))
+    ),
     PE = obsPE,
-    PErec = switch(test, recPE, NULL),
-    refPE = switch(test, distPE, NULL),
-    p_value = switch(test, min(1, 2 * mean(distPE > max(obsPE, recPE))), NULL),
+    PErec = switch(test,
+      recPE,
+      NULL
+    ),
+    refPE = switch(test,
+      distPE,
+      NULL
+    ),
+    p_value = switch(test,
+      min(1, 2 * mean(distPE > max(obsPE, recPE))),
+      NULL
+    ),
     call = object$call
   )
   class(out) <- "summary.ulsif"
@@ -97,7 +107,6 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
 
 
 summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, min_pred = 1e-6, ...) {
-
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
   stacked <- rbind(nu, de)
@@ -113,7 +122,7 @@ summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
   pred_nu <- c(stats::predict(object, newdata = nu))
   pred_de <- c(stats::predict(object, newdata = de))
 
-  obsUKL  <- mean(log(pmax(min_pred, c(pred_nu))))
+  obsUKL <- mean(log(pmax(min_pred, c(pred_nu))))
   if (test) {
     distUKL <- pbapply::pbreplicate(
       n_perm,
@@ -126,15 +135,26 @@ summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
   }
 
   out <- list(
-    alpha_opt  = object$alpha_opt,
-    sigma_opt  = object$sigma_opt,
-    centers    = object$centers,
-    dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
+    alpha_opt = object$alpha_opt,
+    sigma_opt = object$sigma_opt,
+    centers = object$centers,
+    dr = data.frame(
+      dr = c(pred_nu, pred_de),
+      group = factor(rep(c("nu", "de"), c(nnu, nde)))
+    ),
     UKL = obsUKL,
-    UKLrec = switch(test, recUKL, NULL),
-    refUKL = switch(test, distUKL, NULL),
-    p_value = switch(test, min(1, 2 * mean(distUKL > max(obsUKL, recUKL))), NULL),
+    UKLrec = switch(test,
+      recUKL,
+      NULL
+    ),
+    refUKL = switch(test,
+      distUKL,
+      NULL
+    ),
+    p_value = switch(test,
+      min(1, 2 * mean(distUKL > max(obsUKL, recUKL))),
+      NULL
+    ),
     call = object$call
   )
   class(out) <- "summary.kliep"
@@ -168,7 +188,6 @@ summary.kliep <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
 
 
 summary.kmm <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, min_pred = 1e-6, ...) {
-
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
   stacked <- rbind(nu, de)
@@ -184,7 +203,7 @@ summary.kmm <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl
   pred_nu <- c(stats::predict(object, newdata = nu))
   pred_de <- c(stats::predict(object, newdata = de))
 
-  obsPE  <- 1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  obsPE <- 1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
   if (test) {
     distPE <- pbapply::pbreplicate(
       n_perm,
@@ -193,19 +212,31 @@ summary.kmm <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl
       cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
-    recPE <- 1/(2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
-      1/nnu * sum(c(stats::predict(rec, newdata = nu))) + 1/2  }
+    recPE <- 1 / (2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
+      1 / nnu * sum(c(stats::predict(rec, newdata = nu))) + 1 / 2
+  }
 
   out <- list(
-    alpha_opt  = object$alpha_opt,
-    sigma_opt  = object$sigma_opt,
-    centers    = object$centers,
-    dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
+    alpha_opt = object$alpha_opt,
+    sigma_opt = object$sigma_opt,
+    centers = object$centers,
+    dr = data.frame(
+      dr = c(pred_nu, pred_de),
+      group = factor(rep(c("nu", "de"), c(nnu, nde)))
+    ),
     PE = obsPE,
-    PErec = switch(test, recPE, NULL),
-    refPE = switch(test, distPE, NULL),
-    p_value = switch(test, min(1, 2 * mean(distPE > max(obsPE, recPE))), NULL),
+    PErec = switch(test,
+      recPE,
+      NULL
+    ),
+    refPE = switch(test,
+      distPE,
+      NULL
+    ),
+    p_value = switch(test,
+      min(1, 2 * mean(distPE > max(obsPE, recPE))),
+      NULL
+    ),
     call = object$call
   )
   class(out) <- "summary.kmm"
@@ -234,7 +265,6 @@ summary.kmm <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl
 #' @example inst/examples/lhss-example.R
 
 summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, ...) {
-
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
   stacked <- rbind(nu, de)
@@ -250,7 +280,7 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
   pred_nu <- c(stats::predict(object, newdata = nu))
   pred_de <- c(stats::predict(object, newdata = de))
 
-  obsPE  <- 1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  obsPE <- 1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
   if (test) {
     distPE <- pbapply::pbreplicate(
       n_perm,
@@ -259,22 +289,33 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
       cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
-    recPE <- 1/(2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
-      1/nnu * sum(c(stats::predict(rec, newdata = nu))) + 1/2
+    recPE <- 1 / (2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
+      1 / nnu * sum(c(stats::predict(rec, newdata = nu))) + 1 / 2
   }
 
   out <- list(
-    alpha_opt  = object$alpha_opt,
-    sigma_opt  = object$sigma_opt,
+    alpha_opt = object$alpha_opt,
+    sigma_opt = object$sigma_opt,
     lambda_opt = object$lambda_opt,
     m = object$m,
-    centers    = object$centers,
-    dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
+    centers = object$centers,
+    dr = data.frame(
+      dr = c(pred_nu, pred_de),
+      group = factor(rep(c("nu", "de"), c(nnu, nde)))
+    ),
     PE = obsPE,
-    PErec = switch(test, recPE, NULL),
-    refPE = switch(test, distPE, NULL),
-    p_value = switch(test, min(1, 2 * mean(distPE > max(obsPE, recPE))), NULL),
+    PErec = switch(test,
+      recPE,
+      NULL
+    ),
+    refPE = switch(test,
+      distPE,
+      NULL
+    ),
+    p_value = switch(test,
+      min(1, 2 * mean(distPE > max(obsPE, recPE))),
+      NULL
+    ),
     call = object$call
   )
   class(out) <- "summary.lhss"
@@ -303,7 +344,6 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
 
 
 summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, ...) {
-
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
   stacked <- rbind(nu, de)
@@ -319,7 +359,7 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
   pred_nu <- c(stats::predict(object, newdata = nu, min_pred = sqrt(.Machine$double.eps)))
   pred_de <- c(stats::predict(object, newdata = de, min_pred = sqrt(.Machine$double.eps)))
 
-  obsPE  <- 1/(2 * nnu) * sum(pred_nu) - 1/nde * sum(pred_de) + 1/2
+  obsPE <- 1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
   if (test) {
     distPE <- pbapply::pbreplicate(
       n_perm,
@@ -328,21 +368,32 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
       cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
-    recPE <- 1/(2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
-      1/nnu * sum(c(stats::predict(rec, newdata = nu))) + 1/2
+    recPE <- 1 / (2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
+      1 / nnu * sum(c(stats::predict(rec, newdata = nu))) + 1 / 2
   }
 
   out <- list(
-    alpha_opt  = object$alpha_opt,
-    sigma_opt  = object$sigma_opt,
+    alpha_opt = object$alpha_opt,
+    sigma_opt = object$sigma_opt,
     J_opt = object$J_opt,
-    centers    = object$centers,
-    dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
+    centers = object$centers,
+    dr = data.frame(
+      dr = c(pred_nu, pred_de),
+      group = factor(rep(c("nu", "de"), c(nnu, nde)))
+    ),
     PE = obsPE,
-    PErec = switch(test, recPE, NULL),
-    refPE = switch(test, distPE, NULL),
-    p_value = switch(test, min(1, 2 * mean(distPE > max(obsPE, recPE))), NULL),
+    PErec = switch(test,
+      recPE,
+      NULL
+    ),
+    refPE = switch(test,
+      distPE,
+      NULL
+    ),
+    p_value = switch(test,
+      min(1, 2 * mean(distPE > max(obsPE, recPE))),
+      NULL
+    ),
     call = object$call
   )
   class(out) <- "summary.spectral"
@@ -371,7 +422,6 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
 #' @example inst/examples/naive-example.R
 
 summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cluster = NULL, ...) {
-
   nu <- check.datatype(object$df_numerator)
   de <- check.datatype(object$df_denominator)
 
@@ -391,7 +441,7 @@ summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parall
 
   min_pred <- log(sqrt(.Machine$double.eps))
   max_pred <- -min_pred
-  SALDRD   <- (mean(pmin(max_pred, pmax(min_pred, pred_nu))) - mean(pmin(max_pred, pmax(min_pred, pred_de))))^2
+  SALDRD <- (mean(pmin(max_pred, pmax(min_pred, pred_nu))) - mean(pmin(max_pred, pmax(min_pred, pred_de))))^2
 
   if (test) {
     distSALDRD <- pbapply::pbreplicate(
@@ -405,14 +455,21 @@ summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parall
   out <- list(
     n = c(nnu = nnu, nde = nde),
     dim = ncol(object$model_matrices$nu),
-    dr = data.frame(dr = c(pred_nu, pred_de),
-                    group = factor(rep(c("nu", "de"), c(nnu, nde)))),
+    dr = data.frame(
+      dr = c(pred_nu, pred_de),
+      group = factor(rep(c("nu", "de"), c(nnu, nde)))
+    ),
     SALDRD = SALDRD,
-    refSALDRD = switch(test, distSALDRD, NULL),
-    p_value = switch(test, mean(distSALDRD > SALDRD), NULL),
+    refSALDRD = switch(test,
+      distSALDRD,
+      NULL
+    ),
+    p_value = switch(test,
+      mean(distSALDRD > SALDRD),
+      NULL
+    ),
     call = object$call
   )
   class(out) <- "summary.naivedensityratio"
   out
 }
-

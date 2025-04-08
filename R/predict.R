@@ -18,21 +18,20 @@
 #' @example inst/examples/ulsif-example.R
 
 predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), lambda = c("lambdaopt", "all"), ...) {
-
-  newsigma  <- check.sigma.predict(object, sigma)
+  newsigma <- check.sigma.predict(object, sigma)
   newlambda <- check.lambda.predict(object, lambda)
-  newdata   <- check.newdata(object, newdata)
+  newdata <- check.newdata(object, newdata)
 
-  alpha     <- extract_params(object, sigma = newsigma, lambda = newlambda, ...)
-  nsigma    <- length(newsigma)
-  nlambda   <- length(newlambda)
-  dratio    <- array(0, c(nrow(newdata), nsigma, nlambda))
+  alpha <- extract_params(object, sigma = newsigma, lambda = newlambda, ...)
+  nsigma <- length(newsigma)
+  nlambda <- length(newlambda)
+  dratio <- array(0, c(nrow(newdata), nsigma, nlambda))
   intercept <- nrow(object$alpha) > nrow(object$centers)
 
   for (i in 1:nsigma) {
     K <- distance(newdata, object$model_matrices$ce, intercept) |> kernel_gaussian(newsigma[i])
     for (j in 1:nlambda) {
-      dratio[ , i, j] <- K %*% alpha[, i, j]
+      dratio[, i, j] <- K %*% alpha[, i, j]
     }
   }
   dratio
@@ -57,9 +56,8 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
 
 
 predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), ...) {
-
   newsigma <- check.sigma.predict(object, sigma)
-  newdata  <- check.newdata(object, newdata)
+  newdata <- check.newdata(object, newdata)
 
   alpha <- extract_params(object, sigma = newsigma, ...)
   nsigma <- ncol(alpha)
@@ -92,9 +90,8 @@ predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
 
 
 predict.kmm <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), ...) {
-
   newsigma <- check.sigma.predict(object, sigma)
-  newdata  <- check.newdata(object, newdata)
+  newdata <- check.newdata(object, newdata)
 
   alpha <- extract_params(object, sigma = newsigma, ...)
   nsigma <- ncol(alpha)
@@ -128,24 +125,23 @@ predict.kmm <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), ..
 
 
 predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), lambda = c("lambdaopt", "all"), ...) {
-
-  newlambda   <- check.lambda.predict(object, lambda)
-  lambdaind   <- match(newlambda, object$lambda)
+  newlambda <- check.lambda.predict(object, lambda)
+  lambdaind <- match(newlambda, object$lambda)
   lambdasigma <- check.lambdasigma.predict(object, sigma, newlambda, lambdaind)
-  newdata     <- check.newdata(object, newdata)
+  newdata <- check.newdata(object, newdata)
 
   alpha_U_sigma <- extract_params(object, lambda = newlambda, lambdasigma = lambdasigma, ...)
-  nlambda     <- length(newlambda)
-  nsigma      <- nrow(lambdasigma) / nlambda
-  dratio    <- array(0, c(nrow(newdata), nsigma, nlambda))
+  nlambda <- length(newlambda)
+  nsigma <- nrow(lambdasigma) / nlambda
+  dratio <- array(0, c(nrow(newdata), nsigma, nlambda))
   intercept <- nrow(object$alpha) > nrow(object$centers)
   for (i in 1:nlambda) {
     for (j in 1:nsigma) {
-      U_new <- alpha_U_sigma$U[ , , j, i]
-      alpha_new <- alpha_U_sigma$alpha[ , j, i]
+      U_new <- alpha_U_sigma$U[, , j, i]
+      alpha_new <- alpha_U_sigma$alpha[, j, i]
       K <- distance(newdata %*% U_new, object$model_matrices$ce %*% U_new, intercept) |>
         kernel_gaussian(sigma = alpha_U_sigma$sigma[j, i])
-      dratio[ , j, i] <- K %*% alpha_new
+      dratio[, j, i] <- K %*% alpha_new
     }
   }
   dratio
@@ -170,21 +166,20 @@ predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), l
 
 predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"),
                              J = c("Jopt", "all"), ...) {
-
   newsigma <- check.sigma.predict(object, sigma)
-  newJ     <- check.J.predict(object, J)
-  newdata  <- check.newdata(object, newdata)
+  newJ <- check.J.predict(object, J)
+  newdata <- check.newdata(object, newdata)
 
   alpha_eigen <- extract_params(object, sigma = newsigma, J = newJ, ...)
   dratio <- array(0, dim = c(nrow(newdata), length(newJ), length(newsigma)))
 
   for (i in 1:length(newsigma)) {
     K <- distance(newdata, object$model_matrices$ce, FALSE) |> kernel_gaussian(newsigma[i])
-    D <- diag(length(alpha_eigen$Evals[,i]))
-    diag(D) <- sqrt(nrow(object$model_matrices$ce))/alpha_eigen$Evals[,i]
-    phihatpred <- K %*% alpha_eigen$Evecs[,,i] %*% D
+    D <- diag(length(alpha_eigen$Evals[, i]))
+    diag(D) <- sqrt(nrow(object$model_matrices$ce)) / alpha_eigen$Evals[, i]
+    phihatpred <- K %*% alpha_eigen$Evecs[, , i] %*% D
     for (j in 1:length(newJ)) {
-      dratio[ , j, i] <- phihatpred[,seq_len(newJ[j]), drop = FALSE] %*% alpha_eigen$alpha[seq_len(newJ[j]),i, drop = FALSE]
+      dratio[, j, i] <- phihatpred[, seq_len(newJ[j]), drop = FALSE] %*% alpha_eigen$alpha[seq_len(newJ[j]), i, drop = FALSE]
     }
   }
   dratio
@@ -212,7 +207,6 @@ predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"
 
 predict.naivedensityratio <- function(object, newdata = NULL, log = FALSE,
                                       tol = 1e-6, ...) {
-
   newdata <- check.newdata(object, newdata)
   newdata_proj <- predict(object$fit, newdata) |> asplit(2)
 
@@ -231,7 +225,7 @@ predict.naivedensityratio <- function(object, newdata = NULL, log = FALSE,
   densest_nu <- rowSums(log_densities_nu)
   densest_de <- rowSums(log_densities_de)
 
-  if (log)  {
+  if (log) {
     res <- densest_nu - densest_de
   } else {
     res <- exp(densest_nu - densest_de)
@@ -255,7 +249,7 @@ extract_params <- function(object, ...) {
 extract_params.kliep <- function(object, sigma, ...) {
   if (all(sigma %in% object$sigma)) {
     which_sigma <- match(sigma, object$sigma)
-    alpha <- object$alpha[ , which_sigma, drop = FALSE]
+    alpha <- object$alpha[, which_sigma, drop = FALSE]
   } else {
     alpha <- update(object, sigma = sigma, cv = FALSE, ...)$alpha
   }
@@ -278,7 +272,7 @@ extract_params.ulsif <- function(object, sigma, lambda, ...) {
   if (all(sigma %in% object$sigma) & all(lambda %in% object$lambda)) {
     which_sigma <- match(sigma, object$sigma)
     which_lambda <- match(lambda, object$lambda)
-    alpha <- object$alpha[ , which_sigma, which_lambda, drop = FALSE]
+    alpha <- object$alpha[, which_sigma, which_lambda, drop = FALSE]
   } else {
     alpha <- update(object, sigma = sigma, lambda = lambda, ...)$alpha
   }
@@ -299,10 +293,10 @@ extract_params.lhss <- function(object, lambda, lambdasigma, ...) {
   sigma <- matrix(0, nsigma, nlambda)
   for (i in 1:nlambda) {
     for (j in 1:nsigma) {
-      ind <- (i-1) * nsigma + j
+      ind <- (i - 1) * nsigma + j
       if (!is.na(lambdasigma[ind, 1]) & !is.na(lambdasigma[ind, 2])) {
-        alpha[ , j, i] <- object$alpha[, lambdasigma[ind, 2], lambdasigma[ind, 1]]
-        U[ , , j, i] <- object$U[, , lambdasigma[ind, 2], lambdasigma[ind, 1]]
+        alpha[, j, i] <- object$alpha[, lambdasigma[ind, 2], lambdasigma[ind, 1]]
+        U[, , j, i] <- object$U[, , lambdasigma[ind, 2], lambdasigma[ind, 1]]
         sigma[j, i] <- object$sigma[lambdasigma[ind, 2], lambdasigma[ind, 1]]
       } else {
         if (is.na(lambdasigma[ind, 4])) {
@@ -321,7 +315,7 @@ extract_params.lhss <- function(object, lambda, lambdasigma, ...) {
             ...
           )
         }
-        alpha[ , j, i] <- fitnew$alpha
+        alpha[, j, i] <- fitnew$alpha
         U[, , j, i] <- fitnew$U_opt
         sigma[j, i] <- fitnew$sigma_opt
       }
@@ -336,15 +330,14 @@ extract_params.lhss <- function(object, lambda, lambdasigma, ...) {
 #' @keywords internal
 
 extract_params.spectral <- function(object, sigma, J, ...) {
-
-  maxJ <- max(J) #largest subspace dimension
+  maxJ <- max(J) # largest subspace dimension
   nsigma <- length(sigma) # number of new sigma values in predict
   which_sigma <- match(sigma, object$sigma) # indices of original sigma values per new sigma
 
   if (all(sigma %in% object$sigma) & all(J <= max(object$J))) {
     # extract parameters
     Evals <- object$Evals[1:maxJ, which_sigma, drop = FALSE]
-    Evecs <- object$Evecs[ , 1:maxJ, which_sigma, drop = FALSE]
+    Evecs <- object$Evecs[, 1:maxJ, which_sigma, drop = FALSE]
     alpha <- object$alpha[1:maxJ, which_sigma, drop = FALSE]
   } else {
     if (maxJ <= max(object$J)) {
@@ -360,8 +353,8 @@ extract_params.spectral <- function(object, sigma, J, ...) {
       Evecs <- array(0, dim = c(dim(object$Evecs)[1], maxJ, nsigma))
 
       # store old results on correct places
-      alpha[, sigma_old_ind]   <- object$alpha[1:max(J), sigma_old_ind]
-      Evals[, sigma_old_ind]   <- object$Evals[1:maxJ, sigma_old_ind]
+      alpha[, sigma_old_ind] <- object$alpha[1:max(J), sigma_old_ind]
+      Evals[, sigma_old_ind] <- object$Evals[1:maxJ, sigma_old_ind]
       Evecs[, , sigma_old_ind] <- object$Evecs[, 1:max(J), sigma_old_ind]
 
       # store new results on correct places
@@ -377,4 +370,3 @@ extract_params.spectral <- function(object, sigma, J, ...) {
   }
   list(alpha = alpha, Evals = Evals, Evecs = Evecs)
 }
-
