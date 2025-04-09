@@ -71,7 +71,11 @@ dr.histogram <- function(x,
   # Plot
   plot <-
     ggplot2::ggplot(data, ggplot2::aes(x = ext$dr)) +
-    ggplot2::geom_histogram(ggplot2::aes(fill = ext$sample),
+    ggplot2::geom_histogram(
+      mapping = ggplot2::aes(
+        y = ggplot2::after_stat(count / sum(count)),
+        fill = ext$sample
+      ),
       alpha = .75,
       color = "black",
       binwidth = binwidth,
@@ -90,7 +94,7 @@ dr.histogram <- function(x,
     ggplot2::theme_bw() +
     ggplot2::labs(
       x = x_lab,
-      y = "Count",
+      y = "Relative frequency",
       title = "Distribution of density ratio estimates",
       fill = "Sample"
     )
