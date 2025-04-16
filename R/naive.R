@@ -41,7 +41,7 @@
 #' @example inst/examples/naive-example.R
 
 
-naive <- function(df_numerator, df_denominator, m, bw = "SJ",
+naive <- function(df_numerator, df_denominator, m = NULL, bw = "SJ",
                   kernel = "gaussian", n = 2L^11, ...) {
   cl <- match.call()
 
@@ -52,7 +52,7 @@ naive <- function(df_numerator, df_denominator, m, bw = "SJ",
   dat <- check.dataform(nu, de, NULL, TRUE, NULL, NULL)
 
   P <- ncol(dat$nu)
-  M <- ifelse(missing(m), P, m)
+  M <- ifelse(is.null(m), P, m)
   M <- check.subspace(M, P)
 
   # PCA to remove linear relations between variables

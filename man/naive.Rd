@@ -7,7 +7,7 @@
 naive(
   df_numerator,
   df_denominator,
-  m,
+  m = NULL,
   bw = "SJ",
   kernel = "gaussian",
   n = 2L^11,
