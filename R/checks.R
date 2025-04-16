@@ -384,22 +384,22 @@ check.lambda.predict <- function(object, lambda) {
   lambda
 }
 
-check.J.predict <- function(object, J) {
-  if (is.character(J)) {
-    J <- match.arg(J, c("Jopt", "all"))
-    if (J == "Jopt") {
-      J <- object$J_opt
-    } else if (J == "all") {
-      J <- object$J
+check.subspace.spectral.predict <- function(object, m) {
+  if (is.character(m)) {
+    m <- match.arg(m, c("opt", "all"))
+    if (m == "opt") {
+      m <- object$m_opt
+    } else if (m == "all") {
+      m <- object$m
     }
-  } else if (is.numeric(J) & is.vector(J)) {
-    if (max(J) > nrow(object$centers)) {
-      stop("'J' cannot exceed the number of centers.")
+  } else if (is.numeric(m) & is.vector(m)) {
+    if (max(m) > nrow(object$centers)) {
+      stop("'m' cannot exceed the number of centers.")
     }
   } else {
-    stop("'J' should be one of 'Jopt', 'all' or an integer vector with values to use as J parameter")
+    stop("'m' should be one of 'opt', 'all' or an integer vector with values to use as 'm' parameter")
   }
-  J
+  m
 }
 
 check.subspace <- function(m, P) {
@@ -416,24 +416,24 @@ check.subspace <- function(m, P) {
   m
 }
 
-check.subspace.spectral <- function(J, cv_ind_de) {
+check.subspace.spectral <- function(m, cv_ind_de) {
   ncenters <- ifelse(all(cv_ind_de == 0),
     length(cv_ind_de),
     length(cv_ind_de) - max(table(cv_ind_de))
   )
 
-  if (is.null(J)) {
-    J <- seq(1, ncenters, length.out = 50)
-    J <- unique(floor(J))
+  if (is.null(m)) {
+    m <- seq(1, ncenters, length.out = 50)
+    m <- unique(floor(m))
   } else {
-    if (!is.numeric(J)) {
+    if (!is.numeric(m)) {
       stop("The number of spectral components 'J' must be 'NULL' or a numeric scalar or vector.")
     } else {
-      if (any(J < 1) | any(J > ncenters)) stop(paste0("The number of spectral components 'J' must be at least 1 and at most ", ncenters, "."))
-      J <- unique(floor(J))
+      if (any(m < 1) | any(m > ncenters)) stop(paste0("The number of spectral components 'm' must be at least 1 and at most ", ncenters, "."))
+      m <- unique(floor(m))
     }
   }
-  J
+  m
 }
 
 check.newdata <- function(object, newdata) {
