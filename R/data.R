@@ -87,6 +87,8 @@ NULL
 #' }
 #' @keywords data datasets insurance
 
+NULL
+
 #' colon
 #'
 #' Colon cancer data set from princeton, containing 2000 gene expressions from
@@ -98,3 +100,36 @@ NULL
 #' @format A data.frame with 62 rows and 2001 columns (class variable and 2000
 #' gene expressions).
 #' @keywords  data datasets colon
+#' @references
+#' Alon, U., Barkai, N., Notterman, D. A., Gish, K., Ybarra, S., Mack, D., &
+#' Levine, A. J. (1999). Broad patterns of gene expression revealed by clustering
+#' of tumor and normal colon tissues probed by oligonucleotide arrays.
+#' *Proceedings of the National Academy of Sciences*, 96(12), 6745-6750.
+
+NULL
+
+#' kidiq
+#'
+#' The kidiq data stems from the National Longitudinal Survey of Youth and is used
+#' in Gelman and Hill (2007). The data set contains 434 observations measured on
+#' five variables, and is obtained from
+#' \href{https://github.com/jknowles/BDAexampleR}{https://github.com/jknowles/BDAexampleR}.
+#'
+#' @name kidiq
+#' @docType data
+#' @format A data.frame with 434 rows and 5 columns
+#' \describe{
+#'   \item{kid_score}{Child's IQ score (continuous)}
+#'   \item{mom_hs}{Whether the mother obtained a high school degree (binary)}
+#'   \item{mom_iq}{Mother's IQ score (continuous)}
+#'   \item{mom_work}{Whether the mother worked in the first three years of the
+#'   child's life (1: not in the first three years; 2: in the second or third
+#'   year; 3: parttime in the first year; 4: fulltime in the first year)}
+#'   \item{mom_age}{Mother's age (continuous)}
+#' }
+#' @keywords data datasets kidiq
+#' @references
+#' Gelman, A., & Hill, J. (2006). Data Analysis Using Regression and
+#' Multilevel/Hierarchical Models. Cambridge: Cambridge University Press.
+
+NULL
