@@ -354,9 +354,9 @@ print.spectral <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
   cat(str(unname(x$sigma)))
   cat("\n")
   cat("\nSubspace dimension (J):")
-  cat(str(unname(x$J)))
+  cat(str(unname(x$m)))
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
-    "Optimal subspace: ", paste(format(x$J_opt, digits, ...)), "\n",
+    "Optimal subspace: ", paste(format(x$m_opt, digits, ...)), "\n",
     sep = ""
   )
   cat("Optimal kernel weights (cv):")
@@ -389,7 +389,7 @@ print.summary.spectral <- function(x, digits = max(3L, getOption("digits") - 3L)
   )
 
   cat("\nOptimal sigma: ", paste(format(x$sigma_opt, digits, ...)), "\n",
-    "Optimal subspace: ", paste(format(x$J_opt, digits, ...)), "\n",
+    "Optimal subspace: ", paste(format(x$m_opt, digits, ...)), "\n",
     sep = ""
   )
   cat("Optimal kernel weights (cv):")

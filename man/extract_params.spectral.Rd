@@ -4,7 +4,7 @@
 \alias{extract_params.spectral}
 \title{Obtain parameters from a \code{spectral} object}
 \usage{
-\method{extract_params}{spectral}(object, sigma, J, ...)
+\method{extract_params}{spectral}(object, sigma, m, ...)
 }
 \description{
 Obtain parameters from a \code{spectral} object

@@ -5,7 +5,7 @@
 #' @param df_denominator \code{data.frame} with exclusively numeric variables
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
-#' @param J Integer vector indicating the number of eigenvectors to use in the
+#' @param m Integer vector indicating the number of eigenvectors to use in the
 #' spectral series expansion. Defaults to 50 evenly spaced values between 1 and
 #' the number of denominator samples (or the largest number of samples that can
 #' be used as centers in the cross-validation scheme).
@@ -48,7 +48,7 @@
 #'
 #' @example inst/examples/spectral-example.R
 
-spectral <- function(df_numerator, df_denominator, J = NULL, scale = "numerator",
+spectral <- function(df_numerator, df_denominator, m = NULL, scale = "numerator",
                      nsigma = 10, sigma_quantile = NULL, sigma = NULL,
                      ncenters = NULL, cv = TRUE, nfold = 10, parallel = FALSE,
                      nthreads = NULL, progressbar = TRUE) {
@@ -66,7 +66,7 @@ spectral <- function(df_numerator, df_denominator, J = NULL, scale = "numerator"
 
   cv_ind_nu <- check.nfold(cv, nfold, sigma, nnu)
   cv_ind_de <- check.nfold(cv, nfold, sigma, ncenters)
-  J <- check.subspace.spectral(J, cv_ind_de)
+  m <- check.subspace.spectral(m, cv_ind_de)
 
   parallel <- check.parallel(parallel, nthreads, unique(cv_ind_nu))
   nthreads <- check.threads(parallel, nthreads)
@@ -77,15 +77,15 @@ spectral <- function(df_numerator, df_denominator, J = NULL, scale = "numerator"
   sigma <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
 
   res <- spectral_dre(
-    dist_nu, dist_de, J, sigma, cv_ind_nu, cv_ind_de,
+    dist_nu, dist_de, m, sigma, cv_ind_nu, cv_ind_de,
     parallel, nthreads, progressbar
   )
 
   # Order eigenvalues and eigenvectors from largest to smallest
   # note that armadillo orders them from smallest to largest
-  res$Evals <- res$Evals[ncenters:(ncenters - max(J) + 1), , drop = FALSE]
-  res$Evecs <- res$Evecs[, ncenters:(ncenters - max(J) + 1), , drop = FALSE]
-  res$betatilde <- res$betatilde[max(J):1, , drop = FALSE]
+  res$Evals <- res$Evals[ncenters:(ncenters - max(m) + 1), , drop = FALSE]
+  res$Evecs <- res$Evecs[, ncenters:(ncenters - max(m) + 1), , drop = FALSE]
+  res$betatilde <- res$betatilde[max(m):1, , drop = FALSE]
   dimnames(res$Evecs) <- list(NULL, NULL, paste0("sigma", 1:length(sigma)))
   colnames(res$Evals) <- paste0("sigma", 1:length(sigma))
 
@@ -101,12 +101,12 @@ spectral <- function(df_numerator, df_denominator, J = NULL, scale = "numerator"
     Evals = res$Evals,
     cv_score = res$loss,
     sigma = sigma,
-    J = J,
+    m = m,
     centers = df_centers,
     scale = scale,
     model_matrices = dat,
-    alpha_opt = res$betatilde[seq_len(J[opt_loss[2]]), opt_loss[1]],
-    J_opt = J[opt_loss[2]],
+    alpha_opt = res$betatilde[seq_len(m[opt_loss[2]]), opt_loss[1]],
+    m_opt = m[opt_loss[2]],
     sigma_opt = sigma[opt_loss[1]],
     call = cl
   )

@@ -22,15 +22,15 @@ arma::mat compute_psihat(const arma::mat& K,
 // [[Rcpp::export]]
 arma::rowvec spectral_cv_loss(const arma::mat& Knu,
                            const arma::mat& Kde,
-                           const arma::vec& J,
-                           const int& maxJ,
+                           const arma::vec& m,
+                           const int& maxM,
                            const int& nfolds,
                            const arma::uvec& cv_ind_nu,
                            const arma::uvec& cv_ind_de,
                            const int& nthreads,
                            const bool& parallel) {
 
-  arma::vec loss(J.size());
+  arma::vec loss(m.size());
 
   #ifdef _OPENMP
   #pragma omp parallel for num_threads(nthreads) if (parallel)
@@ -49,15 +49,15 @@ arma::rowvec spectral_cv_loss(const arma::mat& Knu,
 
     int ncol = EigVecs.n_cols;
 
-    arma::vec betatilde = mean(compute_psihat(Knu.submat(idx_train_nu, idx_train_de), EigVecs, EigVals, maxJ, ncol), 0).t();
+    arma::vec betatilde = mean(compute_psihat(Knu.submat(idx_train_nu, idx_train_de), EigVecs, EigVals, maxM, ncol), 0).t();
 
-    arma::mat psitest_nu = compute_psihat(Knu.submat(idx_test_nu, idx_train_de), EigVecs, EigVals, maxJ, ncol);
-    arma::mat psitest_de = compute_psihat(Kde.submat(idx_test_de, idx_train_de), EigVecs, EigVals, maxJ, ncol);
+    arma::mat psitest_nu = compute_psihat(Knu.submat(idx_test_nu, idx_train_de), EigVecs, EigVals, maxM, ncol);
+    arma::mat psitest_de = compute_psihat(Kde.submat(idx_test_de, idx_train_de), EigVecs, EigVals, maxM, ncol);
 
-    for (arma::uword j = 0; j < J.size(); j++) {
-      int start = maxJ - J(j);
-      arma::vec beta_nu = psitest_nu.cols(start, maxJ-1) * betatilde.subvec(start, maxJ-1);
-      arma::vec beta_de = psitest_de.cols(start, maxJ-1) * betatilde.subvec(start, maxJ-1);
+    for (arma::uword j = 0; j < m.size(); j++) {
+      int start = maxM - m(j);
+      arma::vec beta_nu = psitest_nu.cols(start, maxM-1) * betatilde.subvec(start, maxM-1);
+      arma::vec beta_de = psitest_de.cols(start, maxM-1) * betatilde.subvec(start, maxM-1);
 
       beta_nu.elem(find(beta_nu < 0)).zeros();
       beta_de.elem(find(beta_de < 0)).zeros();
@@ -73,7 +73,7 @@ arma::rowvec spectral_cv_loss(const arma::mat& Knu,
 // [[Rcpp::export]]
 List spectral_dre(const arma::mat& dist_nu,
                   const arma::mat& dist_de,
-                  const arma::vec& J,
+                  const arma::vec& m,
                   const arma::vec& sigma,
                   const arma::uvec& cv_ind_nu,
                   const arma::uvec& cv_ind_de,
@@ -83,11 +83,11 @@ List spectral_dre(const arma::mat& dist_nu,
 
   int ncol = dist_de.n_cols;
   int nsigma = sigma.size();
-  int nsubspace = J.size();
-  int maxJ = max(J);
+  int nsubspace = m.size();
+  int maxM = max(m);
   int nfolds = max(cv_ind_nu) + 1;
   arma::mat loss(nsigma, nsubspace);
-  arma::mat betatilde(maxJ, nsigma);
+  arma::mat betatilde(maxM, nsigma);
   arma::mat Evals(ncol, nsigma);
   arma::cube Evecs(ncol, ncol, nsigma);
 
@@ -121,11 +121,11 @@ List spectral_dre(const arma::mat& dist_nu,
       Evecs.slice(sig) = Evecs_sig;
       Evals.col(sig) = Evals_sig;
 
-      arma::mat psihat = compute_psihat(Knu, Evecs.slice(sig), Evals.col(sig), maxJ, ncol);
+      arma::mat psihat = compute_psihat(Knu, Evecs.slice(sig), Evals.col(sig), maxM, ncol);
       betatilde.col(sig) = mean(psihat, 0).t();
 
       if (nfolds > 1) {
-        loss.row(sig) = spectral_cv_loss(Knu, Kde, J, maxJ, nfolds, cv_ind_nu, cv_ind_de, nthreads, parallel);
+        loss.row(sig) = spectral_cv_loss(Knu, Kde, m, maxM, nfolds, cv_ind_nu, cv_ind_de, nthreads, parallel);
       }
     }
   }

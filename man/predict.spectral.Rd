@@ -8,7 +8,7 @@
   object,
   newdata = NULL,
   sigma = c("sigmaopt", "all"),
-  J = c("Jopt", "all"),
+  m = c("opt", "all"),
   ...
 )
 }
@@ -19,7 +19,7 @@
 
 \item{sigma}{A scalar with the Gaussian kernel width}
 
-\item{J}{integer indicating the dimension of the eigenvector expansion}
+\item{m}{integer indicating the dimension of the eigenvector expansion}
 
 \item{...}{Additional arguments to be passed to the function}
 }

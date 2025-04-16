@@ -153,7 +153,7 @@ predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), l
 #' @param object A \code{spectral} object
 #' @param newdata Optional \code{matrix} new data set to compute the density
 #' @param sigma A scalar with the Gaussian kernel width
-#' @param J integer indicating the dimension of the eigenvector expansion
+#' @param m integer indicating the dimension of the eigenvector expansion
 #' @param ... Additional arguments to be passed to the function
 #'
 #' @return An array with predicted density ratio values from possibly new data,
@@ -165,21 +165,21 @@ predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), l
 #' @export
 
 predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"),
-                             J = c("Jopt", "all"), ...) {
+                             m = c("opt", "all"), ...) {
   newsigma <- check.sigma.predict(object, sigma)
-  newJ <- check.J.predict(object, J)
+  newM <- check.subspace.spectral.predict(object, m)
   newdata <- check.newdata(object, newdata)
 
-  alpha_eigen <- extract_params(object, sigma = newsigma, J = newJ, ...)
-  dratio <- array(0, dim = c(nrow(newdata), length(newJ), length(newsigma)))
+  alpha_eigen <- extract_params(object, sigma = newsigma, m = newM, ...)
+  dratio <- array(0, dim = c(nrow(newdata), length(newM), length(newsigma)))
 
   for (i in 1:length(newsigma)) {
     K <- distance(newdata, object$model_matrices$ce, FALSE) |> kernel_gaussian(newsigma[i])
     D <- diag(length(alpha_eigen$Evals[, i]))
     diag(D) <- sqrt(nrow(object$model_matrices$ce)) / alpha_eigen$Evals[, i]
     phihatpred <- K %*% alpha_eigen$Evecs[, , i] %*% D
-    for (j in 1:length(newJ)) {
-      dratio[, j, i] <- phihatpred[, seq_len(newJ[j]), drop = FALSE] %*% alpha_eigen$alpha[seq_len(newJ[j]), i, drop = FALSE]
+    for (m in 1:length(newM)) {
+      dratio[, m, i] <- phihatpred[, seq_len(newM[m]), drop = FALSE] %*% alpha_eigen$alpha[seq_len(newM[m]), i, drop = FALSE]
     }
   }
   dratio
@@ -329,40 +329,40 @@ extract_params.lhss <- function(object, lambda, lambdasigma, ...) {
 #' @method extract_params spectral
 #' @keywords internal
 
-extract_params.spectral <- function(object, sigma, J, ...) {
-  maxJ <- max(J) # largest subspace dimension
+extract_params.spectral <- function(object, sigma, m, ...) {
+  maxM <- max(m) # largest subspace dimension
   nsigma <- length(sigma) # number of new sigma values in predict
   which_sigma <- match(sigma, object$sigma) # indices of original sigma values per new sigma
 
-  if (all(sigma %in% object$sigma) & all(J <= max(object$J))) {
+  if (all(sigma %in% object$sigma) & maxM <= max(object$m)) {
     # extract parameters
-    Evals <- object$Evals[1:maxJ, which_sigma, drop = FALSE]
-    Evecs <- object$Evecs[, 1:maxJ, which_sigma, drop = FALSE]
-    alpha <- object$alpha[1:maxJ, which_sigma, drop = FALSE]
+    Evals <- object$Evals[1:maxM, which_sigma, drop = FALSE]
+    Evecs <- object$Evecs[, 1:maxM, which_sigma, drop = FALSE]
+    alpha <- object$alpha[1:maxM, which_sigma, drop = FALSE]
   } else {
-    if (maxJ <= max(object$J)) {
+    if (maxM <= max(object$m)) {
       sigma_new <- sigma[which(is.na(which_sigma))]
       sigma_old_ind <- which_sigma[!is.na(which_sigma)]
 
       # update fit object to accomodate new parameters
-      fit <- update(object, sigma = sigma_new, J = maxJ, cv = FALSE, ...)
+      fit <- update(object, sigma = sigma_new, m = maxM, cv = FALSE, ...)
 
       # initialize empty objects to store results
-      alpha <- matrix(0, maxJ, nsigma)
-      Evals <- matrix(0, maxJ, nsigma)
-      Evecs <- array(0, dim = c(dim(object$Evecs)[1], maxJ, nsigma))
+      alpha <- matrix(0, maxM, nsigma)
+      Evals <- matrix(0, maxM, nsigma)
+      Evecs <- array(0, dim = c(dim(object$Evecs)[1], maxM, nsigma))
 
       # store old results on correct places
-      alpha[, sigma_old_ind] <- object$alpha[1:max(J), sigma_old_ind]
-      Evals[, sigma_old_ind] <- object$Evals[1:maxJ, sigma_old_ind]
-      Evecs[, , sigma_old_ind] <- object$Evecs[, 1:max(J), sigma_old_ind]
+      alpha[, sigma_old_ind] <- object$alpha[1:maxM, sigma_old_ind]
+      Evals[, sigma_old_ind] <- object$Evals[1:maxM, sigma_old_ind]
+      Evecs[, , sigma_old_ind] <- object$Evecs[, 1:maxM, sigma_old_ind]
 
       # store new results on correct places
       alpha[, which(is.na(which_sigma))] <- fit$alpha
       Evals[, which(is.na(which_sigma))] <- fit$Evals
       Evecs[, , which(is.na(which_sigma))] <- fit$Evecs
     } else {
-      fit <- update(object, sigma = sigma, J = J, cv = FALSE, ...)
+      fit <- update(object, sigma = sigma, m = m, cv = FALSE, ...)
       alpha <- fit$alpha
       Evals <- fit$Evals
       Evecs <- fit$Evecs

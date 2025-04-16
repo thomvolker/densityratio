@@ -7,7 +7,7 @@
 spectral(
   df_numerator,
   df_denominator,
-  J = NULL,
+  m = NULL,
   scale = "numerator",
   nsigma = 10,
   sigma_quantile = NULL,
@@ -28,7 +28,7 @@ the numerator samples}
 with the denominator samples (must have the same variables as
 \code{df_denominator})}
 
-\item{J}{Integer vector indicating the number of eigenvectors to use in the
+\item{m}{Integer vector indicating the number of eigenvectors to use in the
 spectral series expansion. Defaults to 50 evenly spaced values between 1 and
 the number of denominator samples (or the largest number of samples that can
 be used as centers in the cross-validation scheme).}
