@@ -375,7 +375,7 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
   out <- list(
     alpha_opt = object$alpha_opt,
     sigma_opt = object$sigma_opt,
-    J_opt = object$J_opt,
+    m_opt = object$m_opt,
     centers = object$centers,
     dr = data.frame(
       dr = c(pred_nu, pred_de),
@@ -436,8 +436,8 @@ summary.naivedensityratio <- function(object, test = FALSE, n_perm = 100, parall
     on.exit(parallel::stopCluster(cluster))
   }
 
-  pred_nu <- c(stats::predict(object, newdata = nu))
-  pred_de <- c(stats::predict(object, newdata = de))
+  pred_nu <- c(stats::predict(object, newdata = nu, log = TRUE))
+  pred_de <- c(stats::predict(object, newdata = de, log = TRUE))
 
   min_pred <- log(sqrt(.Machine$double.eps))
   max_pred <- -min_pred
