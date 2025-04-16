@@ -73,7 +73,7 @@ dr.histogram <- function(x,
     ggplot2::ggplot(data, ggplot2::aes(x = ext$dr)) +
     ggplot2::geom_histogram(
       mapping = ggplot2::aes(
-        y = ggplot2::after_stat(count / sum(count)),
+        y = ggplot2::after_stat(!!quote(density)),
         fill = ext$sample
       ),
       alpha = .75,
