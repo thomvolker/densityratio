@@ -43,8 +43,8 @@ compute_kliep <- function(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progr
     .Call(`_densityratio_compute_kliep`, dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
 }
 
-kmm_compute_alpha <- function(Kdn, Kdd, Kd, nnu, nde) {
-    .Call(`_densityratio_kmm_compute_alpha`, Kdn, Kdd, Kd, nnu, nde)
+kmm_unconstrained_alpha <- function(Kdn, Kdd, Kd, nnu, nde) {
+    .Call(`_densityratio_kmm_unconstrained_alpha`, Kdn, Kdd, Kd, nnu, nde)
 }
 
 kmm_constrained_alpha <- function(Kdn, Kdd, Kd, nnu, nde, settings) {
@@ -75,12 +75,12 @@ compute_psihat <- function(K, Evecs, Evals, maxJ, ncol) {
     .Call(`_densityratio_compute_psihat`, K, Evecs, Evals, maxJ, ncol)
 }
 
-spectral_cv_loss <- function(Knu, Kde, J, maxJ, nfolds, cv_ind_nu, cv_ind_de, nthreads, parallel) {
-    .Call(`_densityratio_spectral_cv_loss`, Knu, Kde, J, maxJ, nfolds, cv_ind_nu, cv_ind_de, nthreads, parallel)
+spectral_cv_loss <- function(Knu, Kde, m, maxM, nfolds, cv_ind_nu, cv_ind_de, nthreads, parallel) {
+    .Call(`_densityratio_spectral_cv_loss`, Knu, Kde, m, maxM, nfolds, cv_ind_nu, cv_ind_de, nthreads, parallel)
 }
 
-spectral_dre <- function(dist_nu, dist_de, J, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar) {
-    .Call(`_densityratio_spectral_dre`, dist_nu, dist_de, J, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar)
+spectral_dre <- function(dist_nu, dist_de, m, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar) {
+    .Call(`_densityratio_spectral_dre`, dist_nu, dist_de, m, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar)
 }
 
 ulsif_compute_alpha <- function(Hhat, hhat, lambda) {
