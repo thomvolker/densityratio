@@ -12,11 +12,11 @@ using namespace Rcpp;
 using namespace arma;
 
 //[[Rcpp::export]]
-arma::vec kmm_compute_alpha(const arma::mat& Kdn,
-                            const arma::mat& Kdd,
-                            const arma::mat& Kd,
-                            const int nnu,
-                            const int nde) {
+arma::vec kmm_unconstrained_alpha(const arma::mat& Kdn,
+                                  const arma::mat& Kdd,
+                                  const arma::mat& Kd,
+                                  const int nnu,
+                                  const int nde) {
   arma::mat L1 = Kd.t() * Kdd * Kd;
   L1.diag() += 0.0001;
   arma::vec L2 = sum(Kd.t() * Kdn, 1);
@@ -79,7 +79,7 @@ double kmm_cv_loss(const arma::mat& Kdn,
                                     idx_train_de.n_elem,
                                     settings);
     } else {
-      alpha = kmm_compute_alpha(Kdn.submat(idx_train_de, idx_train_nu),
+      alpha = kmm_unconstrained_alpha(Kdn.submat(idx_train_de, idx_train_nu),
                                 Kdd.submat(idx_train_de, idx_train_de),
                                 Kd.rows(idx_train_de),
                                 idx_train_nu.n_elem,
@@ -157,7 +157,7 @@ List compute_kmm(const arma::mat& nu,
           current_alpha = kmm_constrained_alpha(Kdn, Kdd, Kd, nnu, nde, settings);
           alpha.col(sig) = current_alpha;
         } else {
-          current_alpha = kmm_compute_alpha(Kdn, Kdd, Kd, nnu, nde);
+          current_alpha = kmm_unconstrained_alpha(Kdn, Kdd, Kd, nnu, nde);
           alpha.col(sig) = current_alpha;
         }
         if (nfolds > 1) {
