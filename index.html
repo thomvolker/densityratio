@@ -70,7 +70,7 @@
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p>This package provides functionality to directly estimate a density ratio <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><msub><mi>p</mi><mtext mathvariant="normal">nu</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><msub><mi>p</mi><mtext mathvariant="normal">de</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},</annotation></semantics></math> without estimating the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.</p>
-<p><img src="reference/figures/README-densities-1.png" width="15cm" style="display: block; margin: auto;"></p>
+<p><img src="reference/figures/README-densities-1.png" width="80%" style="display: block; margin: auto;"></p>
 <div class="section level3">
 <h3 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
 </h3>
@@ -80,7 +80,7 @@
 <li>
 <strong>Automatic</strong>: Good default hyperparameters that can be optimized in cross-validation (we do recommend understanding those parameters before using <code>densityratio</code> in practice).</li>
 <li>
-<strong>Complete</strong>: Several density ratio estimation methods, such as unconstrained least-squares importance fitting (<code><a href="reference/ulsif.html">ulsif()</a></code>), Kullback-Leibler importance estimation procedure (<code><a href="reference/kliep.html">kliep()</a></code>), ratio of estimated densities (<code><a href="reference/naive.html">naive()</a></code>), ratio of estimated densities after dimension reduction (<code>naivesubspace()</code>), and least-squares heterodistributional subspace search (<code><a href="reference/lhss.html">lhss()</a></code>; experimental).</li>
+<strong>Complete</strong>: Several density ratio estimation methods, such as unconstrained least-squares importance fitting (<code><a href="reference/ulsif.html">ulsif()</a></code>), Kullback-Leibler importance estimation procedure (<code><a href="reference/kliep.html">kliep()</a></code>), kernel mean matching (<code><a href="reference/kmm.html">kmm()</a></code>), ratio of estimated densities (<code><a href="reference/naive.html">naive()</a></code>), spectral density ratio estimation (<code><a href="reference/spectral.html">spectral()</a></code> and least-squares heterodistributional subspace search (<code><a href="reference/lhss.html">lhss()</a></code>).</li>
 <li>
 <strong>User-friendly</strong>: Simple user interface, default <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>, <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> functions for all density ratio estimation methods; built-in data sets for quick testing.</li>
 </ul>
@@ -101,8 +101,7 @@
 <h3 id="minimal-example">Minimal example<a class="anchor" aria-label="anchor" href="#minimal-example"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://thomvolker.github.io/densityratio/">densityratio</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://thomvolker.github.io/densityratio/">densityratio</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">numerator_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 6 × 5</span></span>
@@ -115,10 +114,10 @@
 <span><span class="co">#&gt; 5 A     G1     1.01    2.23   2.01 </span></span>
 <span><span class="co">#&gt; 6 C     G2     1.83    0.762  3.71</span></span>
 <span></span>
-<span><span class="va">fit</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/ulsif.html">ulsif</a></span><span class="op">(</span></span>
-<span>  df_numerator <span class="op">=</span> <span class="va">numerator_data</span><span class="op">$</span><span class="va">x5</span>, </span>
-<span>  df_denominator <span class="op">=</span> <span class="va">denominator_data</span><span class="op">$</span><span class="va">x5</span>, </span>
-<span>  nsigma <span class="op">=</span> <span class="fl">5</span>, </span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ulsif.html">ulsif</a></span><span class="op">(</span></span>
+<span>  df_numerator <span class="op">=</span> <span class="va">numerator_data</span><span class="op">$</span><span class="va">x5</span>,</span>
+<span>  df_denominator <span class="op">=</span> <span class="va">denominator_data</span><span class="op">$</span><span class="va">x5</span>,</span>
+<span>  nsigma <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  nlambda <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -143,42 +142,32 @@
 <span><span class="co">#&gt; For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.</span></span></code></pre></div>
 <p>To formally evaluate whether the numerator and denominator densities differ significantly, you can perform a two-sample homogeneity test as follows.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span>, test <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; ulsif(df_numerator = numerator_data$x5, df_denominator = denominator_data$x5,     nsigma = 5, nlambda = 5)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Kernel Information:</span></span>
-<span><span class="co">#&gt;   Kernel type: Gaussian with L2 norm distances</span></span>
-<span><span class="co">#&gt;   Number of kernels: 200</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Optimal sigma: 0.3726142</span></span>
-<span><span class="co">#&gt; Optimal lambda: 0.03162278</span></span>
-<span><span class="co">#&gt; Optimal kernel weights: num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...</span></span>
-<span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.2801</span></span>
-<span><span class="co">#&gt; Pr(P(nu)=P(de)) &lt; .001</span></span>
-<span><span class="co">#&gt; Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#summary(fit, test = TRUE)</span></span></code></pre></div>
 <p>The probability that numerator and denominator samples share a common data generating mechanism is very small.</p>
 <p>The <code>ulsif</code>-object also contains the (hyper-)parameters used in estimating the density ratio, such as the centers used in constructing the Gaussian kernels (<code>fit$centers</code>), the different bandwidth parameters (<code>fit$sigma</code>) and the regularization parameters (<code>fit$lambda</code>). Using these variables, we can obtain the estimated density ratio using <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># obtain predictions for the numerator samples</span></span>
+<code class="sourceCode R"><span><span class="co"># obtain predictions for the numerator samples</span></span>
 <span></span>
 <span><span class="va">newx5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="op">-</span><span class="fl">3</span>, to <span class="op">=</span> <span class="fl">6</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
-<span><span class="va">pred</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit</span>, newdata <span class="op">=</span> <span class="va">newx5</span><span class="op">)</span></span>
+<span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit</span>, newdata <span class="op">=</span> <span class="va">newx5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">newx5</span>, y <span class="op">=</span> <span class="va">pred</span>, col <span class="op">=</span> <span class="st">"ulsif estimates"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">stat_function</span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu">aes</span><span class="op">(</span>col <span class="op">=</span> <span class="st">"True density ratio"</span><span class="op">)</span>, </span>
-<span>                fun <span class="op">=</span> <span class="va">dratio</span>, </span>
-<span>                args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">0.4</span>, dif <span class="op">=</span> <span class="fl">3</span>, mu <span class="op">=</span> <span class="fl">3</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span>                linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_function</span><span class="op">(</span></span>
+<span>    mapping <span class="op">=</span> <span class="fu">aes</span><span class="op">(</span>col <span class="op">=</span> <span class="st">"True density ratio"</span><span class="op">)</span>,</span>
+<span>    fun <span class="op">=</span> <span class="va">dratio</span>,</span>
+<span>    args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">0.4</span>, dif <span class="op">=</span> <span class="fl">3</span>, mu <span class="op">=</span> <span class="fl">3</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    linewidth <span class="op">=</span> <span class="fl">1</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_classic</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">scale_color_manual</span><span class="op">(</span>name <span class="op">=</span> <span class="cn">NULL</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#de0277"</span>, <span class="st">"purple"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">theme</span><span class="op">(</span>legend.position.inside <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
-<span>        text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot-univ-1.png" width="15cm" style="display: block; margin: auto;"></p>
+<span>  <span class="fu">theme</span><span class="op">(</span></span>
+<span>    legend.position <span class="op">=</span> <span class="st">"inside"</span>,</span>
+<span>    legend.position.inside <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
+<span>    text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>,</span>
+<span>    legend.text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>,</span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot-univ-1.png" width="80%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="scaling">Scaling<a class="anchor" aria-label="anchor" href="#scaling"></a>
@@ -190,8 +179,7 @@
 </h3>
 <p>All of the functions in the <code>densityratio</code> package accept categorical variables types. However, note that internally, these variables are one-hot encoded, which can lead to a high-dimensional feature-space.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">numerator_data</span><span class="op">$</span><span class="va">x1</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">numerator_data</span><span class="op">$</span><span class="va">x1</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   A   B   C </span></span>
 <span><span class="co">#&gt; 351 339 310</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">denominator_data</span><span class="op">$</span><span class="va">x1</span><span class="op">)</span></span>
@@ -199,7 +187,7 @@
 <span><span class="co">#&gt; 252 232 516</span></span>
 <span></span>
 <span><span class="va">fit_cat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ulsif.html">ulsif</a></span><span class="op">(</span></span>
-<span>  df_numerator <span class="op">=</span> <span class="va">numerator_data</span><span class="op">$</span><span class="va">x1</span>, </span>
+<span>  df_numerator <span class="op">=</span> <span class="va">numerator_data</span><span class="op">$</span><span class="va">x1</span>,</span>
 <span>  df_denominator <span class="op">=</span> <span class="va">denominator_data</span><span class="op">$</span><span class="va">x1</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in check.sigma(nsigma, sigma_quantile, sigma, dist_nu): There are duplicate values in 'sigma', only the unique values are used.</span></span>
@@ -209,9 +197,9 @@
 <span>  FUN <span class="op">=</span> <span class="va">unique</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   numerator_data$x1 predict(fit_cat)</span></span>
-<span><span class="co">#&gt; 1                 A        1.3005360</span></span>
-<span><span class="co">#&gt; 2                 B        1.3574809</span></span>
-<span><span class="co">#&gt; 3                 C        0.6379142</span></span>
+<span><span class="co">#&gt; 1                 A        1.3041919</span></span>
+<span><span class="co">#&gt; 2                 B        1.3708760</span></span>
+<span><span class="co">#&gt; 3                 C        0.6358922</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">numerator_data</span><span class="op">$</span><span class="va">x1</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">denominator_data</span><span class="op">$</span><span class="va">x1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -229,22 +217,7 @@
 <span>  df_denominator <span class="op">=</span> <span class="va">denominator_data</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_all</span>, test <span class="op">=</span> <span class="cn">TRUE</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; ulsif(df_numerator = numerator_data, df_denominator = denominator_data)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Kernel Information:</span></span>
-<span><span class="co">#&gt;   Kernel type: Gaussian with L2 norm distances</span></span>
-<span><span class="co">#&gt;   Number of kernels: 200</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Optimal sigma: 1.065369</span></span>
-<span><span class="co">#&gt; Optimal lambda: 0.1623777</span></span>
-<span><span class="co">#&gt; Optimal kernel weights: num [1:201] 0.5691 0.1511 0.0959 0.0118 0.0149 ...</span></span>
-<span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.4629</span></span>
-<span><span class="co">#&gt; Pr(P(nu)=P(de)) &lt; .001</span></span>
-<span><span class="co">#&gt; Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).</span></span></code></pre></div>
+<span><span class="co">#summary(fit_all, test = TRUE, parallel = TRUE)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="other-density-ratio-estimation-functions">Other density ratio estimation functions<a class="anchor" aria-label="anchor" href="#other-density-ratio-estimation-functions"></a>
@@ -254,18 +227,23 @@
 <li>
 <code><a href="reference/naive.html">naive()</a></code> estimates the numerator and denominator densities separately, and subsequently takes there ratio.</li>
 <li>
-<code><a href="reference/kliep.html">kliep()</a></code> estimates the density ratio directly through the Kullback-Leibler importance estimation procedure. <!-- * `kmm()` estimates the density ratio for the denominator sample points only through kernel mean matching.  -->
-</li>
+<code><a href="reference/kliep.html">kliep()</a></code> estimates the density ratio directly through the Kullback-Leibler importance estimation procedure.</li>
+<li>
+<code><a href="reference/kmm.html">kmm()</a></code> estimates the density ratio through kernel mean matching.</li>
+<li>
+<code><a href="reference/lhss.html">lhss()</a></code> estimates the density ratio in a subspace where the two distributions are most different using least-squares heterodistributional subspace search.</li>
+<li>
+<code><a href="reference/spectral.html">spectral()</a></code> estimates the density ratio using a spectral series approach.</li>
 </ul>
+<p>We display <code><a href="reference/kliep.html">kliep()</a></code> and <code><a href="reference/naive.html">naive()</a></code> as examples here. The other functions are displayed in the <a href="https://thomvolker.github.io/densityratio/articles/densityratio.html">Get Started vignette</a>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">fit_naive</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/naive.html">naive</a></span><span class="op">(</span></span>
-<span>  df_numerator <span class="op">=</span> <span class="va">numerator_data</span><span class="op">$</span><span class="va">x5</span>, </span>
+<code class="sourceCode R"><span><span class="va">fit_naive</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/naive.html">naive</a></span><span class="op">(</span></span>
+<span>  df_numerator <span class="op">=</span> <span class="va">numerator_data</span><span class="op">$</span><span class="va">x5</span>,</span>
 <span>  df_denominator <span class="op">=</span> <span class="va">denominator_data</span><span class="op">$</span><span class="va">x5</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fit_kliep</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/kliep.html">kliep</a></span><span class="op">(</span></span>
-<span>  df_numerator <span class="op">=</span> <span class="va">numerator_data</span><span class="op">$</span><span class="va">x5</span>, </span>
+<span>  df_numerator <span class="op">=</span> <span class="va">numerator_data</span><span class="op">$</span><span class="va">x5</span>,</span>
 <span>  df_denominator <span class="op">=</span> <span class="va">denominator_data</span><span class="op">$</span><span class="va">x5</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -278,14 +256,19 @@
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">pred</span>, col <span class="op">=</span> <span class="st">"ulsif estimates"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">pred_naive</span>, col <span class="op">=</span> <span class="st">"naive estimates"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">pred_kliep</span>, col <span class="op">=</span> <span class="st">"kliep estimates"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">stat_function</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, col <span class="op">=</span> <span class="st">"True density ratio"</span><span class="op">)</span>, </span>
-<span>                fun <span class="op">=</span> <span class="va">dratio</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">0.4</span>, dif <span class="op">=</span> <span class="fl">3</span>, mu <span class="op">=</span> <span class="fl">3</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span>                linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_function</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, col <span class="op">=</span> <span class="st">"True density ratio"</span><span class="op">)</span>,</span>
+<span>    fun <span class="op">=</span> <span class="va">dratio</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">0.4</span>, dif <span class="op">=</span> <span class="fl">3</span>, mu <span class="op">=</span> <span class="fl">3</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    linewidth <span class="op">=</span> <span class="fl">1</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_classic</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>name <span class="op">=</span> <span class="cn">NULL</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pink"</span>, <span class="st">"#512970"</span>,<span class="st">"#de0277"</span>, <span class="st">"purple"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">theme</span><span class="op">(</span>legend.position.inside <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
-<span>        text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot-methods-1.png" width="15cm" style="display: block; margin: auto;"></p>
+<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>name <span class="op">=</span> <span class="cn">NULL</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pink"</span>, <span class="st">"#512970"</span>, <span class="st">"#de0277"</span>, <span class="st">"purple"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span></span>
+<span>    legend.position <span class="op">=</span> <span class="st">"inside"</span>,</span>
+<span>    legend.position.inside <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
+<span>    text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>,</span>
+<span>    legend.text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>,</span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot-methods-1.png" width="80%" style="display: block; margin: auto;"></p>
 <p>The figure directly shows that <code><a href="reference/ulsif.html">ulsif()</a></code> and <code><a href="reference/kliep.html">kliep()</a></code> come rather close to the true density ratio function in this example, and outperform the <code><a href="reference/naive.html">naive()</a></code> solution.</p>
 </div>
 </div>
@@ -304,14 +287,16 @@
 </ul>
 <p><strong>Papers</strong></p>
 <ul>
-<li>Density ratio estimation for the evaluation of the utility of synthetic data: Volker, De Wolf and Van Kesteren (2023). <a href="https://unece.org/statistics/documents/2023/08/working-documents/assessing-utility-synthetic-data-density-ratio" class="external-link">Assessing the utility of synthetic data: A density ratio perspective</a>
-</li>
+<li><p>Density ratio estimation for the evaluation of the utility of synthetic data: Volker, De Wolf and Van Kesteren (2023). <a href="https://unece.org/statistics/documents/2023/08/working-documents/assessing-utility-synthetic-data-density-ratio" class="external-link">Assessing the utility of synthetic data: A density ratio perspective</a></p></li>
+<li><p>Density ratio estimation for covariate shift: Huang, Smola, Gretton, Borgwardt and Schölkopf (2007). <a href="https://proceedings.neurips.cc/paper/2006/file/a2186aa7c086b46ad4e8bf81e2a3a19b-Paper.pdf" class="external-link">Correcting sample selection bias by unlabeled data</a></p></li>
+<li><p>High-dimensional density ratio estimation through a spectral series approach: Izbicki, Lee and Schafer (2014). <a href="https://proceedings.mlr.press/v33/izbicki14.pdf" class="external-link">High-dimensional density ratio estimation with extensions to approximate likelihood computation</a></p></li>
+<li><p>Least-squares density ratio estimation: Sugiyama, Hido and Kanamori (2009). <a href="https://www.jmlr.org/papers/volume10/kanamori09a/kanamori09a.pdf" class="external-link">A least-squares approach to direct importance estimation</a></p></li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="how-to-cite">How to cite<a class="anchor" aria-label="anchor" href="#how-to-cite"></a>
 </h2>
-<p>Volker, T.B. (2023). densityratio: Distribution comparison through density ratio estimation. <a href="https://doi.org/10.5281/zenodo.8307819" class="external-link uri">https://doi.org/10.5281/zenodo.8307819</a></p>
+<p>Volker, T.B., Poses, C. &amp; Van Kesteren, E.J. (2023). densityratio: Distribution comparison through density ratio estimation. <a href="https://doi.org/10.5281/zenodo.8307818" class="external-link uri">https://doi.org/10.5281/zenodo.8307818</a></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
