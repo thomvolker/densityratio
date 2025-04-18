@@ -10,7 +10,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 5,
+  fig.path = "covariate-shift-"
+)
+```
 
 # Introduction
 
@@ -60,8 +68,7 @@ Importantly, we assume that the conditional distribution of the insurance charge
 This assumption may not hold if the regions also differ on unobserved confounders, but to keep the vignette focused, we ignore this issue here.
 We then train a prediction model on the southern regions and use it to predict insurance charges in the northern regions.
 
-
-``` r
+```{r prep-data}
 library(densityratio)
 
 set.seed(123)
@@ -91,8 +98,7 @@ We remove the outcome variable `charges` from the data before passing it to the 
 Hence, we do not want to reweigh samples based on the outcome variable.
 
 
-
-``` r
+```{r ulsif}
 dr_rs <- ulsif(test_rs |> subset(select = -charges),
                train_rs |> subset(select = -charges))
 dr_cs <- ulsif(test_cs |> subset(select = -charges),
@@ -101,47 +107,15 @@ dr_cs <- ulsif(test_cs |> subset(select = -charges),
 
 The resulting `ulsif` objects contain the estimated density ratio, but also the optimal parameters that can be used to predict the density ratio for new data.
 
-
-``` r
+```{r dr-rs}
 dr_rs
-#> 
-#> Call:
-#> ulsif(df_numerator = subset(test_rs, select = -charges), df_denominator = subset(train_rs,     select = -charges))
-#> 
-#> Kernel Information:
-#>   Kernel type: Gaussian with L2 norm distances
-#>   Number of kernels: 200
-#>   sigma: num [1:10] 0.813 1.185 1.366 1.528 1.678 ...
-#> 
-#> Regularization parameter (lambda): num [1:20] 1000 483.3 233.6 112.9 54.6 ...
-#> 
-#> Optimal sigma (loocv): 2.802938
-#> Optimal lambda (loocv): 2.976351
-#> Optimal kernel weights (loocv): num [1:201] 0.01462 0.01017 0.00757 0.00554 0.00745 ...
-#> 
 ```
 
 The output shows the number of inducing points used in the estimation (number of kernels), and the grid of bandwidth (sigma) and regularization parameters (lambda) used in the cross-validation.
 Moreover, the output shows the optimal bandwidth parameter, the optimal regularization parameter lambda and the optimal kernel weights, all optimized through leave-one-out cross-validation.
 
-
-``` r
+```{r dr-cs}
 dr_cs
-#> 
-#> Call:
-#> ulsif(df_numerator = subset(test_cs, select = -charges), df_denominator = subset(train_cs,     select = -charges))
-#> 
-#> Kernel Information:
-#>   Kernel type: Gaussian with L2 norm distances
-#>   Number of kernels: 200
-#>   sigma: num [1:10] 0.856 1.225 1.416 1.59 1.753 ...
-#> 
-#> Regularization parameter (lambda): num [1:20] 1000 483.3 233.6 112.9 54.6 ...
-#> 
-#> Optimal sigma (loocv): 1.224742
-#> Optimal lambda (loocv): 0.3359818
-#> Optimal kernel weights (loocv): num [1:201] 0.27465 0.0706 0.03061 -0.00883 0.01246 ...
-#> 
 ```
 
 Comparing the two density ratio objects shows that under covariate shift, the optimal bandwidth parameter and regularization parameter are somewhat smaller than under random sampling, which implies that the model is more sensitive to smaller deviations between the two distributions.
@@ -152,40 +126,9 @@ However, for each estimation function and corresponding divergence measure, one 
 This can be done by setting the `test = TRUE` argument in the `summary()` function.
 
 
-
-``` r
+```{r summary-dr}
 summary(dr_rs, test = TRUE)
-#> 
-#> Call:
-#> ulsif(df_numerator = subset(test_rs, select = -charges), df_denominator = subset(train_rs,     select = -charges))
-#> 
-#> Kernel Information:
-#>   Kernel type: Gaussian with L2 norm distances
-#>   Number of kernels: 200
-#> 
-#> Optimal sigma: 2.802938
-#> Optimal lambda: 2.976351
-#> Optimal kernel weights: num [1:201] 0.01462 0.01017 0.00757 0.00554 0.00745 ...
-#>  
-#> Pearson divergence between P(nu) and P(de): 0.02298
-#> Pr(P(nu)=P(de)) =  0.28
-#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 summary(dr_cs, test = TRUE)
-#> 
-#> Call:
-#> ulsif(df_numerator = subset(test_cs, select = -charges), df_denominator = subset(train_cs,     select = -charges))
-#> 
-#> Kernel Information:
-#>   Kernel type: Gaussian with L2 norm distances
-#>   Number of kernels: 200
-#> 
-#> Optimal sigma: 1.224742
-#> Optimal lambda: 0.3359818
-#> Optimal kernel weights: num [1:201] 0.27465 0.0706 0.03061 -0.00883 0.01246 ...
-#>  
-#> Pearson divergence between P(nu) and P(de): 0.1221
-#> Pr(P(nu)=P(de)) < .001
-#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
 
 These summaries indeed show that the two distributions are not significantly different under random sampling, but differ significantly under our covariate shift setting.
@@ -201,26 +144,18 @@ The default `plot()` summarizes the similarity of the samples through the densit
 When the numerator and denominator samples are drawn from the same distribution, the density ratio should be close to 1 (and close to 0 on a log-scale).
 Moreover, the distribution of the density ratio values should be very similar for both the numerator and denominator samples.
 
-
-``` r
+```{r plot-dr-rs}
 plot(dr_rs)
-#> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
-
-![plot of chunk plot-dr-rs](covariate-shift-plot-dr-rs-1.png)
 
 
 In cases where the numerator and denominator samples have different densities, the density ratio values will be different from 1, and more importantly, the distributions of density ratio values over the two groups will overlap to a lesser extent.
 Hence, numerator samples will typically have estimated density ratio values larger than 1, while denominator samples will have density ratio values smaller than 1 (or, on a logarithmic scale, larger and smaller than zero, respectively).
 This is exactly what we see in the figure below: numerator samples (i.e., the test cases) typically have larger estimated density ratio values than the denominator (training) samples, although the difference is not that large here (but note the different scale of the x-axis compared to the previous plot).
 ´
-
-``` r
+```{r plot-dr-cs}
 plot(dr_cs)
-#> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
-
-![plot of chunk plot-dr-cs](covariate-shift-plot-dr-cs-1.png)
 
 The package comes with two additional plotting functions: `plot_univariate()` and `plot_bivariate()`.
 The `plot_univariate()` plots the density ratio values against each variable separately, which can help to identify those variables that are most informative for the density ratio.
@@ -231,23 +166,17 @@ People in the numerator sample (i.e., the test cases), seem to have lower `bmi` 
 This results in a higher density ratio for lower `bmi` values, and a lower density ratio for higher `bmi` values.
 
 
-
-``` r
+```{r plot-dr-univariate}
 plot_univariate(dr_cs, vars = c("age", "bmi"), grid = TRUE)
 ```
-
-![plot of chunk plot-dr-univariate](covariate-shift-plot-dr-univariate-1.png)
 
 The `plot_bivariate()` function is available to plot the density ratio values for pairs of variables (with the density ratio value mapped to the color scale).
 We can again select the variables for which we want to create the scatterplots using `vars`, and the function will create a scatterplot for each pair of variables.
 Again, we solely observe a pattern for `bmi`, with higher values corresponding to lower density ratio values.
 
-
-``` r
+```{r plot-dr-bivariate}
 plot_bivariate(dr_cs, vars = c("age", "bmi", "children"), grid = TRUE)
 ```
-
-![plot of chunk plot-dr-bivariate](covariate-shift-plot-dr-bivariate-1.png)
 
 # Covariate shift
 
@@ -283,16 +212,14 @@ We first fit a least squares regression model to the training data, and then pre
 
 Without weighting, we simply fit the regression model as follows.
 
-
-``` r
+```{r fit-lm-rs}
 formula <- charges ~ age + sex + bmi + children + smoker
 fit_rs <- lm(formula, data = train_rs)
 ```
 
 We can then predict the outcome variable for the training and test data, and evaluate the RMSE and $R^2$.
 
-
-``` r
+```{r model-eval-rs}
 y_train_rs <- train_rs$charges
 y_test_rs  <- test_rs$charges
 pred_train_rs <- predict(fit_rs, newdata = train_rs)
@@ -304,15 +231,12 @@ c(
   R2_tr = 1 - var(y_train_rs - pred_train_rs) / var(y_train_rs),
   R2_te = 1 - var(y_test_rs - pred_test_rs) / var(y_test_rs)
 )
-#>   RMSE_train    RMSE_test        R2_tr        R2_te 
-#> 6142.8279347 5990.7051274    0.7503945    0.7455363
 ```
 These calculations show that the RMSE and $R^2$ values are quite similar for the training and test data, which is expected under random sampling.
 
 Subsequently, we fit the regression model with reweighting. We can calculate the weights for the training data using the `predict()` function in the `densityratio` package, and then use these weights in the `lm()` function.
 
-
-``` r
+```{r model-eval-rs-w}
 weights_rs <- predict(dr_rs, newdata = train_rs |> subset(select = -charges))
 fit_rs_w <- lm(formula, data = train_rs, weights = weights_rs)
 
@@ -325,8 +249,6 @@ c(
   R2_tr = 1 - var(y_train_rs - pred_train_rs_w) / var(y_train_rs),
   R2_te = 1 - var(y_test_rs - pred_test_rs_w) / var(y_test_rs)
 )
-#>   RMSE_train    RMSE_test        R2_tr        R2_te 
-#> 6143.7668763 5995.5513712    0.7503211    0.7451020
 ```
 
 We see that training and test performance is almost identical to the unweighted solution, which makes sense as the weights are generally very close to 1.
@@ -335,15 +257,13 @@ We see that training and test performance is almost identical to the unweighted 
 
 We repeat exactly the same procedure as in the previous section, but now for the setting with covariate shift between training and test data.
 
-
-``` r
+```{r fit-lm-cs}
 fit_cs <- lm(formula, data = train_cs)
 ```
 
 We again predict the outcome variable for the training and test data, and evaluate the RMSE and $R^2$.
 
-
-``` r
+```{r model-eval-cs}
 y_train_cs <- train_cs$charges
 y_test_cs  <- test_cs$charges
 pred_train_cs <- predict(fit_cs, newdata = train_cs)
@@ -355,13 +275,10 @@ c(
   R2_tr = 1 - var(y_train_cs - pred_train_cs) / var(y_train_cs),
   R2_te = 1 - var(y_test_cs - pred_test_cs) / var(y_test_cs)
 )
-#>   RMSE_train    RMSE_test        R2_tr        R2_te 
-#> 5860.0592523 6434.1388040    0.7944538    0.6722150
 ```
 Now, the performance of the prediction model decreases substantially on the test data, as is expected under covariate shift. Hopefully, we can account for this by reweighing the training data.
 
-
-``` r
+```{r model-eval-cs-w}
 weights_cs <- predict(dr_cs, newdata = train_cs |> subset(select = -charges))
 fit_cs_w <- lm(formula, data = train_cs, weights = weights_cs)
 
@@ -374,8 +291,6 @@ c(
   R2_tr = 1 - var(y_train_cs - pred_train_cs_w) / var(y_train_cs),
   R2_te = 1 - var(y_test_cs - pred_test_cs_w) / var(y_test_cs)
 )
-#>   RMSE_train    RMSE_test        R2_tr        R2_te 
-#> 6005.6703347 6191.6472513    0.7841192    0.6971867
 ```
 
 We see that we get a modest improvement in the RMSE and $R^2$ values for the test data, compared to the unweighted solution.
@@ -385,32 +300,9 @@ Second, we have no way of knowing whether our important assumption, namely that 
 There could very well be unobserved processes that affect the selection mechanism and the outcome.
 Finally, it could very well be that the performance under random sampling is not even attainable, because, for example, the distribution of the outcome is different in the two settings.
 
-
-``` r
+```{r fit-test-cs}
 lm(formula, data = test_cs) |>
   summary()
-#> 
-#> Call:
-#> lm(formula = formula, data = test_cs)
-#> 
-#> Residuals:
-#>    Min     1Q Median     3Q    Max 
-#>  -8867  -3221  -1166   1187  27132 
-#> 
-#> Coefficients:
-#>               Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept) -12619.838   1419.984  -8.887  < 2e-16 ***
-#> age            242.068     17.155  14.111  < 2e-16 ***
-#> sexmale          8.815    477.858   0.018 0.985287    
-#> bmi            379.957     43.460   8.743  < 2e-16 ***
-#> children       759.908    201.638   3.769 0.000179 ***
-#> smokeryes    21320.176    605.795  35.194  < 2e-16 ***
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-#> 
-#> Residual standard error: 6077 on 643 degrees of freedom
-#> Multiple R-squared:  0.7061,	Adjusted R-squared:  0.7038 
-#> F-statistic:   309 on 5 and 643 DF,  p-value: < 2.2e-16
 ```
 Fitting the same model on the ***test*** data shows that, given our model specification, an $R^2 = 0.71$ is the best we can do, which suggests that our reweighted model is already quite close to the best possible performance.
 
