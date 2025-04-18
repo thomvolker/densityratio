@@ -8,4 +8,4 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-\vignettes\precompile.R
+^vignettes/precompile\.R$
