@@ -1,6 +1,7 @@
 ---
 title: "densityratio"
 output: rmarkdown::html_vignette
+author: "Carlos Gonzalez Poses & Thom Benjamin Volker"
 vignette: >
   %\VignetteIndexEntry{densityratio}
   %\VignetteEngine{knitr::rmarkdown}
@@ -207,10 +208,12 @@ Other estimation functions have similar arguments, although only `ulsif()` and `
 #### Intermezzo: Bandwidth & regularization parameter
 
 > **Bandwidth parameter:** The bandwidth parameter controls how flexible the density ratio model is. Smaller values place relatively more weight on observations that are very close to the observation at hand, whereas larger values also borrow information from observations that are further away in feature space. A smaller smaller bandwidth allows to model sudden shifts in the density ratio, but might also be prone to overfitting, while a larger bandwidth results in a smoother estimate. Below, we illustrate this by plotting the estimated density ratio for a single variable, `kid_score`, estimated with both a large and a small bandwidth parameter. While both estimates show that the density ratio is larger for larger values of `kid_score`, the estimate with the smaller bandwidth parameter is much more flexible and less smooth.
-![plot of chunk bandwidth-note](densityratio-bandwidth-note-1.png)
+>
+![Density ratio estimates for a large and small bandwidth parameter.](densityratio-bandwidth-note-1.png)
 
 > **Regularization parameter**: The regularization parameter controls the amount of regularization applied to the model. A larger value of the regularization parameter results in a smoother estimate, while a smaller value allows for more flexibility in the model. This is shown below, where we plot the estimated density ratio for `kid_score` estimated with both a large and a small regularization parameter. Again, the estimate with the smaller regularization parameter is much more flexible and less smooth. Note, here, that regularization shrinks the kernel weights towards zero, such that the estimated density ratio tends to zero (and not to one, as one might expect). We plan to investigate this further in the future.
-![plot of chunk regularization-note](densityratio-regularization-note-1.png)
+>
+![Density ratio estimates for a large and small regularization parameter.](densityratio-regularization-note-1.png)
 
 ## Scaling of the data
 
@@ -430,7 +433,7 @@ dr_naive
 ```
 
 
-## Summarizing the density ratio objects
+# Summarizing the density ratio objects
 
 The `densityratio` package contains several functions to help interpreting the output of each estimation method. The `summary()` function provides a brief summary of the estimated object, including the optimal hyperparameter values, the number of inducing points and the divergence between the numerator and denominator samples.
 
@@ -512,7 +515,7 @@ summary(dr, test = TRUE, parallel = TRUE, cluster = 12)
 ```
 
 
-## Visualizing the density ratio
+# Visualizing the density ratio
 
 When mere testing is not sufficient, visualizing the density ratio can provide more tangible information on the differences between the two distributions.
 The `plot()` function summarizes the model output by displaying the estimated density ratio values.
@@ -523,7 +526,7 @@ plot(dr)
 #> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![plot of chunk plot-dr](densityratio-plot-dr-1.png)
+![Density ratio values for the high school and no high school samples.](densityratio-plot-dr-1.png)
 
 The figure shows the distribution of density ratio values for the numerator and denominator samples (on a log-scale, to improve symmetry).
 This allows to evaluate how dissimilar the two distributions are: the more the density ratio values are separated, the more the two groups stand apart.
@@ -538,7 +541,7 @@ For example, below we plot the density ratio values against `kid_score` and `mom
 plot_univariate(dr, c("kid_score", "mom_iq"), grid = TRUE)
 ```
 
-![plot of chunk plot-univariate](densityratio-plot-univariate-1.png)
+![Univariate plots of `kid_score` and `mom_iq` against the estimated density ratio values for the two groups of samples.](densityratio-plot-univariate-1.png)
 
 This figure shows that the density ratio values do not seem to vary so much with `kid_score`, but do differ substantially with `mom_iq`.
 That is, for `kid_score`, the samples of the two groups mix quite well, although there might be slightly more `no high school` samples with a lower `kid_score`, resulting in slightly lower density ratio values in this region.
@@ -552,11 +555,11 @@ Now, the density ratio values are mapped to the color scale.
 plot_bivariate(dr, c("kid_score", "mom_iq", "mom_age"), grid = TRUE)
 ```
 
-![plot of chunk plot-bivariate](densityratio-plot-bivariate-1.png)
+![Bivariate scatter plots for `kid_score`, `mom_iq` and `mom_age`, with density ratio values mapped to the color scale.](densityratio-plot-bivariate-1.png)
 
 This figure shows that density ratio values are especially small for observations with low values for both `mom_iq` and `kid_score`. The values do not differ so much in the direction of `mom_age`.
 
-## Predicting the density ratio for new cases
+# Predicting the density ratio for new cases
 
 Under the hood, the plotting functionality makes extensive use of the `predict()` function, which takes a fitted density ratio object and a new data set as input, and returns the predicted density ratio values for these new cases.
 By default, the `predict()` function predicts the density ratio values for the numerator samples, but this can be changed by providing another data set in the `newdata` argument.

@@ -1,11 +1,9 @@
 ---
-title: "Density ratio estimation for covariate shift"
+title: "Covariate shift adjustment"
 output: rmarkdown::html_vignette
-authors:
-  - Carlos Gonzalez Poses
-  - Thom Benjamin Volker
+author: "Carlos Gonzalez Poses & Thom Benjamin Volker"
 vignette: >
-  %\VignetteIndexEntry{Density ratio estimation for covariate shift}
+  %\VignetteIndexEntry{Covariate shift adjustment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -207,7 +205,7 @@ plot(dr_rs)
 #> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![plot of chunk plot-dr-rs](covariate-shift-plot-dr-rs-1.png)
+![Distribution of density ratio values under random sampling.](covariate-shift-plot-dr-rs-1.png)
 
 
 In cases where the numerator and denominator samples have different densities, the density ratio values will be different from 1, and more importantly, the distributions of density ratio values over the two groups will overlap to a lesser extent.
@@ -220,7 +218,7 @@ plot(dr_cs)
 #> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![plot of chunk plot-dr-cs](covariate-shift-plot-dr-cs-1.png)
+![Distribution of density ratio values under covariate shift.](covariate-shift-plot-dr-cs-1.png)
 
 The package comes with two additional plotting functions: `plot_univariate()` and `plot_bivariate()`.
 The `plot_univariate()` plots the density ratio values against each variable separately, which can help to identify those variables that are most informative for the density ratio.
@@ -236,7 +234,7 @@ This results in a higher density ratio for lower `bmi` values, and a lower densi
 plot_univariate(dr_cs, vars = c("age", "bmi"), grid = TRUE)
 ```
 
-![plot of chunk plot-dr-univariate](covariate-shift-plot-dr-univariate-1.png)
+![Univariate plots of `age` and `bmi` against the estimated density ratio values for the two groups of samples under covariate shift.](covariate-shift-plot-dr-univariate-1.png)
 
 The `plot_bivariate()` function is available to plot the density ratio values for pairs of variables (with the density ratio value mapped to the color scale).
 We can again select the variables for which we want to create the scatterplots using `vars`, and the function will create a scatterplot for each pair of variables.
@@ -247,7 +245,7 @@ Again, we solely observe a pattern for `bmi`, with higher values corresponding t
 plot_bivariate(dr_cs, vars = c("age", "bmi", "children"), grid = TRUE)
 ```
 
-![plot of chunk plot-dr-bivariate](covariate-shift-plot-dr-bivariate-1.png)
+![Bivariate scatter plots for `age`, `bmi` and `children` for two groups of samples under covariate shift, with density ratio values mapped to the color scale.](covariate-shift-plot-dr-bivariate-1.png)
 
 # Covariate shift
 

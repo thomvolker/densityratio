@@ -1,11 +1,9 @@
 ---
-title: "Density ratio estimation for covariate shift"
+title: "Covariate shift adjustment"
 output: rmarkdown::html_vignette
-authors:
-  - Carlos Gonzalez Poses
-  - Thom Benjamin Volker
+author: "Carlos Gonzalez Poses & Thom Benjamin Volker"
 vignette: >
-  %\VignetteIndexEntry{Density ratio estimation for covariate shift}
+  %\VignetteIndexEntry{Covariate shift adjustment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,7 +12,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 6,
+  fig.width = 8,
   fig.height = 5,
   fig.path = "covariate-shift-"
 )
@@ -144,7 +142,7 @@ The default `plot()` summarizes the similarity of the samples through the densit
 When the numerator and denominator samples are drawn from the same distribution, the density ratio should be close to 1 (and close to 0 on a log-scale).
 Moreover, the distribution of the density ratio values should be very similar for both the numerator and denominator samples.
 
-```{r plot-dr-rs}
+```{r plot-dr-rs, fig.cap="Distribution of density ratio values under random sampling."}
 plot(dr_rs)
 ```
 
@@ -153,7 +151,7 @@ In cases where the numerator and denominator samples have different densities, t
 Hence, numerator samples will typically have estimated density ratio values larger than 1, while denominator samples will have density ratio values smaller than 1 (or, on a logarithmic scale, larger and smaller than zero, respectively).
 This is exactly what we see in the figure below: numerator samples (i.e., the test cases) typically have larger estimated density ratio values than the denominator (training) samples, although the difference is not that large here (but note the different scale of the x-axis compared to the previous plot).
 ´
-```{r plot-dr-cs}
+```{r plot-dr-cs, fig.cap="Distribution of density ratio values under covariate shift."}
 plot(dr_cs)
 ```
 
@@ -166,7 +164,7 @@ People in the numerator sample (i.e., the test cases), seem to have lower `bmi` 
 This results in a higher density ratio for lower `bmi` values, and a lower density ratio for higher `bmi` values.
 
 
-```{r plot-dr-univariate}
+```{r plot-dr-univariate, fig.cap="Univariate plots of `age` and `bmi` against the estimated density ratio values for the two groups of samples under covariate shift."}
 plot_univariate(dr_cs, vars = c("age", "bmi"), grid = TRUE)
 ```
 
@@ -174,7 +172,7 @@ The `plot_bivariate()` function is available to plot the density ratio values fo
 We can again select the variables for which we want to create the scatterplots using `vars`, and the function will create a scatterplot for each pair of variables.
 Again, we solely observe a pattern for `bmi`, with higher values corresponding to lower density ratio values.
 
-```{r plot-dr-bivariate}
+```{r plot-dr-bivariate, fig.cap="Bivariate scatter plots for `age`, `bmi` and `children` for two groups of samples under covariate shift, with density ratio values mapped to the color scale."}
 plot_bivariate(dr_cs, vars = c("age", "bmi", "children"), grid = TRUE)
 ```
 
