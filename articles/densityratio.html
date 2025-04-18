@@ -40,7 +40,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/covariate-shift.html">Density ratio estimation for covariate shift</a></li>
+<li><a class="dropdown-item" href="../articles/covariate-shift.html">Covariate shift adjustment</a></li>
   </ul>
 </li>
       </ul>
@@ -61,6 +61,8 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>densityratio</h1>
+                        <h4 data-toc-skip class="author">Carlos Gonzalez
+Poses &amp; Thom Benjamin Volker</h4>
             
       
 
@@ -380,7 +382,11 @@ density ratio for a single variable, <code>kid_score</code>, estimated
 with both a large and a small bandwidth parameter. While both estimates
 show that the density ratio is larger for larger values of
 <code>kid_score</code>, the estimate with the smaller bandwidth
-parameter is much more flexible and less smooth. <img src="densityratio-bandwidth-note-1.png" alt="plot of chunk bandwidth-note"></p>
+parameter is much more flexible and less smooth.</p>
+<div class="float">
+<img src="densityratio-bandwidth-note-1.png" alt="Density ratio estimates for a large and small bandwidth parameter."><div class="figcaption">Density ratio estimates for a large and small
+bandwidth parameter.</div>
+</div>
 </blockquote>
 <blockquote>
 <p><strong>Regularization parameter</strong>: The regularization
@@ -393,7 +399,11 @@ regularization parameter. Again, the estimate with the smaller
 regularization parameter is much more flexible and less smooth. Note,
 here, that regularization shrinks the kernel weights towards zero, such
 that the estimated density ratio tends to zero (and not to one, as one
-might expect). We plan to investigate this further in the future. <img src="densityratio-regularization-note-1.png" alt="plot of chunk regularization-note"></p>
+might expect). We plan to investigate this further in the future.</p>
+<div class="float">
+<img src="densityratio-regularization-note-1.png" alt="Density ratio estimates for a large and small regularization parameter."><div class="figcaption">Density ratio estimates for a large and small
+regularization parameter.</div>
+</div>
 </blockquote>
 </div>
 </div>
@@ -683,9 +693,10 @@ merely included as a benchmark.</p>
 <span><span class="co">#&gt; </span></span></code></pre></div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="summarizing-the-density-ratio-objects">Summarizing the density ratio objects<a class="anchor" aria-label="anchor" href="#summarizing-the-density-ratio-objects"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="summarizing-the-density-ratio-objects">Summarizing the density ratio objects<a class="anchor" aria-label="anchor" href="#summarizing-the-density-ratio-objects"></a>
+</h2>
 <p>The <code>densityratio</code> package contains several functions to
 help interpreting the output of each estimation method. The
 <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> function provides a brief summary of the
@@ -778,9 +789,9 @@ cluster is created using the number of available cores minus one.</p>
 <span><span class="co">#&gt; Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="visualizing-the-density-ratio">Visualizing the density ratio<a class="anchor" aria-label="anchor" href="#visualizing-the-density-ratio"></a>
-</h3>
+<div class="section level2">
+<h2 id="visualizing-the-density-ratio">Visualizing the density ratio<a class="anchor" aria-label="anchor" href="#visualizing-the-density-ratio"></a>
+</h2>
 <p>When mere testing is not sufficient, visualizing the density ratio
 can provide more tangible information on the differences between the two
 distributions. The <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function summarizes the model
@@ -789,7 +800,8 @@ output by displaying the estimated density ratio values.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span></code></pre></div>
 <div class="float">
-<img src="densityratio-plot-dr-1.png" alt="plot of chunk plot-dr"><div class="figcaption">plot of chunk plot-dr</div>
+<img src="densityratio-plot-dr-1.png" alt="Density ratio values for the high school and no high school samples."><div class="figcaption">Density ratio values for the high school and no
+high school samples.</div>
 </div>
 <p>The figure shows the distribution of density ratio values for the
 numerator and denominator samples (on a log-scale, to improve symmetry).
@@ -811,7 +823,9 @@ feature).</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_univariate.html">plot_univariate</a></span><span class="op">(</span><span class="va">dr</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kid_score"</span>, <span class="st">"mom_iq"</span><span class="op">)</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="densityratio-plot-univariate-1.png" alt="plot of chunk plot-univariate"><div class="figcaption">plot of chunk plot-univariate</div>
+<img src="densityratio-plot-univariate-1.png" alt="Univariate plots of kid_score and mom_iq against the estimated density ratio values for the two groups of samples."><div class="figcaption">Univariate plots of <code>kid_score</code> and
+<code>mom_iq</code> against the estimated density ratio values for the
+two groups of samples.</div>
 </div>
 <p>This figure shows that the density ratio values do not seem to vary
 so much with <code>kid_score</code>, but do differ substantially with
@@ -831,16 +845,18 @@ density ratio values are mapped to the color scale.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_bivariate.html">plot_bivariate</a></span><span class="op">(</span><span class="va">dr</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kid_score"</span>, <span class="st">"mom_iq"</span>, <span class="st">"mom_age"</span><span class="op">)</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="densityratio-plot-bivariate-1.png" alt="plot of chunk plot-bivariate"><div class="figcaption">plot of chunk plot-bivariate</div>
+<img src="densityratio-plot-bivariate-1.png" alt="Bivariate scatter plots for kid_score, mom_iq and mom_age, with density ratio values mapped to the color scale."><div class="figcaption">Bivariate scatter plots for
+<code>kid_score</code>, <code>mom_iq</code> and <code>mom_age</code>,
+with density ratio values mapped to the color scale.</div>
 </div>
 <p>This figure shows that density ratio values are especially small for
 observations with low values for both <code>mom_iq</code> and
 <code>kid_score</code>. The values do not differ so much in the
 direction of <code>mom_age</code>.</p>
 </div>
-<div class="section level3">
-<h3 id="predicting-the-density-ratio-for-new-cases">Predicting the density ratio for new cases<a class="anchor" aria-label="anchor" href="#predicting-the-density-ratio-for-new-cases"></a>
-</h3>
+<div class="section level2">
+<h2 id="predicting-the-density-ratio-for-new-cases">Predicting the density ratio for new cases<a class="anchor" aria-label="anchor" href="#predicting-the-density-ratio-for-new-cases"></a>
+</h2>
 <p>Under the hood, the plotting functionality makes extensive use of the
 <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> function, which takes a fitted density ratio
 object and a new data set as input, and returns the predicted density
@@ -869,7 +885,6 @@ different parameters. These values can alternatively be set to “all”,
 which returns the predicted density ratio values for all parameter
 values, or a specific value, which returns the predicted density ratio
 values for that specific hyperparameter value.</p>
-</div>
 </div>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
