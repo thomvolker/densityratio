@@ -28,7 +28,7 @@ over the entire multivariate space of the data. Subsequently, the
 density ratio values can be used to summarize the dissimilarity between
 the two distributions in a discrepancy measure.
 
-<img src="man/figures/README-densities-1.png" width="15cm" style="display: block; margin: auto;" />
+<img src="man/figures/README-densities-1.png" width="80%" style="display: block; margin: auto;" />
 
 ### Features
 
@@ -39,10 +39,10 @@ the two distributions in a discrepancy measure.
   before using `densityratio` in practice).
 - **Complete**: Several density ratio estimation methods, such as
   unconstrained least-squares importance fitting (`ulsif()`),
-  Kullback-Leibler importance estimation procedure (`kliep()`), ratio of
-  estimated densities (`naive()`), ratio of estimated densities after
-  dimension reduction (`naivesubspace()`), and least-squares
-  heterodistributional subspace search (`lhss()`; experimental).
+  Kullback-Leibler importance estimation procedure (`kliep()`), kernel
+  mean matching (`kmm()`), ratio of estimated densities (`naive()`),
+  spectral density ratio estimation (`spectral()` and least-squares
+  heterodistributional subspace search (`lhss()`).
 - **User-friendly**: Simple user interface, default `predict()`,
   `print()` and `summary()` functions for all density ratio estimation
   methods; built-in data sets for quick testing.
@@ -67,7 +67,6 @@ five variables.
 ### Minimal example
 
 ``` r
-
 library(densityratio)
 
 head(numerator_data)
@@ -81,10 +80,10 @@ head(numerator_data)
 #> 5 A     G1     1.01    2.23   2.01 
 #> 6 C     G2     1.83    0.762  3.71
 
-fit  <- ulsif(
-  df_numerator = numerator_data$x5, 
-  df_denominator = denominator_data$x5, 
-  nsigma = 5, 
+fit <- ulsif(
+  df_numerator = numerator_data$x5,
+  df_denominator = denominator_data$x5,
+  nsigma = 5,
   nlambda = 5
 )
 
@@ -120,22 +119,7 @@ differ significantly, you can perform a two-sample homogeneity test as
 follows.
 
 ``` r
-summary(fit, test = TRUE)
-#> 
-#> Call:
-#> ulsif(df_numerator = numerator_data$x5, df_denominator = denominator_data$x5,     nsigma = 5, nlambda = 5)
-#> 
-#> Kernel Information:
-#>   Kernel type: Gaussian with L2 norm distances
-#>   Number of kernels: 200
-#> 
-#> Optimal sigma: 0.3726142
-#> Optimal lambda: 0.03162278
-#> Optimal kernel weights: num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
-#>  
-#> Pearson divergence between P(nu) and P(de): 0.2801
-#> Pr(P(nu)=P(de)) < .001
-#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
+#summary(fit, test = TRUE)
 ```
 
 The probability that numerator and denominator samples share a common
@@ -149,25 +133,30 @@ these variables, we can obtain the estimated density ratio using
 `predict()`.
 
 ``` r
-
 # obtain predictions for the numerator samples
 
 newx5 <- seq(from = -3, to = 6, by = 0.05)
-pred  <- predict(fit, newdata = newx5)
+pred <- predict(fit, newdata = newx5)
 
 ggplot() +
   geom_point(aes(x = newx5, y = pred, col = "ulsif estimates")) +
-  stat_function(mapping = aes(col = "True density ratio"), 
-                fun = dratio, 
-                args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
-                linewidth = 1) +
+  stat_function(
+    mapping = aes(col = "True density ratio"),
+    fun = dratio,
+    args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
+    linewidth = 1
+  ) +
   theme_classic() +
   scale_color_manual(name = NULL, values = c("#de0277", "purple")) +
-  theme(legend.position.inside = c(0.8, 0.9),
-        text = element_text(size = 20))
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.8, 0.9),
+    text = element_text(size = 50),
+    legend.text = element_text(size = 50),
+  )
 ```
 
-<img src="man/figures/README-plot-univ-1.png" width="15cm" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot-univ-1.png" width="80%" style="display: block; margin: auto;" />
 
 ### Scaling
 
@@ -186,7 +175,6 @@ variables types. However, note that internally, these variables are
 one-hot encoded, which can lead to a high-dimensional feature-space.
 
 ``` r
-
 summary(numerator_data$x1)
 #>   A   B   C 
 #> 351 339 310
@@ -195,7 +183,7 @@ summary(denominator_data$x1)
 #> 252 232 516
 
 fit_cat <- ulsif(
-  df_numerator = numerator_data$x1, 
+  df_numerator = numerator_data$x1,
   df_denominator = denominator_data$x1
 )
 #> Warning in check.sigma(nsigma, sigma_quantile, sigma, dist_nu): There are duplicate values in 'sigma', only the unique values are used.
@@ -205,9 +193,9 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.3005360
-#> 2                 B        1.3574809
-#> 3                 C        0.6379142
+#> 1                 A        1.3041919
+#> 2                 B        1.3708760
+#> 3                 C        0.6358922
 
 table(numerator_data$x1) / table(denominator_data$x1)
 #> 
@@ -232,22 +220,7 @@ fit_all <- ulsif(
   df_denominator = denominator_data
 )
 
-summary(fit_all, test = TRUE, parallel = TRUE)
-#> 
-#> Call:
-#> ulsif(df_numerator = numerator_data, df_denominator = denominator_data)
-#> 
-#> Kernel Information:
-#>   Kernel type: Gaussian with L2 norm distances
-#>   Number of kernels: 200
-#> 
-#> Optimal sigma: 1.065369
-#> Optimal lambda: 0.1623777
-#> Optimal kernel weights: num [1:201] 0.5691 0.1511 0.0959 0.0118 0.0149 ...
-#>  
-#> Pearson divergence between P(nu) and P(de): 0.4629
-#> Pr(P(nu)=P(de)) < .001
-#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
+#summary(fit_all, test = TRUE, parallel = TRUE)
 ```
 
 ### Other density ratio estimation functions
@@ -259,17 +232,25 @@ estimate a density ratio.
   separately, and subsequently takes there ratio.
 - `kliep()` estimates the density ratio directly through the
   Kullback-Leibler importance estimation procedure.
-  <!-- * `kmm()` estimates the density ratio for the denominator sample points only through kernel mean matching.  -->
+- `kmm()` estimates the density ratio through kernel mean matching.
+- `lhss()` estimates the density ratio in a subspace where the two
+  distributions are most different using least-squares
+  heterodistributional subspace search.
+- `spectral()` estimates the density ratio using a spectral series
+  approach.
+
+We display `kliep()` and `naive()` as examples here. The other functions
+are displayed in the [Get Started
+vignette](https://thomvolker.github.io/densityratio/articles/densityratio.html).
 
 ``` r
-
 fit_naive <- naive(
-  df_numerator = numerator_data$x5, 
+  df_numerator = numerator_data$x5,
   df_denominator = denominator_data$x5
 )
 
 fit_kliep <- kliep(
-  df_numerator = numerator_data$x5, 
+  df_numerator = numerator_data$x5,
   df_denominator = denominator_data$x5
 )
 
@@ -282,16 +263,21 @@ ggplot(data = NULL, aes(x = newx5)) +
   geom_point(aes(y = pred, col = "ulsif estimates")) +
   geom_point(aes(y = pred_naive, col = "naive estimates")) +
   geom_point(aes(y = pred_kliep, col = "kliep estimates")) +
-  stat_function(aes(x = NULL, col = "True density ratio"), 
-                fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
-                linewidth = 1) +
+  stat_function(aes(x = NULL, col = "True density ratio"),
+    fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
+    linewidth = 1
+  ) +
   theme_classic() +
-  scale_color_manual(name = NULL, values = c("pink", "#512970","#de0277", "purple")) +
-  theme(legend.position.inside = c(0.8, 0.9),
-        text = element_text(size = 20))
+  scale_color_manual(name = NULL, values = c("pink", "#512970", "#de0277", "purple")) +
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.8, 0.9),
+    text = element_text(size = 50),
+    legend.text = element_text(size = 50),
+  )
 ```
 
-<img src="man/figures/README-plot-methods-1.png" width="15cm" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot-methods-1.png" width="80%" style="display: block; margin: auto;" />
 
 The figure directly shows that `ulsif()` and `kliep()` come rather close
 to the true density ratio function in this example, and outperform the
@@ -319,7 +305,22 @@ Issues](https://github.com/thomvolker/densityratio/issues).
   the utility of synthetic data: A density ratio
   perspective](https://unece.org/statistics/documents/2023/08/working-documents/assessing-utility-synthetic-data-density-ratio)
 
+- Density ratio estimation for covariate shift: Huang, Smola, Gretton,
+  Borgwardt and Schölkopf (2007). [Correcting sample selection bias by
+  unlabeled
+  data](https://proceedings.neurips.cc/paper/2006/file/a2186aa7c086b46ad4e8bf81e2a3a19b-Paper.pdf)
+
+- High-dimensional density ratio estimation through a spectral series
+  approach: Izbicki, Lee and Schafer (2014). [High-dimensional density
+  ratio estimation with extensions to approximate likelihood
+  computation](https://proceedings.mlr.press/v33/izbicki14.pdf)
+
+- Least-squares density ratio estimation: Sugiyama, Hido and Kanamori
+  (2009). [A least-squares approach to direct importance
+  estimation](https://www.jmlr.org/papers/volume10/kanamori09a/kanamori09a.pdf)
+
 ## How to cite
 
-Volker, T.B. (2023). densityratio: Distribution comparison through
-density ratio estimation. <https://doi.org/10.5281/zenodo.8307819>
+Volker, T.B., Poses, C. & Van Kesteren, E.J. (2023). densityratio:
+Distribution comparison through density ratio estimation.
+<https://doi.org/10.5281/zenodo.8307818>

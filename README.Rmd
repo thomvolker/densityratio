@@ -1,7 +1,7 @@
 ---
 output: 
   github_document:
-    html_preview: false
+    html_preview: true
 ---
 
 ```{r, include=FALSE}
@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, logo, include=FALSE}
-
 library(hexSticker)
 library(ggplot2)
 
@@ -34,29 +33,36 @@ dratio <- function(x, p, dif, mu, sd) {
 }
 
 hexSticker::sticker(
-    ggplot() +
-        stat_function(aes(col = "frac(italic(P[n](x)), italic(P[d](x)))"),
-                      fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
-                      alpha = 0.9, size = 0.9) +
-        stat_function(fun = dbinorm_scaled, args = list(p=0.4, dif = 3, scaling = 10),
-                      alpha = 0.3, col = "white", size = 0.3, linetype = "dashed") +
-        stat_function(fun = dnorm_scaled, args = list(scaling = 10, mean = 3, sd = 2),
-                      alpha = 0.3, col = "white", size = 0.3, linetype = "dashed") +
-
-        theme_void() +
-        hexSticker::theme_transparent() +
-        scale_color_manual(name = NULL, values = c("#d8e5e8"), labels = scales::parse_format()) +
-        theme(panel.background = element_rect(fill = 'transparent'),
-              plot.background = element_rect(fill = "transparent"),
-              legend.position = c(1.02, 0.53),
-              legend.text = element_text(colour = "white", size = 24)) +
-        guides(color = guide_legend(override.aes = list(linetype = 0))) +
-        xlim(-5, 8.6),
-    package = "densityratio",
-    p_size = 22, s_x = 1, s_y = 1, s_width = 1.4, s_height = 1.4,
-    h_fill = "#034e57", h_color = "#93effa", p_color = "#de0277",
-    p_y = 1.4,
-    filename = "man/figures/logo.png"
+  ggplot() +
+    stat_function(aes(col = "frac(italic(P[n](x)), italic(P[d](x)))"),
+      fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
+      alpha = 0.9, size = 0.9
+    ) +
+    stat_function(
+      fun = dbinorm_scaled, args = list(p = 0.4, dif = 3, scaling = 10),
+      alpha = 0.3, col = "white", linewidth = 0.3, linetype = "dashed"
+    ) +
+    stat_function(
+      fun = dnorm_scaled, args = list(scaling = 10, mean = 3, sd = 2),
+      alpha = 0.3, col = "white", linewidth = 0.3, linetype = "dashed"
+    ) +
+    theme_void() +
+    hexSticker::theme_transparent() +
+    scale_color_manual(name = NULL, values = c("#d8e5e8"), labels = scales::parse_format()) +
+    theme(
+      panel.background = element_rect(fill = "transparent"),
+      plot.background = element_rect(fill = "transparent"),
+      legend.position = "inside",
+      legend.position.inside = c(1.02, 0.53),
+      legend.text = element_text(colour = "white", size = 40)
+    ) +
+    guides(color = guide_legend(override.aes = list(linetype = 0))) +
+    xlim(-5, 8.6),
+  package = "densityratio",
+  p_size = 22, s_x = 1, s_y = 1, s_width = 1.4, s_height = 1.4,
+  h_fill = "#034e57", h_color = "#93effa", p_color = "#de0277",
+  p_y = 1.4,
+  filename = "man/figures/logo.png"
 )
 ```
 
@@ -76,8 +82,7 @@ This package provides functionality to directly estimate a density ratio
 $$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$
 without estimating the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.
 
-```{r, densities, echo=FALSE,message=FALSE,warning=FALSE,fig.height=6,fig.width=10,out.width="15cm",fig.dpi=500,fig.format="png",fig.align="center"}
-
+```{r, densities, echo=FALSE,message=FALSE,warning=FALSE,fig.height=6,fig.width=10,out.width="80%", fig.dpi=500,fig.format="png",fig.align="center"}
 set.seed(1)
 library(ggplot2)
 library(patchwork)
@@ -91,7 +96,7 @@ dratio <- function(x, p, dif, mu, sd) {
 }
 
 fit <- densityratio::ulsif(
-  df_numerator = densityratio::numerator_data$x5, 
+  df_numerator = densityratio::numerator_data$x5,
   df_denominator = densityratio::denominator_data$x5,
   centers = c(densityratio::numerator_data$x5, densityratio::denominator_data$x5),
   parallel = TRUE,
@@ -99,42 +104,61 @@ fit <- densityratio::ulsif(
 )
 
 ggplot() +
-  stat_function(aes(col = factor(1, labels = "italic(P[n](x))")), 
-                fun = dbinorm, args = list(p = 0.4, dif = 3),
-                size = 1) +
-  stat_function(aes(col = factor(2, labels = "italic(P[d](x))")), 
-                fun = dnorm, args = list(mean = 3, sd = 2),
-                size = 1) +
+  stat_function(aes(col = factor(1, labels = "italic(P[n](x))")),
+    fun = dbinorm, args = list(p = 0.4, dif = 3),
+    linewidth = 1
+  ) +
+  stat_function(aes(col = factor(2, labels = "italic(P[d](x))")),
+    fun = dnorm, args = list(mean = 3, sd = 2),
+    linewidth = 1
+  ) +
   xlim(-5, 8.6) +
-  scale_color_manual(name = NULL, 
-                     values = c("#93effa", "#034e57"), 
-                     labels = scales::parse_format()) +
+  scale_color_manual(
+    name = NULL,
+    values = c("#93effa", "#034e57"),
+    labels = scales::parse_format()
+  ) +
   theme_classic() +
   hexSticker::theme_transparent() +
-  theme(legend.position = c(0.9, 0.9),
-        text = element_text(size = 20),
-        panel.background = element_rect(fill = 'transparent'),
-        plot.background = element_rect(fill = "transparent")) +
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.9, 0.9),
+    text = element_text(size = 50),
+    legend.text = element_text(size = 50),
+    panel.background = element_rect(fill = "transparent"),
+    plot.background = element_rect(fill = "transparent")
+  ) +
   xlab(expression(italic(x))) +
   ylab(NULL) +
-ggplot() +
-  stat_function(aes(col = "italic(r(x))"), 
-                fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
-                size = 1) +
-  geom_line(aes(x = seq(-5, 8.6, length.out = 100),
-                y = predict(fit, seq(-5, 8.6, length.out = 100)),
-                col = "italic(hat(r)(x))"),
-            size = 1) +
+  ggplot() +
+  stat_function(aes(col = "italic(r(x))"),
+    fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
+    size = 1
+  ) +
+  geom_line(
+    aes(
+      x = seq(-5, 8.6, length.out = 100),
+      y = predict(fit, seq(-5, 8.6, length.out = 100)),
+      col = "italic(hat(r)(x))"
+    ),
+    size = 1
+  ) +
   xlim(-5, 8.6) +
   theme_classic() +
   hexSticker::theme_transparent() +
-  scale_color_manual(name = NULL, 
-                     values = c("pink", "#de0277"),
-                     labels = scales::parse_format()) +
-  theme(legend.position = c(0.9, 0.9),
-        text = element_text(size = 20),
-        panel.background = element_rect(fill = 'transparent'),
-        plot.background = element_rect(fill = "transparent")) +
+  scale_color_manual(
+    name = NULL,
+    values = c("pink", "#de0277"),
+    labels = scales::parse_format()
+  ) +
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.9, 0.9),
+    text = element_text(size = 50),
+    legend.text = element_text(size = 50),
+    panel.background = element_rect(fill = "transparent"),
+    plot.background = element_rect(fill = "transparent")
+  ) +
   xlab(expression(italic(x))) +
   ylab(NULL)
 ```
@@ -144,7 +168,7 @@ ggplot() +
 
 * __Fast__: Computationally intensive code is executed in `C++` using `Rcpp` and `RcppArmadillo`.
 * __Automatic__: Good default hyperparameters that can be optimized in cross-validation (we do recommend understanding those parameters before using `densityratio` in practice).
-* __Complete__: Several density ratio estimation methods, such as unconstrained least-squares importance fitting (`ulsif()`), Kullback-Leibler importance estimation procedure (`kliep()`), ratio of estimated densities (`naive()`), ratio of estimated densities after dimension reduction (`naivesubspace()`), and least-squares heterodistributional subspace search (`lhss()`; experimental).
+* __Complete__: Several density ratio estimation methods, such as unconstrained least-squares importance fitting (`ulsif()`), Kullback-Leibler importance estimation procedure (`kliep()`), kernel mean matching (`kmm()`), ratio of estimated densities (`naive()`), spectral density ratio estimation (`spectral()` and least-squares heterodistributional subspace search (`lhss()`).
 * __User-friendly__: Simple user interface, default `predict()`, `print()` and `summary()` functions for all density ratio estimation methods; built-in data sets for quick testing.
 
 
@@ -163,15 +187,14 @@ The package contains several functions to estimate the density ratio between the
 ### Minimal example
 
 ```{r, example-univ}
-
 library(densityratio)
 
 head(numerator_data)
 
-fit  <- ulsif(
-  df_numerator = numerator_data$x5, 
-  df_denominator = denominator_data$x5, 
-  nsigma = 5, 
+fit <- ulsif(
+  df_numerator = numerator_data$x5,
+  df_denominator = denominator_data$x5,
+  nsigma = 5,
   nlambda = 5
 )
 
@@ -187,7 +210,7 @@ summary(fit)
 To formally evaluate whether the numerator and denominator densities differ significantly, you can perform a two-sample homogeneity test as follows.
 
 ```{r, summary-univ-test}
-summary(fit, test = TRUE)
+#summary(fit, test = TRUE)
 ```
 
 The probability that numerator and denominator samples share a common data generating mechanism is very small.
@@ -196,23 +219,28 @@ The `ulsif`-object also contains the (hyper-)parameters used in estimating the d
 Using these variables, we can obtain the estimated density ratio using `predict()`.
 
 
-```{r, plot-univ, fig.height=6, fig.width=10, out.width="15cm", fig.dpi=500, fig.format="png", fig.align="center"}
-
+```{r, plot-univ, fig.height=6, fig.width=10, out.width="80%", fig.dpi=500, fig.format="png", fig.align="center"}
 # obtain predictions for the numerator samples
 
 newx5 <- seq(from = -3, to = 6, by = 0.05)
-pred  <- predict(fit, newdata = newx5)
+pred <- predict(fit, newdata = newx5)
 
 ggplot() +
   geom_point(aes(x = newx5, y = pred, col = "ulsif estimates")) +
-  stat_function(mapping = aes(col = "True density ratio"), 
-                fun = dratio, 
-                args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
-                linewidth = 1) +
+  stat_function(
+    mapping = aes(col = "True density ratio"),
+    fun = dratio,
+    args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
+    linewidth = 1
+  ) +
   theme_classic() +
   scale_color_manual(name = NULL, values = c("#de0277", "purple")) +
-  theme(legend.position.inside = c(0.8, 0.9),
-        text = element_text(size = 20))
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.8, 0.9),
+    text = element_text(size = 50),
+    legend.text = element_text(size = 50),
+  )
 ```
 
 ### Scaling
@@ -226,12 +254,11 @@ All of the functions in the `densityratio` package accept categorical variables 
 
 
 ```{r, cat-data}
-
 summary(numerator_data$x1)
 summary(denominator_data$x1)
 
 fit_cat <- ulsif(
-  df_numerator = numerator_data$x1, 
+  df_numerator = numerator_data$x1,
   df_denominator = denominator_data$x1
 )
 
@@ -256,7 +283,7 @@ fit_all <- ulsif(
   df_denominator = denominator_data
 )
 
-summary(fit_all, test = TRUE, parallel = TRUE)
+#summary(fit_all, test = TRUE, parallel = TRUE)
 ```
 
 
@@ -266,17 +293,20 @@ Besides `ulsif()`, the package contains several other functions to estimate a de
 
 * `naive()` estimates the numerator and denominator densities separately, and subsequently takes there ratio. 
 * `kliep()` estimates the density ratio directly through the Kullback-Leibler importance estimation procedure.
-<!-- * `kmm()` estimates the density ratio for the denominator sample points only through kernel mean matching.  -->
+* `kmm()` estimates the density ratio through kernel mean matching.
+* `lhss()` estimates the density ratio in a subspace where the two distributions are most different using least-squares heterodistributional subspace search.
+* `spectral()` estimates the density ratio using a spectral series approach.
 
-```{r, plot-methods, warning=FALSE, fig.height=6, fig.width=10, out.width="15cm", fig.dpi=500, fig.format="png", fig.align="center"}
+We display `kliep()` and `naive()` as examples here. The other functions are displayed in the [Get Started vignette](https://thomvolker.github.io/densityratio/articles/densityratio.html). 
 
+```{r, plot-methods, warning=FALSE, fig.height=6, fig.width=10, out.width="80%", fig.dpi=500, fig.format="png", fig.align="center"}
 fit_naive <- naive(
-  df_numerator = numerator_data$x5, 
+  df_numerator = numerator_data$x5,
   df_denominator = denominator_data$x5
 )
 
 fit_kliep <- kliep(
-  df_numerator = numerator_data$x5, 
+  df_numerator = numerator_data$x5,
   df_denominator = denominator_data$x5
 )
 
@@ -289,13 +319,18 @@ ggplot(data = NULL, aes(x = newx5)) +
   geom_point(aes(y = pred, col = "ulsif estimates")) +
   geom_point(aes(y = pred_naive, col = "naive estimates")) +
   geom_point(aes(y = pred_kliep, col = "kliep estimates")) +
-  stat_function(aes(x = NULL, col = "True density ratio"), 
-                fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
-                linewidth = 1) +
+  stat_function(aes(x = NULL, col = "True density ratio"),
+    fun = dratio, args = list(p = 0.4, dif = 3, mu = 3, sd = 2),
+    linewidth = 1
+  ) +
   theme_classic() +
-  scale_color_manual(name = NULL, values = c("pink", "#512970","#de0277", "purple")) +
-  theme(legend.position.inside = c(0.8, 0.9),
-        text = element_text(size = 20))
+  scale_color_manual(name = NULL, values = c("pink", "#512970", "#de0277", "purple")) +
+  theme(
+    legend.position = "inside",
+    legend.position.inside = c(0.8, 0.9),
+    text = element_text(size = 50),
+    legend.text = element_text(size = 50),
+  )
 ```
 
 The figure directly shows that `ulsif()` and `kliep()` come rather close to the true density ratio function in this example, and outperform the `naive()` solution. 
@@ -316,9 +351,15 @@ __Papers__
 
 * Density ratio estimation for the evaluation of the utility of synthetic data: Volker, De Wolf and Van Kesteren (2023). [Assessing the utility of synthetic data: A density ratio perspective](https://unece.org/statistics/documents/2023/08/working-documents/assessing-utility-synthetic-data-density-ratio)
 
+* Density ratio estimation for covariate shift: Huang, Smola, Gretton, Borgwardt and Schölkopf (2007). [Correcting sample selection bias by unlabeled data](https://proceedings.neurips.cc/paper/2006/file/a2186aa7c086b46ad4e8bf81e2a3a19b-Paper.pdf)
+
+* High-dimensional density ratio estimation through a spectral series approach: Izbicki, Lee and Schafer (2014). [High-dimensional density ratio estimation with extensions to approximate likelihood computation](https://proceedings.mlr.press/v33/izbicki14.pdf)
+
+* Least-squares density ratio estimation: Sugiyama, Hido and Kanamori (2009). [A least-squares approach to direct importance estimation](https://www.jmlr.org/papers/volume10/kanamori09a/kanamori09a.pdf)
+
 ## How to cite
 
-Volker, T.B. (2023). densityratio: Distribution comparison through density ratio estimation. <https://doi.org/10.5281/zenodo.8307819>
+Volker, T.B., Poses, C. & Van Kesteren, E.J. (2023). densityratio: Distribution comparison through density ratio estimation. <https://doi.org/10.5281/zenodo.8307818>
 
 
 
