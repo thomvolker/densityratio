@@ -2,8 +2,9 @@ pandoc: '3.2'
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  getting-started: getting-started.html
-last_built: 2025-04-09T14:00Z
+  covariate-shift: covariate-shift.html
+  densityratio: densityratio.html
+last_built: 2025-04-17T13:45Z
 urls:
   reference: https://thomvolker.github.io/densityratio/reference
   article: https://thomvolker.github.io/densityratio/articles

@@ -30,13 +30,16 @@ m parameter to an integer value smaller than the number of variables."><meta pro
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/densityratio.html">Get started</a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/getting-started.html">Introduction: Density ratio estimation for covariate shift</a>
+    <a class="dropdown-item" href="../articles/covariate-shift.html">Introduction: Density ratio estimation for covariate shift</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -69,7 +72,7 @@ the PCA solution, one can set the number of components by setting the
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">naive</span><span class="op">(</span></span>
 <span>  <span class="va">df_numerator</span>,</span>
 <span>  <span class="va">df_denominator</span>,</span>
-<span>  <span class="va">m</span>,</span>
+<span>  m <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  bw <span class="op">=</span> <span class="st">"SJ"</span>,</span>
 <span>  kernel <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">2L</span><span class="op">^</span><span class="fl">11</span>,</span>
@@ -161,11 +164,11 @@ a power' of two.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Number of variables: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Number of numerator samples: 50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Number of denominator samples: 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Density ratio for numerator samples: num [1:50] 1.41 5.74 1.87 4.13 1.67 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Density ratio for denominator samples: num [1:100] 2.93 0.071 1.065 1.59 2.115 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Density ratio for numerator samples: num [1:50] 0.344 1.747 0.628 1.419 0.511 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Density ratio for denominator samples: num [1:100] 1.0751 -2.6454 0.0626 0.464 0.7493 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Squared average log density ratio difference for numerator and denominator samples (SALDRD): 3.025</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Squared average log density ratio difference for numerator and denominator samples (SALDRD): 13.56</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># Plot model object</span></span></span>
