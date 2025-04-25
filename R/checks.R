@@ -325,41 +325,105 @@ check.sigma.predict <- function(object, sigma) {
   sigma
 }
 
+# check.lambdasigma.predict <- function(object, sigma, lambda, lambdaind) {
+#   #only for use in lhss, where the sigma values change per lambda (due to optimizing U matrix)
+#   nlambda <- length(lambda)
+#   if (is.character(sigma)) {
+#     sigma <- match.arg(sigma, c("sigmaopt", "all"))
+#     if (sigma == "sigmaopt") { # Extract optimal sigma based on cv score for every lambda
+#       sigmaind <- sapply(lambdaind, \(i) which.min(object$cv_score[, i]))
+#       lambdasigmaind <- matrix(c(lambdaind, sigmaind), ncol = 2)
+#     } else if (sigma == "all") { # Extract all sigma values for every lambda
+#       sigmaind <- seq_len(nrow(object$sigma))
+#       lambdasigmaind <- matrix(
+#         c(
+#           rep(lambdaind, each = length(sigmaind)),
+#           rep(sigmaind, nlambda)
+#         ),
+#         ncol = 2
+#       )
+#       lambdasigmaind[is.na(lambdasigmaind[, 1]), 2] <- NA
+#     }
+#   } else if (is.numeric(sigma) & is.vector(sigma)) {
+#     sigmaind <- lapply(lambdaind, \(i) ifelse(is.na(i), NA, match(sigma, object$sigma[, i])))
+#     lambdasigmaind <- matrix(
+#       c(
+#         rep(lambdaind, each = length(unlist(sigmaind)) / length(lambdaind)),
+#         unlist(sigmaind)
+#       ),
+#       ncol = 2
+#     )
+#   } else {
+#     stop("'sigma' should be one of 'sigmaopt', 'all' or a numeric scalar or vector with values to use as sigma parameter")
+#   }
+#   lambdanew <- rep(lambda, each = nrow(lambdasigmaind) / nlambda)
+#   sigmanew <- sapply(1:nrow(lambdasigmaind), \(i) {
+#     if (is.numeric(sigma) & is.na(lambdasigmaind[i, 2])) {
+#       return(sigma[(i - 1) %% length(sigma) + 1])
+#     } else {
+#       return(object$sigma[lambdasigmaind[i, 2], lambdasigmaind[i, 1]])
+#     }
+#   })
+#   lambdasigma <- cbind(lambdasigmaind, lambdanew, sigmanew)
+#   colnames(lambdasigma) <- c("lambdaind", "sigmaind", "lambda", "sigma")
+#   lambdasigma
+# }
+
 check.lambdasigma.predict <- function(object, sigma, lambda, lambdaind) {
-  #only for use in lhss, where the sigma values change per lambda (due to optimizing U matrix)
   nlambda <- length(lambda)
+
   if (is.character(sigma)) {
     sigma <- match.arg(sigma, c("sigmaopt", "all"))
-    if (sigma == "sigmaopt") { # Extract optimal sigma based on cv score for every lambda
-      sigmaind <- sapply(lambdaind, \(i) which.min(object$cv_score[, i]))
+
+    if (sigma == "sigmaopt") {
+      # for all lambda values considered, select optimal if it exists, NA otherwise
+      sigmaind <- sapply(lambdaind, function(i) {
+        ifelse(is.na(i), NA, which.min(object$cv_score[, i]))
+      })
       lambdasigmaind <- matrix(c(lambdaind, sigmaind), ncol = 2)
-    } else if (sigma == "all") { # Extract all sigma values for every lambda
-      sigmaind <- seq_len(nrow(object$sigma))
+    } else if (sigma == "all") {
+      # for all lambda values considered, select all sigma values if they already
+      # exist, NA otherwise
       lambdasigmaind <- matrix(
         c(
-          rep(lambdaind, each = length(sigmaind)),
-          rep(sigmaind, nlambda)
+          rep(lambdaind, each = nrow(object$sigma)),
+          rep(seq_len(nrow(object$sigma)), nlambda)
         ),
         ncol = 2
       )
-      lambdasigmaind[is.na(lambdasigmaind[, 1]), 2] <- NA
+      lambdasigmaind[is.na(lambdasigmaind[,1]), 2] <- NA
     }
   } else if (is.numeric(sigma) & is.vector(sigma)) {
-    sigmaind <- lapply(lambdaind, \(i) match(sigma, object$sigma[, i]))
+    # check if any of the lambda-sigma combinations are already fitted, and set
+    # indices to NA otherwise
+    sigmaind <- unlist(
+      lapply(lambdaind, function(i) {
+        if (is.na(i)) {
+          rep(NA, length(sigma))
+        } else {
+          match(sigma, object$sigma[, i])
+        }
+      })
+    )
     lambdasigmaind <- matrix(
       c(
-        rep(lambdaind, each = length(unlist(sigmaind)) / length(lambdaind)),
-        unlist(sigmaind)
+        rep(lambdaind, each = length(sigma)),
+        sigmaind
       ),
       ncol = 2
     )
   } else {
     stop("'sigma' should be one of 'sigmaopt', 'all' or a numeric scalar or vector with values to use as sigma parameter")
   }
-  lambdanew <- rep(lambda, each = nrow(lambdasigmaind) / nlambda)
-  sigmanew <- sapply(1:nrow(lambdasigmaind), \(i) {
-    if (is.numeric(sigma) & is.na(lambdasigmaind[i, 2])) {
-      return(sigma[(i - 1) %% length(sigma) + 1])
+  lambdanew <- rep(lambda, each = nrow(lambdasigmaind)/nlambda)
+  sigmanew <- sapply(seq_len(nrow(lambdasigmaind)), function(i) {
+
+    if (any(is.na(lambdasigmaind[i, 1:2]))) {
+      if (is.numeric(sigma)) {
+        return(sigma[(i - 1) %% length(sigma) + 1])
+      } else {
+        return(NA)
+      }
     } else {
       return(object$sigma[lambdasigmaind[i, 2], lambdasigmaind[i, 1]])
     }
