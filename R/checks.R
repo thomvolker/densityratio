@@ -145,6 +145,9 @@ check.sigma <- function(nsigma, sigma_quantile, sigma, dist_nu) {
   if (length(u) < length(sigma)) {
     warning("There are duplicate values in 'sigma', only the unique values are used.\n")
   }
+  if (any(u <= 0)) {
+    stop("The values in 'sigma' must be larger than 0.")
+  }
   u
 }
 
@@ -199,9 +202,7 @@ check.centers <- function(dat, centers, ncenters) {
   } else {
     if (!is.numeric(ncenters) | length(ncenters) != 1 | ncenters < 1) {
       stop("The 'ncenters' parameter must be a positive numeric scalar.")
-    } else if (ncenters == nrow(dat)) {
-      centers <- dat
-    } else if (ncenters > nrow(dat)) {
+    } else if (ncenters >= nrow(dat)) {
       centers <- dat
     } else {
       centers <- dat[sample(nrow(dat), ncenters), , drop = FALSE]
@@ -211,14 +212,14 @@ check.centers <- function(dat, centers, ncenters) {
 }
 
 check.intercept <- function(intercept) {
-  if (!is.logical(intercept)) {
+  if (!(isTRUE(intercept) | isFALSE(intercept))) {
     stop("'intercept' must be either 'TRUE' or 'FALSE'")
   }
   intercept
 }
 
 check.symmetric <- function(nu, centers) {
-  if (isTRUE(all.equal(nu, centers))) {
+  if (isTRUE(all.equal(nu, centers, check.attributes = FALSE))) {
     symmetric <- TRUE
   } else {
     symmetric <- FALSE
@@ -227,7 +228,7 @@ check.symmetric <- function(nu, centers) {
 }
 
 check.parallel <- function(parallel, nthreads, iterator) {
-  if (!is.logical(parallel)) {
+  if (!(isTRUE(parallel) | isFALSE(parallel))) {
     stop("'parallel' must be either 'TRUE' or 'FALSE'")
   }
   if (parallel & length(iterator) == 1) {
@@ -259,7 +260,7 @@ check.threads <- function(parallel, nthreads) {
       }
       if (nthreads < 1) {
         nthreads <- 1
-        warning("You specified a negative number of threads, 'nthreads' is set to 1.\n")
+        warning("The minimum number of threads equals 1, 'nthreads' is set to 1.\n")
       }
     }
   }
@@ -268,8 +269,8 @@ check.threads <- function(parallel, nthreads) {
 
 check.epsilon <- function(epsilon) {
   if (!(is.null(epsilon))) {
-    if (!is.numeric(epsilon) | !is.null(dim(epsilon))) {
-      stop("'eps' must be either NULL, a numeric scalar or a numeric vector.")
+    if (!is.numeric(epsilon) | !is.vector(epsilon) | any(epsilon < 0)) {
+      stop("'eps' must be either NULL or a positive scalar or vector.")
     }
   } else {
     epsilon <- 10^{
@@ -280,7 +281,7 @@ check.epsilon <- function(epsilon) {
 }
 
 check.maxit <- function(maxit) {
-  if (maxit < 0) {
+  if (maxit < 0 | !is.numeric(maxit) | length(maxit) != 1 | !is.finite(maxit)) {
     stop("'maxit' must be a positive scalar")
   }
   maxit
@@ -325,8 +326,8 @@ check.sigma.predict <- function(object, sigma) {
 }
 
 check.lambdasigma.predict <- function(object, sigma, lambda, lambdaind) {
+  #only for use in lhss, where the sigma values change per lambda (due to optimizing U matrix)
   nlambda <- length(lambda)
-
   if (is.character(sigma)) {
     sigma <- match.arg(sigma, c("sigmaopt", "all"))
     if (sigma == "sigmaopt") { # Extract optimal sigma based on cv score for every lambda
