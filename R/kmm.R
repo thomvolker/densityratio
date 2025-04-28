@@ -80,8 +80,8 @@ kmm <- function(df_numerator, df_denominator, scale = "numerator",
     on.exit(parallel::stopCluster(cluster))
   }
 
-  cv_ind_nu <- check.nfold(cv, nfold, sigma, nrow(dat$nu))
-  cv_ind_de <- check.nfold(cv, nfold, sigma, nrow(dat$de))
+  cv_ind_nu <- check.nfold(cv, nfold, nrow(dat$nu))
+  cv_ind_de <- check.nfold(cv, nfold, nrow(dat$de))
 
   if (is.null(osqp_settings)) {
     osqp_settings <- osqp::osqpSettings(verbose = FALSE)

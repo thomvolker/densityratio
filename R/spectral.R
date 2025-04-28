@@ -64,8 +64,8 @@ spectral <- function(df_numerator, df_denominator, m = NULL, scale = "numerator"
   df_centers <- check.centers(de, NULL, ncenters)
   dat <- check.dataform(nu, de, df_centers, TRUE, NULL, scale)
 
-  cv_ind_nu <- check.nfold(cv, nfold, sigma, nnu)
-  cv_ind_de <- check.nfold(cv, nfold, sigma, ncenters)
+  cv_ind_nu <- check.nfold(cv, nfold, nnu)
+  cv_ind_de <- check.nfold(cv, nfold, ncenters)
   m <- check.subspace.spectral(m, cv_ind_de)
 
   parallel <- check.parallel(parallel, nthreads, unique(cv_ind_nu))

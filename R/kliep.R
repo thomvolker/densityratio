@@ -57,7 +57,7 @@ kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10
   sigma <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
   epsilon <- check.epsilon(epsilon)
   maxit <- check.maxit(maxit)
-  cv_ind <- check.nfold(cv, nfold, sigma, nnu)
+  cv_ind <- check.nfold(cv, nfold, nnu)
 
   res <- compute_kliep(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
   rownames(res$cv_score) <- names(sigma) <- paste0("sigma", 1:length(sigma))

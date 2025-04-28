@@ -183,7 +183,7 @@ check.sigma_quantile.lhss <- function(nsigma, sigma, sigma_quantile) {
 }
 
 check.lambda <- function(nlambda, lambda) {
-  if (!(is.null(lambda))) {
+  if (!is.null(lambda)) {
     if (!is.numeric(lambda) | !is.null(dim(lambda))) {
       stop("'lambda' must be either NULL, a numeric scalar or a numeric vector.")
     }
@@ -287,7 +287,7 @@ check.maxit <- function(maxit) {
   maxit
 }
 
-check.nfold <- function(cv, nfold, sigma, n) {
+check.nfold <- function(cv, nfold, n) {
   if (!cv) {
     cv_ind <- rep(0, n)
   } else {
