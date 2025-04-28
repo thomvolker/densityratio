@@ -325,50 +325,6 @@ check.sigma.predict <- function(object, sigma) {
   sigma
 }
 
-# check.lambdasigma.predict <- function(object, sigma, lambda, lambdaind) {
-#   #only for use in lhss, where the sigma values change per lambda (due to optimizing U matrix)
-#   nlambda <- length(lambda)
-#   if (is.character(sigma)) {
-#     sigma <- match.arg(sigma, c("sigmaopt", "all"))
-#     if (sigma == "sigmaopt") { # Extract optimal sigma based on cv score for every lambda
-#       sigmaind <- sapply(lambdaind, \(i) which.min(object$cv_score[, i]))
-#       lambdasigmaind <- matrix(c(lambdaind, sigmaind), ncol = 2)
-#     } else if (sigma == "all") { # Extract all sigma values for every lambda
-#       sigmaind <- seq_len(nrow(object$sigma))
-#       lambdasigmaind <- matrix(
-#         c(
-#           rep(lambdaind, each = length(sigmaind)),
-#           rep(sigmaind, nlambda)
-#         ),
-#         ncol = 2
-#       )
-#       lambdasigmaind[is.na(lambdasigmaind[, 1]), 2] <- NA
-#     }
-#   } else if (is.numeric(sigma) & is.vector(sigma)) {
-#     sigmaind <- lapply(lambdaind, \(i) ifelse(is.na(i), NA, match(sigma, object$sigma[, i])))
-#     lambdasigmaind <- matrix(
-#       c(
-#         rep(lambdaind, each = length(unlist(sigmaind)) / length(lambdaind)),
-#         unlist(sigmaind)
-#       ),
-#       ncol = 2
-#     )
-#   } else {
-#     stop("'sigma' should be one of 'sigmaopt', 'all' or a numeric scalar or vector with values to use as sigma parameter")
-#   }
-#   lambdanew <- rep(lambda, each = nrow(lambdasigmaind) / nlambda)
-#   sigmanew <- sapply(1:nrow(lambdasigmaind), \(i) {
-#     if (is.numeric(sigma) & is.na(lambdasigmaind[i, 2])) {
-#       return(sigma[(i - 1) %% length(sigma) + 1])
-#     } else {
-#       return(object$sigma[lambdasigmaind[i, 2], lambdasigmaind[i, 1]])
-#     }
-#   })
-#   lambdasigma <- cbind(lambdasigmaind, lambdanew, sigmanew)
-#   colnames(lambdasigma) <- c("lambdaind", "sigmaind", "lambda", "sigma")
-#   lambdasigma
-# }
-
 check.lambdasigma.predict <- function(object, sigma, lambda, lambdaind) {
   nlambda <- length(lambda)
 
