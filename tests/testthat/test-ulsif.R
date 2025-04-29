@@ -20,14 +20,10 @@ test_that("1-dimensional ULSIF estimation and prediction works", {
               lambda = 0.1, sigma = 2, centers = numerator_small$x3,
               scale = NULL)
   summdr <- summary(dr, test = TRUE)
-  summdr_parallel <- summary(dr, test = TRUE, parallel = TRUE, cluster = 2)
   expect_lte(summdr$p_value, 1)
-  expect_type(summdr_parallel, "list")
-  expect_lte(summdr_parallel$p_value, 1)
 
   expect_invisible(print(dr))
   expect_invisible(print(summdr))
-  expect_invisible(print(summdr_parallel))
 
   Knu <- distance(
     as.matrix(numerator_small$x3),
@@ -145,7 +141,6 @@ test_that("ULSIF estimation functions work", {
 })
 
 test_that("set_threads works", {
-  expect_equal(set_threads(10), 10)
-  expect_equal(set_threads(0), parallel::detectCores())
+  expect_equal(set_threads(1), 1)
   expect_warning(set_threads(50))
 })

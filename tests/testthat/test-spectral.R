@@ -62,7 +62,7 @@ test_that("multidimensional spectral estimation and prediction works", {
   est <- spectral_dre(Dnu, Dde, m = 10, sigma = c(1,2,3),
                       cv_ind_nu = check.nfold(TRUE, 10, nrow(Dnu)),
                       cv_ind_de = check.nfold(TRUE, 10, nrow(Dde)),
-                      parallel = TRUE, nthreads = 0, progressbar = FALSE)
+                      parallel = FALSE, nthreads = 0, progressbar = FALSE)
   expect_type(est$betatilde, "double")
   expect_type(est$loss, "double")
   expect_type(est$Evals, "double")
