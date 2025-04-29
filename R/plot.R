@@ -497,8 +497,7 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
   }
 
   if (!grid) {
-    plot <- lapply(unname(var_combinations), function(var) create_bivariate_plot(data, ext, var, logscale, show.sample))
-    return(plot)
+    out <- lapply(unname(var_combinations), function(var) create_bivariate_plot(data, ext, var, logscale, show.sample))
   } else {
     # Make all variables numeric to include them in a single grid-plot
     numvars <- sapply(data, is.numeric)
@@ -571,4 +570,5 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
     grid::grid.newpage()
     grid::grid.draw(out)
   }
+  out
 }
