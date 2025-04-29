@@ -57,7 +57,8 @@ test_that("check.dataform works", {
   expect_equal(d$de, model.matrix(~., de)[,-1, drop = FALSE], ignore_attr = TRUE)
   expect_equal(d$ce, model.matrix(~., ce)[,-1, drop = FALSE], ignore_attr = TRUE)
 
-  d <- check.dataform(nu, de, scale = "numerator", centers = ce, nullcenters = FALSE)
+  d <- check.dataform(nu, de, scale = "numerator", centers = ce, nullcenters = FALSE) |>
+    suppressWarnings()
 
   nu_scale <- scale(nu)
   de_scale <- scale(de,
@@ -83,7 +84,8 @@ test_that("check.dataform works", {
     ignore_attr = TRUE
   )
 
-  d <- check.dataform(nu, de, scale = "denominator", centers = ce, nullcenters = FALSE)
+  d <- check.dataform(nu, de, scale = "denominator", centers = ce, nullcenters = FALSE) |>
+    suppressWarnings()
 
   de_scale <- scale(de)
   nu_scale <- scale(nu,

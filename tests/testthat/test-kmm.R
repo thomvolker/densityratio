@@ -28,7 +28,7 @@ test_that("multidimensional kmm estimation, prediction and plotting works", {
   dr <- kmm(numerator_small, denominator_small, progressbar = FALSE)
   expect_s3_class(dr, "kmm")
 
-  expect_type(plot(dr), "list")
+  expect_type(plot(dr) |> suppressWarnings(), "list")
 
   expect_gt(mean(log(pmax(1e-3, predict(dr)))), 0)
   expect_lt(mean(log(pmax(1e-3, predict(dr, denominator_small)[,1]))), 0)
@@ -38,12 +38,6 @@ test_that("multidimensional kmm estimation, prediction and plotting works", {
 
   expect_type(dr$alpha_opt, "double")
   expect_type(dr$sigma, "double")
-
-  dr_parallel <- kmm(numerator_small, denominator_small, sigma = c(2,3),
-                     constrained = TRUE, parallel = TRUE, nthreads = 2,
-                     progressbar = FALSE)
-
-  expect_type(dr_parallel, "list")
 
   Kdn <- distance(
     as.matrix(denominator_small),

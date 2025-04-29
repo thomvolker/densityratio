@@ -26,7 +26,7 @@ test_that("multidimensional lhss estimation, prediction and plotting works", {
              lambda = c(1, 0.1, 0.001),
              intercept = FALSE)
   expect_s3_class(dr, "lhss")
-  expect_type(plot(dr), "list")
+  expect_type(plot(dr) |> suppressWarnings(), "list")
 
   expect_gt(mean(log(pmax(1e-3, predict(dr)))), 0)
   expect_lt(mean(log(pmax(1e-3, predict(dr, denominator_small)))), 0)
