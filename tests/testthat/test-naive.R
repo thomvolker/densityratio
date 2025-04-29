@@ -1,22 +1,32 @@
-source(test_path("generate-test-data.R"))
 
 test_that("1-dimensional naive estimation and prediction works", {
-  dr <- naive(test_df_numerator_1, test_df_denominator_1)
+  dr <- naive(numerator_small$x3, denominator_small$x3)
+  summdr <- summary(dr)
   expect_s3_class(dr, "naivedensityratio")
-  pred <- predict(dr, test_df_newdata_1)
-  expect_gt(pred[1], pred[2])
+  expect_s3_class(summdr, "summary.naivedensityratio")
+  expect_invisible(print(summdr))
+
+  pred <- predict(dr)
+  expect_gt(mean(log(pmax(1e-3, pred))), 0)
+  expect_lt(mean(log(pmax(1e-3, predict(dr, denominator_small$x3)))), 0)
+
+  dr <- naive(numerator_small$x3, denominator_small$x3, kernel = "ep")
+  summdr <- summary(dr, test = TRUE)
+  expect_lte(summdr$p_value, 1)
+
+  expect_invisible(print(dr))
+  expect_invisible(print(summdr))
 })
 
-test_that("10-dimensional naive estimation and prediction works", {
-  dr <- naive(test_df_numerator_10, test_df_denominator_10)
+test_that("multidimensional naive estimation and prediction works", {
+  dr <- naive(numerator_small, denominator_small)
   expect_s3_class(dr, "naivedensityratio")
-  pred <- predict(dr, test_df_newdata_10)
-  expect_gt(pred[1], pred[2])
-})
+  expect_type(plot(dr), "list")
 
-test_that("high-dimensional naive estimation and prediction works", {
-  dr <- naive(test_df_numerator_max, test_df_denominator_max)
-  expect_s3_class(dr, "naivedensityratio")
-  pred <- predict(dr, test_df_newdata_max)
-  expect_gt(pred[1], pred[2])
+  expect_gt(mean(log(pmax(1e-3, predict(dr)))), 0)
+  expect_lt(mean(log(pmax(1e-3, predict(dr, denominator_small)))), 0)
+
+  dr <- naive(numerator_small, denominator_small, m = 2, kernel = "cos", bw = "nrd0")
+
+  expect_type(dr$density_numerator$PC1$y, "double")
 })
