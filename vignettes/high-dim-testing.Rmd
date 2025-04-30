@@ -1,0 +1,107 @@
+---
+title: "High dimensional two-sample testing"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{High dimensional two-sample testing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+# Introduction
+
+The main use of density ratio estimation is informative distribution comparison.
+Informative, because it allows to evaluate how two distributions differ at every region of the space of the data.
+Consider that we have samples from two, potentially different, distributions, $p_\text{nu}(x)$ and $p_\text{de}(x)$.
+Then, the density ratio between the two distributions is defined as
+$$
+r(x) = \frac{p_\text{nu}(x)}{p_\text{de}(x)},
+$$
+and can take any value between $0$ and $\infty$, according to whether the numerator or denominator distribution is larger at location $x$, which is defined over the multivariate space of the data.
+Differences between two distributions can be summarized using divergence measures (such as the Pearson or Kullback-Leibler divergence), and these divergences measures can again be used to test the null hypothesis that two distributions are equal.
+In this vignette, we show how to use density ratio estimation and the `densityratio` package to perform two-sample testing.
+
+# Two-sample testing with density ratios
+
+Consider that we have samples from two $m$-dimensional distributions, $p_\text{nu}(x)$ and $p_\text{de}(x)$, and we want to test the null hypothesis that the samples come from the same distribution (that is, $p_\text{nu}(x) = p_\text{de}(x)$).
+If we are interested solely in differences in the means of the distributions, we could potentially use a (multivariate) $t$-test (e.g., Hotelling's $t$-squared), but this might not be feasible if the variance-covariance matrix is not invertible.
+However, if we are interested in more general differences between distributions, we would have to settle for a non-parametric test, such as a multivariate extension of the Kolmogorov-Smirnov test.
+Alternatively, we can use divergence based tests, which are based on some divergence measure (see, e.g., Sugiyama et al., 2011), which can have higher power than the Kolmogorov-Smirnov test (see, e.g., Volker et al., 2023).
+The `densityratio` package implements multiple divergence based tests (all implemented in `summary()`), dependent on the estimation method: `ulsif()`, `spectral()`, `kmm()`, and `lhss()` use the Pearson divergence, `kliep()` uses the Kullback-Leibler divergence.
+In this vignette, we use the test implemented in the `spectral()` density ratio estimation method, which is particularly tailored towards high-dimensional data.
+
+The Pearson divergence is defined as
+$$
+\begin{aligned}
+PE(p_\text{nu}, p_\text{de}) &= \frac 1 2 \int \left( \frac{p_\text{nu}(x)}{p_\text{de}(x)} - 1 \right)^2 p_\text{de}(x) dx \\
+&= \frac 1 2 \int r(x) p_\text{nu}(x) dx - \int r(x) p_\text{de} dx + \frac 1 2,
+\end{aligned}
+$$
+and can be interpreted as the expected squared difference of the density ratio from unity, over the denominator distribution.
+If the two distributions are (almost) equal, the squared deviation will be small, and thus the Pearson divergence will be small.
+When there are large differences between the two distributions, the squared deviation will be large, and thus the Pearson divergence will be large.
+Since we do not know the numerator and denominator densities, nor the density ratio, we have to estimate the Pearson divergence from the samples.
+The density ratio can be estimated using the `spectral()` method (see the [Get Started vignette](https://thomvolker.github.io/densityratio/articles/densityratio.html) and Izbicki et al., 2014).
+Subsequently, can estimate the Pearson divergence empirically, by averaging the density ratios over the numerator and denominator samples.
+That is, we estimate the Pearson divergence as
+$$
+\hat{PE}(p_\text{nu}, p_\text{de}) =
+\frac{1}{2n_\text{nu}} \sum_{i = 1}^{n_\text{nu}} \hat{r}(x_i^{(\text{nu})}) - \frac{1}{n_\text{de}} \sum_{j = 1}^{n_\text{de}} \hat{r}(x_j^{(\text{de})}) + \frac{1}{2},
+$$
+where $\hat{r}(x)$ denotes the estimated density ratio at location $x$, and $n_\text{nu}$ and $n_\text{de}$ are the number of samples from the numerator and denominator distributions, respectively.
+
+Finally, we can compare the estimated Pearson divergence to a reference distribution.
+However, to the best of my knowledge, there is no known reference distribution for the Pearson divergence, and since it is a non-negative quantity, a normal approximation might not be feasible.
+Therefore, we use a permutation test to obtain a null distribution, as proposed by Sugiyama et al. (2011).
+That is, we randomly re-allocate the samples from the numerator and denominator distributions, estimate the density ratio function, and compute the Pearson divergence repeatedly, such that we obtain a reference distribution of Pearson divergences under the null hypothesis.
+Subsequently, we evaluate the probability that the obtained Pearson divergence is larger than the Pearson divergences from the null distribution, which gives rise to a $p$-value.
+This approach achieves nominal type I error control rates, as shown by Volker (2025).
+
+# Empirical example
+
+To illustrate the divergence-based test, we use the `colon` dataset (included in the `densityratio` package), which contains the expression levels of 2000 genes in 22 colon tumor tissues, and 40 non-tumor tissues (Alon et al., 1999).
+Our goal is to evaluate whether the expression levels of the genes are different for the two groups (over all genes simultaneously).
+
+
+``` r
+library(densityratio)
+
+numerator <- subset(colon, class == "tumor", select = -class)
+denominator <- subset(colon, class == "normal", select = -class)
+
+dr <- spectral(numerator, denominator)
+
+summary(dr, test = TRUE, parallel = TRUE)
+#> 
+#> Call:
+#> spectral(df_numerator = numerator, df_denominator = denominator)
+#> 
+#> Kernel Information:
+#>   Kernel type: Gaussian with L2 norm distances
+#>   Number of kernels: 40
+#> 
+#> Optimal sigma: 110.8282
+#> Optimal subspace: 35
+#> Optimal kernel weights (cv): num [1:35] 1.05247 0.56802 0.00296 0.15847 -0.24053 ...
+#>  
+#> Pearson divergence between P(nu) and P(de): 1.972
+#> Pr(P(nu)=P(de)) < .001
+#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
+```
+The `summary()` function computes the Pearson divergence, and performs a permutation test to evaluate the null hypothesis that the two distributions are equal.
+In this case, the probability that the samples come from the same distribution is very small, and thus the gene expression levels are different between the two groups.
+Evaluating which genes are most important for this difference is not straightforward which such high-dimensional data, and would require alternative methods (perhaps dimension reduction before conducting density ratio estimation, or a lasso-type analysis).
+
+
+# References
+
+Alon, U., Barkai, N., Notterman, D. A., Gish, K., Ybarra, S., Mack, D., & Levine, A. J. (1999). Broad patterns of gene expression revealed by clustering of tumor and normal colon tissues probed by oligonucleotide arrays. Proceedings of the National Academy of Sciences, 96(12), 6745-6750. <https://doi.org/10.1073/pnas.96.12.6745>
+
+Izbicki, R., Lee, A., & Schafer, C. (2014). High-dimensional density ratio estimation with extensions to approximate likelihood computation. *Proceedings of Machine Learning Research, 33*, 420-429. <https://proceedings.mlr.press/v33/izbicki14.html>
+
+Sugiyama, M., Suzuki, T., Itoh, Y., Kanamori, T., & Kimura, M. (2011). Least-squares two-sample test. *Neural Networks, 24*, 735-751. <http://dx.doi.org/10.1016/j.neunet.2011.04.003>
+
+Volker, T. B. (2025). Divergence-based testing using density ratio estimation techniques. <https://gist.github.com/thomvolker/58197e535ec458752bccbb5b611046ce>
+
+Volker, T. B., de Wolf, P.-P., & Van Kesteren, E.-J. (2023). Assessing the utility of synthetic data: A density ratio perspective. UNECE Expert Meeting on Statistical Data Confidentiality. <https://doi.org/10.5281/zenodo.8315054>
