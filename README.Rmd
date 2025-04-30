@@ -210,7 +210,7 @@ summary(fit)
 To formally evaluate whether the numerator and denominator densities differ significantly, you can perform a two-sample homogeneity test as follows.
 
 ```{r, summary-univ-test}
-#summary(fit, test = TRUE)
+summary(fit, test = TRUE)
 ```
 
 The probability that numerator and denominator samples share a common data generating mechanism is very small.
@@ -283,7 +283,7 @@ fit_all <- ulsif(
   df_denominator = denominator_data
 )
 
-#summary(fit_all, test = TRUE, parallel = TRUE)
+summary(fit_all, test = TRUE, parallel = TRUE)
 ```
 
 
@@ -297,7 +297,7 @@ Besides `ulsif()`, the package contains several other functions to estimate a de
 * `lhss()` estimates the density ratio in a subspace where the two distributions are most different using least-squares heterodistributional subspace search.
 * `spectral()` estimates the density ratio using a spectral series approach.
 
-We display `kliep()` and `naive()` as examples here. The other functions are displayed in the [Get Started vignette](https://thomvolker.github.io/densityratio/articles/densityratio.html). 
+We display `kliep()` and `naive()` as examples here. The other functions are discussed in the [Get Started vignette](https://thomvolker.github.io/densityratio/articles/densityratio.html). 
 
 ```{r, plot-methods, warning=FALSE, fig.height=6, fig.width=10, out.width="80%", fig.dpi=500, fig.format="png", fig.align="center"}
 fit_naive <- naive(

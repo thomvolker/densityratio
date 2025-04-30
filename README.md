@@ -119,7 +119,22 @@ differ significantly, you can perform a two-sample homogeneity test as
 follows.
 
 ``` r
-#summary(fit, test = TRUE)
+summary(fit, test = TRUE)
+#> 
+#> Call:
+#> ulsif(df_numerator = numerator_data$x5, df_denominator = denominator_data$x5,     nsigma = 5, nlambda = 5)
+#> 
+#> Kernel Information:
+#>   Kernel type: Gaussian with L2 norm distances
+#>   Number of kernels: 200
+#> 
+#> Optimal sigma: 0.3726142
+#> Optimal lambda: 0.03162278
+#> Optimal kernel weights: num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
+#>  
+#> Pearson divergence between P(nu) and P(de): 0.2801
+#> Pr(P(nu)=P(de)) < .001
+#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
 
 The probability that numerator and denominator samples share a common
@@ -193,9 +208,9 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.3041919
-#> 2                 B        1.3708760
-#> 3                 C        0.6358922
+#> 1                 A        1.3005360
+#> 2                 B        1.3574809
+#> 3                 C        0.6379142
 
 table(numerator_data$x1) / table(denominator_data$x1)
 #> 
@@ -220,7 +235,22 @@ fit_all <- ulsif(
   df_denominator = denominator_data
 )
 
-#summary(fit_all, test = TRUE, parallel = TRUE)
+summary(fit_all, test = TRUE, parallel = TRUE)
+#> 
+#> Call:
+#> ulsif(df_numerator = numerator_data, df_denominator = denominator_data)
+#> 
+#> Kernel Information:
+#>   Kernel type: Gaussian with L2 norm distances
+#>   Number of kernels: 200
+#> 
+#> Optimal sigma: 1.065369
+#> Optimal lambda: 0.1623777
+#> Optimal kernel weights: num [1:201] 0.5691 0.1511 0.0959 0.0118 0.0149 ...
+#>  
+#> Pearson divergence between P(nu) and P(de): 0.4629
+#> Pr(P(nu)=P(de)) < .001
+#> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
 
 ### Other density ratio estimation functions
