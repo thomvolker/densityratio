@@ -4,7 +4,8 @@ pkgdown_sha: ~
 articles:
   covariate-shift: covariate-shift.html
   densityratio: densityratio.html
-last_built: 2025-04-29T14:18Z
+  high-dim-testing: high-dim-testing.html
+last_built: 2025-04-30T14:27Z
 urls:
   reference: https://thomvolker.github.io/densityratio/reference
   article: https://thomvolker.github.io/densityratio/articles

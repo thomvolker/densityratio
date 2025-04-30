@@ -43,6 +43,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/covariate-shift.html">Covariate shift adjustment</a></li>
+    <li><a class="dropdown-item" href="articles/high-dim-testing.html">High dimensional two-sample testing</a></li>
   </ul>
 </li>
       </ul>
@@ -141,7 +142,22 @@
 <span><span class="co">#&gt; For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.</span></span></code></pre></div>
 <p>To formally evaluate whether the numerator and denominator densities differ significantly, you can perform a two-sample homogeneity test as follows.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#summary(fit, test = TRUE)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span>, test <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; ulsif(df_numerator = numerator_data$x5, df_denominator = denominator_data$x5,     nsigma = 5, nlambda = 5)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Kernel Information:</span></span>
+<span><span class="co">#&gt;   Kernel type: Gaussian with L2 norm distances</span></span>
+<span><span class="co">#&gt;   Number of kernels: 200</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Optimal sigma: 0.3726142</span></span>
+<span><span class="co">#&gt; Optimal lambda: 0.03162278</span></span>
+<span><span class="co">#&gt; Optimal kernel weights: num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...</span></span>
+<span><span class="co">#&gt;  </span></span>
+<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.2801</span></span>
+<span><span class="co">#&gt; Pr(P(nu)=P(de)) &lt; .001</span></span>
+<span><span class="co">#&gt; Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).</span></span></code></pre></div>
 <p>The probability that numerator and denominator samples share a common data generating mechanism is very small.</p>
 <p>The <code>ulsif</code>-object also contains the (hyper-)parameters used in estimating the density ratio, such as the centers used in constructing the Gaussian kernels (<code>fit$centers</code>), the different bandwidth parameters (<code>fit$sigma</code>) and the regularization parameters (<code>fit$lambda</code>). Using these variables, we can obtain the estimated density ratio using <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -196,9 +212,9 @@
 <span>  FUN <span class="op">=</span> <span class="va">unique</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   numerator_data$x1 predict(fit_cat)</span></span>
-<span><span class="co">#&gt; 1                 A        1.3041919</span></span>
-<span><span class="co">#&gt; 2                 B        1.3708760</span></span>
-<span><span class="co">#&gt; 3                 C        0.6358922</span></span>
+<span><span class="co">#&gt; 1                 A        1.3005360</span></span>
+<span><span class="co">#&gt; 2                 B        1.3574809</span></span>
+<span><span class="co">#&gt; 3                 C        0.6379142</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">numerator_data</span><span class="op">$</span><span class="va">x1</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">denominator_data</span><span class="op">$</span><span class="va">x1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -216,7 +232,22 @@
 <span>  df_denominator <span class="op">=</span> <span class="va">denominator_data</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#summary(fit_all, test = TRUE, parallel = TRUE)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_all</span>, test <span class="op">=</span> <span class="cn">TRUE</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; ulsif(df_numerator = numerator_data, df_denominator = denominator_data)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Kernel Information:</span></span>
+<span><span class="co">#&gt;   Kernel type: Gaussian with L2 norm distances</span></span>
+<span><span class="co">#&gt;   Number of kernels: 200</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Optimal sigma: 1.065369</span></span>
+<span><span class="co">#&gt; Optimal lambda: 0.1623777</span></span>
+<span><span class="co">#&gt; Optimal kernel weights: num [1:201] 0.5691 0.1511 0.0959 0.0118 0.0149 ...</span></span>
+<span><span class="co">#&gt;  </span></span>
+<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.4629</span></span>
+<span><span class="co">#&gt; Pr(P(nu)=P(de)) &lt; .001</span></span>
+<span><span class="co">#&gt; Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="other-density-ratio-estimation-functions">Other density ratio estimation functions<a class="anchor" aria-label="anchor" href="#other-density-ratio-estimation-functions"></a>
