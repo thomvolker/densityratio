@@ -162,8 +162,8 @@ permute.naivedensityratio <- function(object, stacked, nnu, nde, min_pred, max_p
     df_denominator = stacked[!ind, ],
   )
 
-  pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE]))
-  pred_de <- c(stats::predict(r, newdata = stacked[!ind, , drop = FALSE]))
+  pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE], log = TRUE))
+  pred_de <- c(stats::predict(r, newdata = stacked[!ind, , drop = FALSE], log = TRUE))
 
   (mean(pmin(max_pred, pmax(min_pred, pred_nu))) - mean(pmin(max_pred, pmax(min_pred, pred_de))))^2
 }
