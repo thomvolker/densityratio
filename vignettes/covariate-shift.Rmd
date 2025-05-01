@@ -273,7 +273,7 @@ $$
 where the density ratio weights $\hat{r}_{\text{tr},i}$ (collected in the diagonal matrix $\hat R$) are obtained from the estimated density ratio model.
 
 
-Below, we compare the performance of least squares regression with and without reweighting on the training and test data.
+Below, we compare the performance of least squares regression with and without reweighing on the training and test data.
 For the sake of illustration, we do this for data under random sampling, and for our covariate shift setting.
 We first fit a least squares regression model to the training data, and then predict the outcome variable for the test data, and evaluate the root mean squared error (RMSE) and ($R^2$).
 
@@ -307,7 +307,7 @@ c(
 ```
 These calculations show that the RMSE and $R^2$ values are quite similar for the training and test data, which is expected under random sampling.
 
-Subsequently, we fit the regression model with reweighting. We can calculate the weights for the training data using the `predict()` function in the `densityratio` package, and then use these weights in the `lm()` function.
+Subsequently, we fit the regression model with reweighing. We can calculate the weights for the training data using the `predict()` function in the `densityratio` package, and then use these weights in the `lm()` function.
 
 
 ``` r

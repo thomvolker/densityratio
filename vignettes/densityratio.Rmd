@@ -162,7 +162,7 @@ dr <- ulsif(high_school, no_high_school, centers = high_school)
 
 ### Bandwidth and regularization parameter
 
-The bandwidth of the kernel and the regularization parameter are tuned automatically using leave-one-out-cross-validation, which can be calculatted analytically.
+The bandwidth of the kernel and the regularization parameter are tuned automatically using leave-one-out-cross-validation, which can be calculated analytically.
 By default, the candidate bandwidth values are chosen by taking quantiles of the interpoint distance matrix corresponding to 10 equally spaced probabilities between 0.05 and 0.95.
 Changing the `nsigma` parameter results in a different number of quantiles used.
 The default candidate values for the regularization parameter `lambda` are set to `10^{seq(-3, 3, length.out = 20)}`.
@@ -251,7 +251,7 @@ Although $k$ can be set to equal the minimum number of observations in the numer
 
 ### `kmm()`
 
-The kernel mean matching algorithm is quite similar to the `ulsif()` algorithm, but starts from a different perspective: we estimate the density ratio such that reweighting the denominator samples with the density ratio results in a distribution that is as similar as possible to the numerator distribution in terms of the L2 norm.
+The kernel mean matching algorithm is quite similar to the `ulsif()` algorithm, but starts from a different perspective: we estimate the density ratio such that reweighing the denominator samples with the density ratio results in a distribution that is as similar as possible to the numerator distribution in terms of the L2 norm.
 This approach does not require tuning of a regularization parameter, but does require tuning of the bandwidth parameter (the same defaults as for `ulsif()` apply).
 By default, `kmm()` uses unconstrained optimization to estimate the density ratio parameters `constrained = FALSE`, but this can be changed to `constrained = TRUE` to use constrained optimization.
 The unconstrained optimization is more efficient, but might yield negative estimates for the density ratio.
@@ -532,9 +532,9 @@ The figure shows the distribution of density ratio values for the numerator and 
 This allows to evaluate how dissimilar the two distributions are: the more the density ratio values are separated, the more the two groups stand apart.
 That is, if the two distributions are very similar, the density ratio will be close to zero on the log-scale (one on the original scale) for all samples, regardless of the group, but more importantly, the height of the bars will be similar for both groups at all density ratio values.
 
-Additionally, it is possible to plot the estimated density ratio values against the features, both univariately and bivariately.
+Additionally, it is possible to plot the estimated density ratio values against the features, both univariate and bivariate.
 This may help to identify features, or combinations of features, on which the two groups differ.
-For example, below we plot the density ratio values against `kid_score` and `mom_iq` in a grid (by specifyin `grid = TRUE`, the default `grid = FALSE` produces a list with separate figures for each feature).
+For example, below we plot the density ratio values against `kid_score` and `mom_iq` in a grid (by specifying `grid = TRUE`, the default `grid = FALSE` produces a list with separate figures for each feature).
 
 
 ``` r
