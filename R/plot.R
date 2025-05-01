@@ -324,7 +324,7 @@ plot_univariate <- function(x, vars = NULL, samples = "both", logscale = TRUE,
   if (!grid) {
     plot <- lapply(vars, function(var) create_univariate_plot(data, ext, var, y_lab, sample.facet))
   } else {
-    values <- data[, vars] |> unlist(use.names = FALSE)
+    values <- unlist(data[, vars], use.names = FALSE)
     variable <- rep(vars, each = length(values) / length(vars))
     dr <- rep(ext$dr, length(vars))
     sample <- rep(ext$sample, length(vars))
@@ -502,11 +502,9 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
   } else {
     # Make all variables numeric to include them in a single grid-plot
     numvars <- sapply(data, is.numeric)
-    data[, !numvars] <- sapply(data[, !numvars], \(x) x |>
-      as.factor() |>
-      as.numeric())
+    data[, !numvars] <- sapply(data[, !numvars], function(x) as.numeric(as.factor(x)))
 
-    datlist <- lapply(var_combinations, \(v) data.frame(
+    datlist <- lapply(var_combinations, function(v) data.frame(
       values.x = data[, v[1]],
       values.y = data[, v[2]],
       xvar = rep(v[1], nrow(data)),

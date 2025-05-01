@@ -44,7 +44,7 @@ check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, 
     means <- colMeans(scaledat)
     sds <- sapply(scaledat, sd)
 
-    alldat[, numvars] <- scale(alldat[, numvars], center = means, scale = sds) |> as.data.frame()
+    alldat[, numvars] <- as.data.frame(scale(alldat[, numvars], center = means, scale = sds))
 
     if (any(sds == 0)) {
       warning("Some variables have zero variance in the data used for scaling. These variables are removed from both the numerator and denominator data.")
@@ -58,7 +58,7 @@ check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, 
   if (!is.null(newdata)) {
     newdata <- check.datatype(newdata)
     if (!is.null(scale)) {
-      newdata[, numvars] <- scale(newdata[, numvars], center = means, scale = sds) |> as.data.frame()
+      newdata[, numvars] <- as.data.frame(scale(newdata[, numvars], center = means, scale = sds))
     }
     alldat <- rbind(alldat, newdata)
     newdat <- model.matrix(~ . - 1, alldat)

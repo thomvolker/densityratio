@@ -57,13 +57,13 @@ naive <- function(df_numerator, df_denominator, m = NULL, bw = "SJ",
 
   # PCA to remove linear relations between variables
   pca <- stats::prcomp(dat$nu, center = TRUE, scale. = TRUE, rank = M)
-  nu_proj <- pca$x |> asplit(2)
-  de_proj <- stats::predict(pca, newdata = dat$de) |> asplit(2)
+  nu_proj <- asplit(pca$x, 2)
+  de_proj <- asplit(stats::predict(pca, newdata = dat$de), 2)
 
   # now assume independence and calculate the density for each component
   # separately
-  d_nu <- lapply(nu_proj, \(x) density(x, bw = bw, kernel = kernel, n = n, ...))
-  d_de <- lapply(de_proj, \(x) density(x, bw = bw, kernel = kernel, n = n, ...))
+  d_nu <- lapply(nu_proj, function(x) density(x, bw = bw, kernel = kernel, n = n, ...))
+  d_de <- lapply(de_proj, function(x) density(x, bw = bw, kernel = kernel, n = n, ...))
 
   # return object
   out <- list(

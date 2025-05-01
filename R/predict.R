@@ -29,7 +29,10 @@ predict.ulsif <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
   intercept <- nrow(object$alpha) > nrow(object$centers)
 
   for (i in 1:nsigma) {
-    K <- distance(newdata, object$model_matrices$ce, intercept) |> kernel_gaussian(newsigma[i])
+    K <- kernel_gaussian(
+      distance(newdata, object$model_matrices$ce, intercept),
+      newsigma[i]
+    )
     for (j in 1:nlambda) {
       dratio[, i, j] <- K %*% alpha[, i, j]
     }
@@ -65,7 +68,10 @@ predict.kliep <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), 
   intercept <- nrow(object$alpha) > nrow(object$centers)
 
   for (i in 1:nsigma) {
-    K <- distance(newdata, object$model_matrices$ce, intercept) |> kernel_gaussian(newsigma[i])
+    K <- kernel_gaussian(
+      distance(newdata, object$model_matrices$ce, intercept),
+      newsigma[i]
+    )
     dratio[, i] <- K %*% alpha[, i]
   }
   dratio
@@ -99,7 +105,10 @@ predict.kmm <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), ..
   intercept <- nrow(object$alpha) > nrow(object$centers)
 
   for (i in 1:nsigma) {
-    K <- distance(newdata, object$model_matrices$ce, intercept) |> kernel_gaussian(newsigma[i])
+    K <- kernel_gaussian(
+      distance(newdata, object$model_matrices$ce, intercept),
+      newsigma[i]
+    )
     dratio[, i] <- K %*% alpha[, i]
   }
   dratio
@@ -139,8 +148,10 @@ predict.lhss <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"), l
     for (j in 1:nsigma) {
       U_new <- alpha_U_sigma$U[, , j, i]
       alpha_new <- alpha_U_sigma$alpha[, j, i]
-      K <- distance(newdata %*% U_new, object$model_matrices$ce %*% U_new, intercept) |>
-        kernel_gaussian(sigma = alpha_U_sigma$sigma[j, i])
+      K <- kernel_gaussian(
+        distance(newdata %*% U_new, object$model_matrices$ce %*% U_new, intercept),
+        sigma = alpha_U_sigma$sigma[j, i]
+      )
       dratio[, j, i] <- K %*% alpha_new
     }
   }
@@ -174,7 +185,10 @@ predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"
   dratio <- array(0, dim = c(nrow(newdata), length(newM), length(newsigma)))
 
   for (i in 1:length(newsigma)) {
-    K <- distance(newdata, object$model_matrices$ce, FALSE) |> kernel_gaussian(newsigma[i])
+    K <- kernel_gaussian(
+      distance(newdata, object$model_matrices$ce, FALSE),
+      newsigma[i]
+    )
     D <- diag(length(alpha_eigen$Evals[, i]))
     diag(D) <- sqrt(nrow(object$model_matrices$ce)) / alpha_eigen$Evals[, i]
     phihatpred <- K %*% alpha_eigen$Evecs[, , i] %*% D
@@ -208,7 +222,7 @@ predict.spectral <- function(object, newdata = NULL, sigma = c("sigmaopt", "all"
 predict.naivedensityratio <- function(object, newdata = NULL, log = FALSE,
                                       tol = 1e-6, ...) {
   newdata <- check.newdata(object, newdata)
-  newdata_proj <- predict(object$fit, newdata) |> asplit(2)
+  newdata_proj <- asplit(predict(object$fit, newdata), 2)
 
   log_densities_nu <- mapply(
     function(density, newdata) {

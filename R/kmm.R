@@ -97,7 +97,7 @@ kmm <- function(df_numerator, df_denominator, scale = "numerator",
       )
     }, cl = cluster)
     res <- list(
-      alpha = do.call(cbind, constrained_out |> lapply(function(x) x$alpha)),
+      alpha = do.call(cbind, lapply(constrained_out, function(x) x$alpha)),
       loss = sapply(constrained_out, function(x) x$loss)
     )
   } else {
