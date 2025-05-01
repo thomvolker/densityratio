@@ -11,7 +11,7 @@ gene expressions).
 \description{
 Colon cancer data set from princeton, containing 2000 gene expressions from
 22 colon tumor tissues and 40 non-tumor tissues. The data can also be found
-\href{here}{http://genomics-pubs.princeton.edu/oncology/affydata/I2000.html}.
+\href{http://genomics-pubs.princeton.edu/oncology/affydata/}{here}.
 }
 \references{
 Alon, U., Barkai, N., Notterman, D. A., Gish, K., Ybarra, S., Mack, D., &

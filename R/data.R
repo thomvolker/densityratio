@@ -71,7 +71,7 @@ NULL
 #' insurance
 #'
 #' Insurance data that is openly available (e.g., on
-#' \href{Kaggle}{https://www.kaggle.com/datasets/mirichoi0218/insurance}).
+#' \href{https://www.kaggle.com/datasets/mirichoi0218/insurance}{Kaggle}).
 #'
 #' @name insurance
 #' @docType data
@@ -93,7 +93,7 @@ NULL
 #'
 #' Colon cancer data set from princeton, containing 2000 gene expressions from
 #' 22 colon tumor tissues and 40 non-tumor tissues. The data can also be found
-#' \href{here}{http://genomics-pubs.princeton.edu/oncology/affydata/I2000.html}.
+#' \href{http://genomics-pubs.princeton.edu/oncology/affydata/}{here}.
 #'
 #' @name colon
 #' @docType data
