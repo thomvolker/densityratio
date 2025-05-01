@@ -60,6 +60,6 @@ plot_bivariate(dr)
 head(predict(dr))
 # Fit model with custom parameters
 kliep(numerator_small, denominator_small,
-      nsigma = 20, ncenters = 100, nfold = 20,
-      epsilon = 10^{3:-5}, maxit = 1000)
+      nsigma = 1, ncenters = 100, nfold = 10,
+      epsilon = 10^{2:-5}, maxit = 500)
 }

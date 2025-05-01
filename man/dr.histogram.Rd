@@ -155,8 +155,8 @@ plot_bivariate(dr)
 head(predict(dr))
 # Fit model with custom parameters
 kliep(numerator_small, denominator_small,
-      nsigma = 20, ncenters = 100, nfold = 20,
-      epsilon = 10^{3:-5}, maxit = 1000)
+      nsigma = 1, ncenters = 100, nfold = 10,
+      epsilon = 10^{2:-5}, maxit = 500)
 set.seed(123)
 # Fit model
 dr <- kmm(numerator_small, denominator_small)
@@ -174,8 +174,8 @@ plot_bivariate(dr)
 head(predict(dr))
 # Fit model with custom parameters
 kmm(numerator_small, denominator_small,
-    nsigma = 20, ncenters = 100, nfold = 20,
-    constrained = TRUE, parallel = TRUE, nthreads = 2)
+    nsigma = 5, ncenters = 100, nfold = 10,
+    constrained = TRUE)
 set.seed(123)
 # Fit model
 dr <- spectral(numerator_small, denominator_small)
@@ -194,9 +194,9 @@ head(predict(dr))
 # Fit model with custom parameters
 spectral(numerator_small, denominator_small, sigma = 2)
 set.seed(123)
-# Fit model
+# Fit model (minimal example to limit computation time)
 dr <- lhss(numerator_small, denominator_small,
-           nsigma = 5, nlambda = 5, ncenters = 50)
+           nsigma = 5, nlambda = 3, ncenters = 50, maxit = 100)
 # Inspect model object
 dr
 # Obtain summary of model object

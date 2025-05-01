@@ -22,7 +22,7 @@ permute(object, ...)
 
 \method{permute}{spectral}(object, stacked, nnu, nde, ...)
 
-\method{permute}{naivedensityratio}(object, stacked, nnu, nde, min_pred, max_pred)
+\method{permute}{naivedensityratio}(object, stacked, nnu, nde, min_pred, max_pred, ...)
 }
 \arguments{
 \item{object}{\code{naivedensityratio} object}

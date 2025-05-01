@@ -32,9 +32,9 @@ Obtain predicted density ratio values from a \code{lhss} object
 }
 \examples{
 set.seed(123)
-# Fit model
+# Fit model (minimal example to limit computation time)
 dr <- lhss(numerator_small, denominator_small,
-           nsigma = 5, nlambda = 5, ncenters = 50)
+           nsigma = 5, nlambda = 3, ncenters = 50, maxit = 100)
 # Inspect model object
 dr
 # Obtain summary of model object
