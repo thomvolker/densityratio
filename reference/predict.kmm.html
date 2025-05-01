@@ -153,19 +153,19 @@ but otherwise the numerator samples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 1.6880096</span>
 <span class="r-in"><span><span class="co"># Fit model with custom parameters</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="kmm.html">kmm</a></span><span class="op">(</span><span class="va">numerator_small</span>, <span class="va">denominator_small</span>,</span></span>
-<span class="r-in"><span>    nsigma <span class="op">=</span> <span class="fl">20</span>, ncenters <span class="op">=</span> <span class="fl">100</span>, nfold <span class="op">=</span> <span class="fl">20</span>,</span></span>
-<span class="r-in"><span>    constrained <span class="op">=</span> <span class="cn">TRUE</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span>, nthreads <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    nsigma <span class="op">=</span> <span class="fl">5</span>, ncenters <span class="op">=</span> <span class="fl">100</span>, nfold <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>    constrained <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> kmm(df_numerator = numerator_small, df_denominator = denominator_small,     constrained = TRUE, nsigma = 20, ncenters = 100, nfold = 20,     parallel = TRUE, nthreads = 2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> kmm(df_numerator = numerator_small, df_denominator = denominator_small,     constrained = TRUE, nsigma = 5, ncenters = 100, nfold = 10)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Kernel Information:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Kernel type: Gaussian with L2 norm distances</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Number of kernels: 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma: num [1:20] 0.811 1.026 1.205 1.355 1.486 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma: num [1:5] 0.811 1.577 2.094 2.66 3.706</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal sigma (20-fold cv): 1.828</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal kernel weights (20-fold cv):  num [1:100, 1] -0.0003 -0.000272 -0.000424 -0.000314 -0.000161 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal sigma (10-fold cv): 2.094</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal kernel weights (10-fold cv):  num [1:100, 1] -0.000498 -0.000999 -0.001187 -0.001022 -0.000275 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization parameters:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Optimization method:  Constrained </span>

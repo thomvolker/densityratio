@@ -148,23 +148,23 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 2.930002</span>
 <span class="r-in"><span><span class="co"># Fit model with custom parameters</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="kliep.html">kliep</a></span><span class="op">(</span><span class="va">numerator_small</span>, <span class="va">denominator_small</span>,</span></span>
-<span class="r-in"><span>      nsigma <span class="op">=</span> <span class="fl">20</span>, ncenters <span class="op">=</span> <span class="fl">100</span>, nfold <span class="op">=</span> <span class="fl">20</span>,</span></span>
-<span class="r-in"><span>      epsilon <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">{</span><span class="fl">3</span><span class="op">:</span><span class="op">-</span><span class="fl">5</span><span class="op">}</span>, maxit <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      nsigma <span class="op">=</span> <span class="fl">1</span>, ncenters <span class="op">=</span> <span class="fl">100</span>, nfold <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>      epsilon <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="op">{</span><span class="fl">2</span><span class="op">:</span><span class="op">-</span><span class="fl">5</span><span class="op">}</span>, maxit <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> kliep(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 20, ncenters = 100, nfold = 20, epsilon = 10^{        3:-5    }, maxit = 1000)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> kliep(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 1, ncenters = 100, nfold = 10, epsilon = 10^{        2:-5    }, maxit = 500)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Kernel Information:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Kernel type: Gaussian with L2 norm distances</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Number of kernels: 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma: num [1:20] 0.73 0.935 1.08 1.209 1.319 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma: num 1.85</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal sigma (20-fold cv): 0.7296</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal kernel weights (20-fold cv):  num [1:100, 1] 0.194 0 0.503 0 0.732 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal sigma (10-fold cv): 1.852</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal kernel weights (10-fold cv):  num [1:100, 1] 0.039 0 0.0659 0 0.0786 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization parameters:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Learning rate (epsilon): 1e+03  1e+02  1e+01  1e+00  1e-01  1e-02  1e-03  1e-04  1e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Maximum number of iterations:  1000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Learning rate (epsilon): 1e+02  1e+01  1e+00  1e-01  1e-02  1e-03  1e-04  1e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Maximum number of iterations:  500</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
