@@ -120,110 +120,16 @@ Creates a histogram of the density ratio estimates. Useful to understand the
 distribution of estimated density ratios in each sample, or compare it among
 samples. It is the default plotting method for density ratio objects.
 }
-\examples{
-set.seed(123)
-# Fit model
-dr <- ulsif(numerator_small, denominator_small)
-# Inspect model object
-dr
-# Obtain summary of model object
-summary(dr)
-# Plot model object
-plot(dr)
-# Plot density ratio for each variable individually
-plot_univariate(dr)
-# Plot density ratio for each pair of variables
-plot_bivariate(dr)
-# Predict density ratio and inspect first 6 predictions
-head(predict(dr))
-# Fit model with custom parameters
-ulsif(numerator_small, denominator_small, sigma = 2, lambda = 2)
-set.seed(123)
-# Fit model
-dr <- kliep(numerator_small, denominator_small)
-# Inspect model object
-dr
-# Obtain summary of model object
-summary(dr)
-# Plot model object
-plot(dr)
-# Plot density ratio for each variable individually
-plot_univariate(dr)
-# Plot density ratio for each pair of variables
-plot_bivariate(dr)
-# Predict density ratio and inspect first 6 predictions
-head(predict(dr))
-# Fit model with custom parameters
-kliep(numerator_small, denominator_small,
-      nsigma = 1, ncenters = 100, nfold = 10,
-      epsilon = 10^{2:-5}, maxit = 500)
-set.seed(123)
-# Fit model
-dr <- kmm(numerator_small, denominator_small)
-# Inspect model object
-dr
-# Obtain summary of model object
-summary(dr)
-# Plot model object
-plot(dr)
-# Plot density ratio for each variable individually
-plot_univariate(dr)
-# Plot density ratio for each pair of variables
-plot_bivariate(dr)
-# Predict density ratio and inspect first 6 predictions
-head(predict(dr))
-# Fit model with custom parameters
-kmm(numerator_small, denominator_small,
-    nsigma = 5, ncenters = 100, nfold = 10,
-    constrained = TRUE)
-set.seed(123)
-# Fit model
-dr <- spectral(numerator_small, denominator_small)
-# Inspect model object
-dr
-# Obtain summary of model object
-summary(dr)
-# Plot model object
-plot(dr)
-# Plot density ratio for each variable individually
-plot_univariate(dr)
-# Plot density ratio for each pair of variables
-plot_bivariate(dr)
-# Predict density ratio and inspect first 6 predictions
-head(predict(dr))
-# Fit model with custom parameters
-spectral(numerator_small, denominator_small, sigma = 2)
-set.seed(123)
-# Fit model (minimal example to limit computation time)
-dr <- lhss(numerator_small, denominator_small,
-           nsigma = 5, nlambda = 3, ncenters = 50, maxit = 100)
-# Inspect model object
-dr
-# Obtain summary of model object
-summary(dr)
-# Plot model object
-plot(dr)
-# Plot density ratio for each variable individually
-plot_univariate(dr)
-# Plot density ratio for each pair of variables
-plot_bivariate(dr)
-# Predict density ratio and inspect first 6 predictions
-head(predict(dr))
-set.seed(123)
-# Fit model
-dr <- naive(numerator_small, denominator_small)
-# Inspect model object
-dr
-# Obtain summary of model object
-summary(dr)
-# Plot model object
-plot(dr)
-# Plot density ratio for each variable individually
-plot_univariate(dr)
-# Plot density ratio for each pair of variables
-plot_bivariate(dr)
-# Predict density ratio and inspect first 6 predictions
-head(predict(dr))
-# Fit model with custom parameters
-naive(numerator_small, denominator_small, m=2, kernel="epanechnikov")
+\seealso{
+\code{\link{ulsif}} for example usage
+
+\code{\link{kliep}} for example usage
+
+\code{\link{kmm}} for example usage
+
+\code{\link{spectral}} for example usage
+
+\code{\link{lhss}} for example usage
+
+\code{\link{naive}} for example usage
 }

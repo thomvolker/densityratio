@@ -108,7 +108,7 @@ dr.histogram <- function(x,
 #' @return A histogram of density ratio estimates.
 #' @method plot ulsif
 #' @export
-#' @example inst/examples/ulsif-example.R
+#' @seealso \code{\link{ulsif}} for example usage
 
 plot.ulsif <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
                        bins = NULL, tol = 10e-3, ...) {
@@ -123,7 +123,7 @@ plot.ulsif <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
 #' @return A histogram of density ratio estimates.
 #' @method plot kliep
 #' @export
-#' @example inst/examples/kliep-example.R
+#' @seealso \code{\link{kliep}} for example usage
 
 
 plot.kliep <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
@@ -138,7 +138,7 @@ plot.kliep <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
 #' @return A histogram of density ratio estimates.
 #' @method plot kmm
 #' @export
-#' @example inst/examples/kmm-example.R
+#' @seealso \code{\link{kmm}} for example usage
 
 
 plot.kmm <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
@@ -153,7 +153,7 @@ plot.kmm <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
 #' @return A histogram of density ratio estimates.
 #' @method plot spectral
 #' @export
-#' @example inst/examples/spectral-example.R
+#' @seealso \code{\link{spectral}} for example usage
 
 
 plot.spectral <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
@@ -168,7 +168,7 @@ plot.spectral <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
 #' @return A histogram of density ratio estimates.
 #' @method plot lhss
 #' @export
-#' @example inst/examples/lhss-example.R
+#' @seealso \code{\link{lhss}} for example usage
 
 
 plot.lhss <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
@@ -183,7 +183,7 @@ plot.lhss <- function(x, samples = "both", logscale = TRUE, binwidth = NULL,
 #' @return A histogram of density ratio estimates.
 #' @method plot naivedensityratio
 #' @export
-#' @example inst/examples/naive-example.R
+#' @seealso \code{\link{naive}} for example usage
 
 plot.naivedensityratio <- function(x, samples = "both", logscale = TRUE,
                                    binwidth = NULL, bins = NULL, tol = 10e-3, ...) {
