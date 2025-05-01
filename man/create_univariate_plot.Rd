@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{create_univariate_plot}
 \alias{create_univariate_plot}
-\title{Indivual univariate plot}
+\title{Univariate plot}
 \usage{
 create_univariate_plot(data, ext, var, y_lab, sample.facet = TRUE)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot_bivariate}
 \alias{plot_bivariate}
-\title{Densityratio in bidimensional plot}
+\title{Densityratio in two-dimensional plot}
 \usage{
 plot_bivariate(
   x,

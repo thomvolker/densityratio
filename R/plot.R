@@ -193,7 +193,7 @@ plot.naivedensityratio <- function(x, samples = "both", logscale = TRUE,
   )
 }
 
-#' Indivual univariate plot
+#' Univariate plot
 #'
 #' Scatterplot of individual values and density ratio estimates. Used internally in [create_univariate_plot()]
 #' @param data Data frame with the individual values and density ratio estimates
@@ -419,7 +419,7 @@ create_bivariate_plot <- function(data, ext, vars, logscale, show.sample) {
   return(plot)
 }
 
-#' Densityratio in bidimensional plot
+#' Densityratio in two-dimensional plot
 #'
 #' Plots a scatterplot of two variables, with densityratio mapped to the colour
 #' scale.
