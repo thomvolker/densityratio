@@ -437,7 +437,7 @@ data. Consequently, we have
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>R</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat R</annotation></semantics></math>)
 are obtained from the estimated density ratio model.</p>
 <p>Below, we compare the performance of least squares regression with
-and without reweighting on the training and test data. For the sake of
+and without reweighing on the training and test data. For the sake of
 illustration, we do this for data under random sampling, and for our
 covariate shift setting. We first fit a least squares regression model
 to the training data, and then predict the outcome variable for the test
@@ -471,7 +471,7 @@ data, and evaluate the RMSE and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>R</mi><mn>2</mn></msup><annotation encoding="application/x-tex">R^2</annotation></semantics></math>
 values are quite similar for the training and test data, which is
 expected under random sampling.</p>
-<p>Subsequently, we fit the regression model with reweighting. We can
+<p>Subsequently, we fit the regression model with reweighing. We can
 calculate the weights for the training data using the
 <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> function in the <code>densityratio</code>
 package, and then use these weights in the <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>

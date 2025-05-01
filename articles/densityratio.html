@@ -321,7 +321,7 @@ argument. If the inducing points are set manually, the
 </h4>
 <p>The bandwidth of the kernel and the regularization parameter are
 tuned automatically using leave-one-out-cross-validation, which can be
-calculatted analytically. By default, the candidate bandwidth values are
+calculated analytically. By default, the candidate bandwidth values are
 chosen by taking quantiles of the interpoint distance matrix
 corresponding to 10 equally spaced probabilities between 0.05 and 0.95.
 Changing the <code>nsigma</code> parameter results in a different number
@@ -468,7 +468,7 @@ solution to the loss is available.</p>
 </h4>
 <p>The kernel mean matching algorithm is quite similar to the
 <code><a href="../reference/ulsif.html">ulsif()</a></code> algorithm, but starts from a different perspective:
-we estimate the density ratio such that reweighting the denominator
+we estimate the density ratio such that reweighing the denominator
 samples with the density ratio results in a distribution that is as
 similar as possible to the numerator distribution in terms of the L2
 norm. This approach does not require tuning of a regularization
@@ -813,11 +813,11 @@ original scale) for all samples, regardless of the group, but more
 importantly, the height of the bars will be similar for both groups at
 all density ratio values.</p>
 <p>Additionally, it is possible to plot the estimated density ratio
-values against the features, both univariately and bivariately. This may
+values against the features, both univariate and bivariate. This may
 help to identify features, or combinations of features, on which the two
 groups differ. For example, below we plot the density ratio values
 against <code>kid_score</code> and <code>mom_iq</code> in a grid (by
-specifyin <code>grid = TRUE</code>, the default
+specifying <code>grid = TRUE</code>, the default
 <code>grid = FALSE</code> produces a list with separate figures for each
 feature).</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
