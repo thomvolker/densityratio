@@ -154,7 +154,7 @@ permute.spectral <- function(object, stacked, nnu, nde, ...) {
 #' @importFrom stats predict
 #' @importFrom stats update
 
-permute.naivedensityratio <- function(object, stacked, nnu, nde, min_pred, max_pred) {
+permute.naivedensityratio <- function(object, stacked, nnu, nde, min_pred, max_pred, ...) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
   r <- stats::update(
     object = object,
