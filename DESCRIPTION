@@ -5,7 +5,7 @@ Version: 0.2.0
 Authors@R: c(
     person("Thom", "Volker", 
     email = "thombenjaminvolker@gmail.com", 
-    role = c("aut", "cre", "cph"),
+    role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2408-7820")),
     person("Carlos", "Gonzalez Poses", role = "ctb"), 
     person("Erik-Jan", "van Kesteren", role = "ctb"))
