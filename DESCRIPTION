@@ -16,7 +16,7 @@ Description: Fast, flexible and user-friendly tools for distribution comparison
   multiple non-parametric estimation techniques (unconstrained least-squares
   importance fitting, ulsif(), Kullback-Leibler importance estimation procedure,
   kliep(), spectral density ratio estimation, spectral(), kernel mean matching,
-  kmm() and least-squares hetero-distributional subspace search, lhss()).
+  kmm(), and least-squares hetero-distributional subspace search, lhss()).
   with automatic tuning of hyperparameters. Helper functions are available for
   two-sample testing and visualizing the density ratios. 
 License: GPL (>= 3)
