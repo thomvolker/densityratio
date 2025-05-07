@@ -17,3 +17,4 @@ head(predict(dr))
 kmm(numerator_small, denominator_small,
     nsigma = 5, ncenters = 100, nfold = 10,
     constrained = TRUE)
+

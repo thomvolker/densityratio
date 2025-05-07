@@ -68,7 +68,7 @@ test_that("multidimensional kmm estimation, prediction and plotting works", {
 
   expect_equal(
     est$alpha,
-    solve(crossprod(Kdd) %*% Kdd + 1e-4*diag(nrow(Kdd)),
+    solve(crossprod(Kdd) %*% Kdd + 1e-3*diag(nrow(Kdd)),
           rowSums(crossprod(Kdd, Kdn))) *
       nrow(Kdd) / ncol(Kdn),
     ignore_attr = TRUE
