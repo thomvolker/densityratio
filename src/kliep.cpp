@@ -21,7 +21,7 @@ arma::mat make_phibar(const arma::mat& dist_de, double sigma) {
 }
 
 //[[Rcpp::export]]
-arma::vec kliep_compute_alpha(const arma::mat& Phi, const arma::vec& phibar, const arma::vec& phibar_corr, const arma::vec& epsilon, int nepsilon, int maxit, bool progressbar) {
+arma::vec kliep_compute_alpha(arma::mat Phi, arma::vec phibar, arma::vec phibar_corr, const arma::vec& epsilon, int nepsilon, int maxit, bool progressbar) {
 
   bool stopped = false;
   bool conv = false;

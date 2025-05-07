@@ -11,14 +11,14 @@ using namespace Rcpp;
 using namespace arma;
 
 // [[Rcpp::export]]
-arma::mat make_UV(const arma::mat& U) {
+arma::mat make_UV(arma::mat U) {
   arma::mat Q, R;
   arma::qr(Q, R, U);
   return Q * sign(as_scalar(R(0,0)));
 }
 
 //[[Rcpp::export]]
-double get_sigma_lhss(const arma::mat& dist, const arma::vec& sigma, const bool& quantiles) {
+double get_sigma_lhss(arma::mat dist, arma::vec sigma, bool quantiles) {
   double s;
   if (quantiles) {
     arma::vec nonzero_dist = nonzeros(dist);

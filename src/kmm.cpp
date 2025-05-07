@@ -12,22 +12,22 @@ using namespace Rcpp;
 using namespace arma;
 
 //[[Rcpp::export]]
-arma::vec kmm_unconstrained_alpha(const arma::mat& Kdn,
-                                  const arma::mat& Kdd,
-                                  const arma::mat& Kd,
-                                  const int nnu,
-                                  const int nde) {
+arma::vec kmm_unconstrained_alpha(arma::mat Kdn,
+                                  arma::mat Kdd,
+                                  arma::mat Kd,
+                                  const double nnu,
+                                  const double nde) {
   arma::mat L1 = Kd.t() * Kdd * Kd;
-  L1.diag() += 0.0001;
+  L1.diag() += 0.001;
   arma::vec L2 = sum(Kd.t() * Kdn, 1);
   arma::vec alpha = arma::solve(L1, L2);
   return nde / nnu * alpha;
 }
 
 //[[Rcpp::export]]
-arma::vec kmm_constrained_alpha(const arma::mat& Kdn,
-                                const arma::mat& Kdd,
-                                const arma::mat& Kd,
+arma::vec kmm_constrained_alpha(arma::mat Kdn,
+                                arma::mat Kdd,
+                                arma::mat Kd,
                                 const int nnu,
                                 const int nde,
                                 const List settings) {
@@ -51,10 +51,10 @@ arma::vec kmm_constrained_alpha(const arma::mat& Kdn,
 }
 
 // [[Rcpp::export]]
-double kmm_cv_loss(const arma::mat& Kdn,
-                   const arma::mat& Kdd,
-                   const arma::mat& Kd,
-                   const arma::mat& Kn,
+double kmm_cv_loss(arma::mat Kdn,
+                   arma::mat Kdd,
+                   arma::mat Kd,
+                   arma::mat Kn,
                    const int& nfolds,
                    const arma::uvec& cv_ind_nu,
                    const arma::uvec& cv_ind_de,

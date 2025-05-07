@@ -33,7 +33,7 @@ arma::mat distance(const arma::mat& X, const arma::mat& Y, const bool& intercept
 //' @export
 
 //[[Rcpp::export]]
-arma::mat kernel_gaussian(const arma::mat& dist, const double& sigma) {
+arma::mat kernel_gaussian(const arma::mat& dist, double sigma) {
   arma::mat KGM = exp(-dist / (2*sigma*sigma));
   return KGM;
 }

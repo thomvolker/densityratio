@@ -13,7 +13,7 @@ using namespace arma;
 
 
 //[[Rcpp::export]]
-arma::vec ulsif_compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double& lambda) {
+arma::vec ulsif_compute_alpha(arma::mat Hhat, arma::vec hhat, double lambda) {
   Hhat.diag() += lambda;
   arma::vec alpha = arma::solve(Hhat, hhat);
   return alpha;
@@ -38,7 +38,7 @@ int set_threads(int nthreads) {
 }
 
 //[[Rcpp::export]]
-double compute_ulsif_loocv(const arma::mat& Hhat, const arma::mat& hhat, const double& lambda, const int& nnu, const int& nde, const int& nmin, const int& ncol, const arma::mat& Knu_nmin, const arma::mat& Kde_nmin) {
+double compute_ulsif_loocv(arma::mat Hhat, arma::mat hhat, double lambda, const int& nnu, const int& nde, const int& nmin, const int& ncol, arma::mat Knu_nmin, arma::mat Kde_nmin) {
   double la = lambda * (nde - 1) / nde;
 
   // arma::vec onen = arma::ones<arma::vec>(nmin);
@@ -110,7 +110,7 @@ List compute_ulsif(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
       } else {
         la = lambda[l];
         p.increment();
-        current_alpha =  ulsif_compute_alpha(Hhat, hhat, la);
+        current_alpha = ulsif_compute_alpha(Hhat, hhat, la);
         alpha.slice(l).col(sig) = current_alpha;
         loocv(sig, l) = compute_ulsif_loocv(Hhat, hhat, la, nnu, nde, nmin, ncol, Knu.rows(0, nmin-1), Kde.rows(0,nmin-1));
       }

@@ -11,24 +11,24 @@ using namespace Rcpp;
 using namespace arma;
 
 // [[Rcpp::export]]
-arma::mat compute_psihat(const arma::mat& K,
-                         const arma::mat& Evecs,
-                         const arma::vec& Evals,
+arma::mat compute_psihat(arma::mat K,
+                         arma::mat Evecs,
+                         arma::vec Evals,
                          const int& maxJ,
                          const int& ncol) {
   return K * Evecs.cols(ncol - maxJ, ncol - 1) * diagmat(sqrt(ncol)/Evals.subvec(ncol - maxJ, ncol - 1));
 }
 
 // [[Rcpp::export]]
-arma::rowvec spectral_cv_loss(const arma::mat& Knu,
-                           const arma::mat& Kde,
-                           const arma::vec& m,
-                           const int& maxM,
-                           const int& nfolds,
-                           const arma::uvec& cv_ind_nu,
-                           const arma::uvec& cv_ind_de,
-                           const int& nthreads,
-                           const bool& parallel) {
+arma::rowvec spectral_cv_loss(arma::mat Knu,
+                              arma::mat Kde,
+                              const arma::vec& m,
+                              int maxM,
+                              const int& nfolds,
+                              const arma::uvec& cv_ind_nu,
+                              const arma::uvec& cv_ind_de,
+                              const int& nthreads,
+                              const bool& parallel) {
 
   arma::vec loss(m.size());
 

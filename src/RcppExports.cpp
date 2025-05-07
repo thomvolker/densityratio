@@ -25,13 +25,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // kernel_gaussian
-arma::mat kernel_gaussian(const arma::mat& dist, const double& sigma);
+arma::mat kernel_gaussian(const arma::mat& dist, double sigma);
 RcppExport SEXP _densityratio_kernel_gaussian(SEXP distSEXP, SEXP sigmaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type dist(distSEXP);
-    Rcpp::traits::input_parameter< const double& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
     rcpp_result_gen = Rcpp::wrap(kernel_gaussian(dist, sigma));
     return rcpp_result_gen;
 END_RCPP
@@ -61,14 +61,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // kliep_compute_alpha
-arma::vec kliep_compute_alpha(const arma::mat& Phi, const arma::vec& phibar, const arma::vec& phibar_corr, const arma::vec& epsilon, int nepsilon, int maxit, bool progressbar);
+arma::vec kliep_compute_alpha(arma::mat Phi, arma::vec phibar, arma::vec phibar_corr, const arma::vec& epsilon, int nepsilon, int maxit, bool progressbar);
 RcppExport SEXP _densityratio_kliep_compute_alpha(SEXP PhiSEXP, SEXP phibarSEXP, SEXP phibar_corrSEXP, SEXP epsilonSEXP, SEXP nepsilonSEXP, SEXP maxitSEXP, SEXP progressbarSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type Phi(PhiSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type phibar(phibarSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type phibar_corr(phibar_corrSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Phi(PhiSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type phibar(phibarSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type phibar_corr(phibar_corrSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< int >::type nepsilon(nepsilonSEXP);
     Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
@@ -95,29 +95,29 @@ BEGIN_RCPP
 END_RCPP
 }
 // kmm_unconstrained_alpha
-arma::vec kmm_unconstrained_alpha(const arma::mat& Kdn, const arma::mat& Kdd, const arma::mat& Kd, const int nnu, const int nde);
+arma::vec kmm_unconstrained_alpha(arma::mat Kdn, arma::mat Kdd, arma::mat Kd, const double nnu, const double nde);
 RcppExport SEXP _densityratio_kmm_unconstrained_alpha(SEXP KdnSEXP, SEXP KddSEXP, SEXP KdSEXP, SEXP nnuSEXP, SEXP ndeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kdn(KdnSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kdd(KddSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kd(KdSEXP);
-    Rcpp::traits::input_parameter< const int >::type nnu(nnuSEXP);
-    Rcpp::traits::input_parameter< const int >::type nde(ndeSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kdn(KdnSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kdd(KddSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kd(KdSEXP);
+    Rcpp::traits::input_parameter< const double >::type nnu(nnuSEXP);
+    Rcpp::traits::input_parameter< const double >::type nde(ndeSEXP);
     rcpp_result_gen = Rcpp::wrap(kmm_unconstrained_alpha(Kdn, Kdd, Kd, nnu, nde));
     return rcpp_result_gen;
 END_RCPP
 }
 // kmm_constrained_alpha
-arma::vec kmm_constrained_alpha(const arma::mat& Kdn, const arma::mat& Kdd, const arma::mat& Kd, const int nnu, const int nde, const List settings);
+arma::vec kmm_constrained_alpha(arma::mat Kdn, arma::mat Kdd, arma::mat Kd, const int nnu, const int nde, const List settings);
 RcppExport SEXP _densityratio_kmm_constrained_alpha(SEXP KdnSEXP, SEXP KddSEXP, SEXP KdSEXP, SEXP nnuSEXP, SEXP ndeSEXP, SEXP settingsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kdn(KdnSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kdd(KddSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kd(KdSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kdn(KdnSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kdd(KddSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kd(KdSEXP);
     Rcpp::traits::input_parameter< const int >::type nnu(nnuSEXP);
     Rcpp::traits::input_parameter< const int >::type nde(ndeSEXP);
     Rcpp::traits::input_parameter< const List >::type settings(settingsSEXP);
@@ -126,15 +126,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // kmm_cv_loss
-double kmm_cv_loss(const arma::mat& Kdn, const arma::mat& Kdd, const arma::mat& Kd, const arma::mat& Kn, const int& nfolds, const arma::uvec& cv_ind_nu, const arma::uvec& cv_ind_de, bool constrained, List settings);
+double kmm_cv_loss(arma::mat Kdn, arma::mat Kdd, arma::mat Kd, arma::mat Kn, const int& nfolds, const arma::uvec& cv_ind_nu, const arma::uvec& cv_ind_de, bool constrained, List settings);
 RcppExport SEXP _densityratio_kmm_cv_loss(SEXP KdnSEXP, SEXP KddSEXP, SEXP KdSEXP, SEXP KnSEXP, SEXP nfoldsSEXP, SEXP cv_ind_nuSEXP, SEXP cv_ind_deSEXP, SEXP constrainedSEXP, SEXP settingsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kdn(KdnSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kdd(KddSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kd(KdSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kn(KnSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kdn(KdnSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kdd(KddSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kd(KdSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kn(KnSEXP);
     Rcpp::traits::input_parameter< const int& >::type nfolds(nfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_nu(cv_ind_nuSEXP);
     Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_de(cv_ind_deSEXP);
@@ -167,25 +167,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // make_UV
-arma::mat make_UV(const arma::mat& U);
+arma::mat make_UV(arma::mat U);
 RcppExport SEXP _densityratio_make_UV(SEXP USEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type U(USEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type U(USEXP);
     rcpp_result_gen = Rcpp::wrap(make_UV(U));
     return rcpp_result_gen;
 END_RCPP
 }
 // get_sigma_lhss
-double get_sigma_lhss(const arma::mat& dist, const arma::vec& sigma, const bool& quantiles);
+double get_sigma_lhss(arma::mat dist, arma::vec sigma, bool quantiles);
 RcppExport SEXP _densityratio_get_sigma_lhss(SEXP distSEXP, SEXP sigmaSEXP, SEXP quantilesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type dist(distSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< const bool& >::type quantiles(quantilesSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type dist(distSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< bool >::type quantiles(quantilesSEXP);
     rcpp_result_gen = Rcpp::wrap(get_sigma_lhss(dist, sigma, quantiles));
     return rcpp_result_gen;
 END_RCPP
@@ -212,14 +212,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // compute_psihat
-arma::mat compute_psihat(const arma::mat& K, const arma::mat& Evecs, const arma::vec& Evals, const int& maxJ, const int& ncol);
+arma::mat compute_psihat(arma::mat K, arma::mat Evecs, arma::vec Evals, const int& maxJ, const int& ncol);
 RcppExport SEXP _densityratio_compute_psihat(SEXP KSEXP, SEXP EvecsSEXP, SEXP EvalsSEXP, SEXP maxJSEXP, SEXP ncolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type K(KSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Evecs(EvecsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type Evals(EvalsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type K(KSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Evecs(EvecsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Evals(EvalsSEXP);
     Rcpp::traits::input_parameter< const int& >::type maxJ(maxJSEXP);
     Rcpp::traits::input_parameter< const int& >::type ncol(ncolSEXP);
     rcpp_result_gen = Rcpp::wrap(compute_psihat(K, Evecs, Evals, maxJ, ncol));
@@ -227,15 +227,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // spectral_cv_loss
-arma::rowvec spectral_cv_loss(const arma::mat& Knu, const arma::mat& Kde, const arma::vec& m, const int& maxM, const int& nfolds, const arma::uvec& cv_ind_nu, const arma::uvec& cv_ind_de, const int& nthreads, const bool& parallel);
+arma::rowvec spectral_cv_loss(arma::mat Knu, arma::mat Kde, const arma::vec& m, int maxM, const int& nfolds, const arma::uvec& cv_ind_nu, const arma::uvec& cv_ind_de, const int& nthreads, const bool& parallel);
 RcppExport SEXP _densityratio_spectral_cv_loss(SEXP KnuSEXP, SEXP KdeSEXP, SEXP mSEXP, SEXP maxMSEXP, SEXP nfoldsSEXP, SEXP cv_ind_nuSEXP, SEXP cv_ind_deSEXP, SEXP nthreadsSEXP, SEXP parallelSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type Knu(KnuSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kde(KdeSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Knu(KnuSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kde(KdeSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type m(mSEXP);
-    Rcpp::traits::input_parameter< const int& >::type maxM(maxMSEXP);
+    Rcpp::traits::input_parameter< int >::type maxM(maxMSEXP);
     Rcpp::traits::input_parameter< const int& >::type nfolds(nfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_nu(cv_ind_nuSEXP);
     Rcpp::traits::input_parameter< const arma::uvec& >::type cv_ind_de(cv_ind_deSEXP);
@@ -265,14 +265,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // ulsif_compute_alpha
-arma::vec ulsif_compute_alpha(arma::mat Hhat, const arma::vec& hhat, const double& lambda);
+arma::vec ulsif_compute_alpha(arma::mat Hhat, arma::vec hhat, double lambda);
 RcppExport SEXP _densityratio_ulsif_compute_alpha(SEXP HhatSEXP, SEXP hhatSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type Hhat(HhatSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type hhat(hhatSEXP);
-    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type hhat(hhatSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     rcpp_result_gen = Rcpp::wrap(ulsif_compute_alpha(Hhat, hhat, lambda));
     return rcpp_result_gen;
 END_RCPP
@@ -289,20 +289,20 @@ BEGIN_RCPP
 END_RCPP
 }
 // compute_ulsif_loocv
-double compute_ulsif_loocv(const arma::mat& Hhat, const arma::mat& hhat, const double& lambda, const int& nnu, const int& nde, const int& nmin, const int& ncol, const arma::mat& Knu_nmin, const arma::mat& Kde_nmin);
+double compute_ulsif_loocv(arma::mat Hhat, arma::mat hhat, double lambda, const int& nnu, const int& nde, const int& nmin, const int& ncol, arma::mat Knu_nmin, arma::mat Kde_nmin);
 RcppExport SEXP _densityratio_compute_ulsif_loocv(SEXP HhatSEXP, SEXP hhatSEXP, SEXP lambdaSEXP, SEXP nnuSEXP, SEXP ndeSEXP, SEXP nminSEXP, SEXP ncolSEXP, SEXP Knu_nminSEXP, SEXP Kde_nminSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type Hhat(HhatSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type hhat(hhatSEXP);
-    Rcpp::traits::input_parameter< const double& >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Hhat(HhatSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type hhat(hhatSEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const int& >::type nnu(nnuSEXP);
     Rcpp::traits::input_parameter< const int& >::type nde(ndeSEXP);
     Rcpp::traits::input_parameter< const int& >::type nmin(nminSEXP);
     Rcpp::traits::input_parameter< const int& >::type ncol(ncolSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Knu_nmin(Knu_nminSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Kde_nmin(Kde_nminSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Knu_nmin(Knu_nminSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Kde_nmin(Kde_nminSEXP);
     rcpp_result_gen = Rcpp::wrap(compute_ulsif_loocv(Hhat, hhat, lambda, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin));
     return rcpp_result_gen;
 END_RCPP
