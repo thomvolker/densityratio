@@ -259,7 +259,7 @@ Besides `ulsif()`, the package contains several other functions to
 estimate a density ratio.
 
 - `naive()` estimates the numerator and denominator densities
-  separately, and subsequently takes there ratio.
+  separately, and subsequently takes their ratio.
 - `kliep()` estimates the density ratio directly through the
   Kullback-Leibler importance estimation procedure.
 - `kmm()` estimates the density ratio through kernel mean matching.
