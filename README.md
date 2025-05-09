@@ -201,7 +201,7 @@ fit_cat <- ulsif(
   df_numerator = numerator_data$x1,
   df_denominator = denominator_data$x1
 )
-#> Warning in check.sigma(nsigma, sigma_quantile, sigma, dist_nu):  are duplicate values in 'sigma', only the unique values are used.
+#> Warning in check.sigma(nsigma, sigma_quantile, sigma, dist_nu): There are duplicate values in 'sigma', only the unique values are used.
 
 aggregate(
   predict(fit_cat) ~ numerator_data$x1,
@@ -219,7 +219,7 @@ table(numerator_data$x1) / table(denominator_data$x1)
 ```
 
 This transformation can give a reasonable estimate of the ratio of
-proportions in the different data sets (although  is some
+proportions in the different data sets (although there is some
 regularization applied such that the estimated odds are closer to one
 than seen in the real data).
 
