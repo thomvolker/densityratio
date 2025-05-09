@@ -201,7 +201,7 @@ fit_cat <- ulsif(
   df_numerator = numerator_data$x1,
   df_denominator = denominator_data$x1
 )
-#> Warning in check.sigma(nsigma, sigma_quantile, sigma, dist_nu): There are duplicate values in 'sigma', only the unique values are used.
+#> Warning in check.sigma(nsigma, sigma_quantile, sigma, dist_nu):  are duplicate values in 'sigma', only the unique values are used.
 
 aggregate(
   predict(fit_cat) ~ numerator_data$x1,
@@ -219,7 +219,7 @@ table(numerator_data$x1) / table(denominator_data$x1)
 ```
 
 This transformation can give a reasonable estimate of the ratio of
-proportions in the different data sets (although there is some
+proportions in the different data sets (although  is some
 regularization applied such that the estimated odds are closer to one
 than seen in the real data).
 
@@ -259,7 +259,7 @@ Besides `ulsif()`, the package contains several other functions to
 estimate a density ratio.
 
 - `naive()` estimates the numerator and denominator densities
-  separately, and subsequently takes there ratio.
+  separately, and subsequently takes their ratio.
 - `kliep()` estimates the density ratio directly through the
   Kullback-Leibler importance estimation procedure.
 - `kmm()` estimates the density ratio through kernel mean matching.
