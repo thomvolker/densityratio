@@ -36,6 +36,10 @@
 #' to the number of available threads minus one.
 #' @param progressbar Logical indicating whether or not to display a progressbar.
 #' @export
+#' @references Kanamori, T., Hido, S., & Sugiyama, M. (2009). A least-squares
+#' approach to direct importance estimation. Journal of Machine Learning
+#' Research, 10, 1391-1445. Available from
+#' <https://jmlr.org/papers/v10/kanamori09a.html>
 #'
 #' @return \code{ulsif}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal weights.
