@@ -49,9 +49,6 @@
 #'
 #' @example inst/examples/kmm-example.R
 
-# TODO: implement cross-validation, out-of-sample prediction, print and
-# summary functions and plot functions
-
 kmm <- function(df_numerator, df_denominator, scale = "numerator",
                 constrained = FALSE, nsigma = 10, sigma_quantile = NULL,
                 sigma = NULL, ncenters = 200, centers = NULL, cv = TRUE,
