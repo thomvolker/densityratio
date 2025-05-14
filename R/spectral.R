@@ -41,7 +41,7 @@
 #'
 #' @references Izbicki, R., Lee, A. &amp; Schafer, C. (2014). High-Dimensional
 #' Density Ratio Estimation with Extensions to Approximate Likelihood Computation.
-#' <i>Proceedings of Machine Learning Research</i> 33:420-429. Available from
+#' <i>Proceedings of Machine Learning Research</i> 33, 420-429. Available from
 #' <https://proceedings.mlr.press/v33/izbicki14.html>.
 #' @return \code{spectral}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal spectral series expansion.
