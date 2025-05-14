@@ -44,3 +44,6 @@ RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 URL: https://thomvolker.github.io/densityratio/
 BugReports: https://github.com/thomvolker/densityratio/issues
+References:
+    Sugiyama et al. (2008) <doi:10.1007/s10463-008-0197-x>
+    
