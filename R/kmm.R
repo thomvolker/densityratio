@@ -41,8 +41,12 @@
 #' @importFrom pbapply pblapply
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom osqp solve_osqp osqpSettings
-
 #' @export
+#' @references Huang, J., Smola, A. J., Gretton, A., Borgwardt, K. M., &
+#' Schölkopf, B. (2006). Correcting sample selection bias by unlabeled data.
+#' In <i>Advances in Neural Information Processing Systems</i>, edited by B.
+#' Schölkopf, J. Platt and T. Hoffman. Available from
+#' <https://proceedings.neurips.cc/paper/2006/hash/a2186aa7c086b46ad4e8bf81e2a3a19b-Abstract.html>.
 #'
 #' @return \code{kmm}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal weights.
