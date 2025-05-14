@@ -11,7 +11,6 @@ using namespace arma;
 //' @param intercept Logical indicating whether an intercept should be added to
 //' the estimation procedure. In this case, the first column is an all-zero
 //' column (which will be transformed into an all-ones column in the kernel).
-//' @export
 
 // [[Rcpp::export]]
 arma::mat distance(const arma::mat& X, const arma::mat& Y, const bool& intercept = false) {
@@ -30,7 +29,6 @@ arma::mat distance(const arma::mat& X, const arma::mat& Y, const bool& intercept
 //' @name kernel_gaussian
 //' @param dist A numeric distance matrix
 //' @param sigma A scalar with the length-scale parameter
-//' @export
 
 //[[Rcpp::export]]
 arma::mat kernel_gaussian(const arma::mat& dist, double sigma) {
