@@ -72,8 +72,6 @@ default, the matrix \code{nu} is used as the matrix with Gaussian centers.}
 \value{
 \code{lhss}-object, containing all information to calculate the
 density ratio using optimal sigma, optimal lambda and optimal weights.
-
-\code{lhss} returns \code{rhat}, the estimated density ratio.
 }
 \description{
 Least-squares heterodistributional subspace search
@@ -96,4 +94,13 @@ plot_bivariate(dr)
 head(predict(dr))
 # Fit model with custom parameters
 naive(numerator_small, denominator_small, m=2, kernel="epanechnikov")
+}
+\references{
+Sugiyama, M., Yamada, M., Von Bünau, P., Suzuki, T., Kanamori, T.
+& Kawanabe, M. (2011). Direct density-ratio estimation with dimensionality
+reduction via least-squares hetero-distributional subspace search. \if{html}{\out{<i>}} Neural
+Networks\if{html}{\out{</i>}}, 24, 183-198. \url{https://doi.org/10.1016/j.neunet.2010.10.005}
+approach to direct importance estimation. Journal of Machine Learning
+Research, 10, 1391-1445. Available from
+\url{https://jmlr.org/papers/v10/kanamori09a.html}
 }

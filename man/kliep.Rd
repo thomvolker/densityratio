@@ -91,3 +91,9 @@ kliep(numerator_small, denominator_small,
       nsigma = 1, ncenters = 100, nfold = 10,
       epsilon = 10^{2:-5}, maxit = 500)
 }
+\references{
+Sugiyama, M., Suzuki, T., Nakajima, S., Kashima, H., Von Bünau, P.,
+& Kawanabe, M. (2008). Direct importance estimation for covariate shift
+adaptation. \if{html}{\out{<i>}}Annals of the Institute of Statistical Mathematics\if{html}{\out{</i>}}
+60, 699-746. Doi: https://doi.org/10.1007/s10463-008-0197-x.
+}

@@ -22,10 +22,6 @@ in Gelman and Hill (2007). The data set contains 434 observations measured on
 five variables, and is obtained from
 \href{https://github.com/jknowles/BDAexampleR}{https://github.com/jknowles/BDAexampleR}.
 }
-\references{
-Gelman, A., & Hill, J. (2006). Data Analysis Using Regression and
-Multilevel/Hierarchical Models. Cambridge: Cambridge University Press.
-}
 \keyword{data}
 \keyword{datasets}
 \keyword{kidiq}

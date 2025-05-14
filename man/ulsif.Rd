@@ -97,3 +97,9 @@ head(predict(dr))
 # Fit model with custom parameters
 ulsif(numerator_small, denominator_small, sigma = 2, lambda = 2)
 }
+\references{
+Kanamori, T., Hido, S., & Sugiyama, M. (2009). A least-squares
+approach to direct importance estimation. Journal of Machine Learning
+Research, 10, 1391-1445. Available from
+\url{https://jmlr.org/papers/v10/kanamori09a.html}
+}

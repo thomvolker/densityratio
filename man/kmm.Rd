@@ -106,3 +106,10 @@ kmm(numerator_small, denominator_small,
     constrained = TRUE)
 
 }
+\references{
+Huang, J., Smola, A. J., Gretton, A., Borgwardt, K. M., &
+Schölkopf, B. (2006). Correcting sample selection bias by unlabeled data.
+In \if{html}{\out{<i>}}Advances in Neural Information Processing Systems\if{html}{\out{</i>}}, edited by B.
+Schölkopf, J. Platt and T. Hoffman. Available from
+\url{https://proceedings.neurips.cc/paper/2006/hash/a2186aa7c086b46ad4e8bf81e2a3a19b-Abstract.html}.
+}

@@ -100,6 +100,6 @@ spectral(numerator_small, denominator_small, sigma = 2)
 \references{
 Izbicki, R., Lee, A. & Schafer, C. (2014). High-Dimensional
 Density Ratio Estimation with Extensions to Approximate Likelihood Computation.
-\if{html}{\out{<i>}}Proceedings of Machine Learning Research\if{html}{\out{</i>}} 33:420-429. Available from
+\if{html}{\out{<i>}}Proceedings of Machine Learning Research\if{html}{\out{</i>}} 33, 420-429. Available from
 \url{https://proceedings.mlr.press/v33/izbicki14.html}.
 }
