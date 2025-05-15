@@ -40,10 +40,7 @@
 #' @references Sugiyama, M., Yamada, M., Von Bünau, P., Suzuki, T., Kanamori, T.
 #' & Kawanabe, M. (2011). Direct density-ratio estimation with dimensionality
 #' reduction via least-squares hetero-distributional subspace search. <i> Neural
-#' Networks</i>, 24, 183-198. <https://doi.org/10.1016/j.neunet.2010.10.005>
-#' approach to direct importance estimation. Journal of Machine Learning
-#' Research, 10, 1391-1445. Available from
-#' <https://jmlr.org/papers/v10/kanamori09a.html>
+#' Networks</i>, 24, 183-198. \doi{10.1016/j.neunet.2010.10.005}.
 #' @example inst/examples/naive-example.R
 
 
