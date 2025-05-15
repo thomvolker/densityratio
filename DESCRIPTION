@@ -18,7 +18,10 @@ Description: Fast, flexible and user-friendly tools for distribution comparison
   kliep(), spectral density ratio estimation, spectral(), kernel mean matching,
   kmm(), and least-squares hetero-distributional subspace search, lhss()).
   with automatic tuning of hyperparameters. Helper functions are available for
-  two-sample testing and visualizing the density ratios. 
+  two-sample testing and visualizing the density ratios. For an overview on 
+  density ratio estimation, see Sugiyama et al. (2012) <doi:10.1017/CBO9781139035613>
+  for a general overview, and the help files for references on the specific 
+  estimation techniques.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -44,11 +47,3 @@ RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 URL: https://thomvolker.github.io/densityratio/
 BugReports: https://github.com/thomvolker/densityratio/issues
-References:
-    Huang et al. (2006) <https://proceedings.neurips.cc/paper/2006/hash/a2186aa7c086b46ad4e8bf81e2a3a19b-Abstract.html>
-    Kanamori et al. (2009) <https://jmlr.org/papers/v10/kanamori09a.html>
-    Sugiyama et al. (2008) <doi:10.1007/s10463-008-0197-x>
-    Sugiyama et al. (2011) <doi:10.1016/j.neunet.2010.10.005>
-    Sugiyama et al. (2012) <doi:10.1017/CBO9781139035613>
-    Izbicki et al. (2016) <https://proceedings.mlr.press/v33/izbicki14.html>
-    
