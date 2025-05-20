@@ -49,11 +49,18 @@ the two distributions in a discrepancy measure.
 
 ## Installation
 
-You can install the development version of `densityratio` from
-[R-universe](https://r-universe.dev/search) with:
+You can install the stable release of `densityratio` from
+[CRAN](https://cran.rstudio.com/web/packages/densityratio/index.html)
+with:
 
 ``` r
-install.packages('densityratio', repos = 'https://thomvolker.r-universe.dev')
+install.packages('densityratio')
+```
+
+For the development version, use:
+
+``` r
+remotes::install_github("thomvolker/densityratio")
 ```
 
 ## Usage
@@ -259,7 +266,7 @@ Besides `ulsif()`, the package contains several other functions to
 estimate a density ratio.
 
 - `naive()` estimates the numerator and denominator densities
-  separately, and subsequently takes their ratio.
+  separately, and subsequently takes there ratio.
 - `kliep()` estimates the density ratio directly through the
   Kullback-Leibler importance estimation procedure.
 - `kmm()` estimates the density ratio through kernel mean matching.
@@ -270,7 +277,7 @@ estimate a density ratio.
   approach.
 
 We display `kliep()` and `naive()` as examples here. The other functions
-are displayed in the [Get Started
+are discussed in the [Get Started
 vignette](https://thomvolker.github.io/densityratio/articles/densityratio.html).
 
 ``` r

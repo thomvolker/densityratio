@@ -174,10 +174,16 @@ ggplot() +
 
 ## Installation
 
-You can install the development version of `densityratio` from [R-universe](https://r-universe.dev/search) with:
+You can install the stable release of `densityratio` from [CRAN](https://cran.rstudio.com/web/packages/densityratio/index.html) with:
 
 ``` r
-install.packages('densityratio', repos = 'https://thomvolker.r-universe.dev')
+install.packages('densityratio')
+```
+
+For the development version, use:
+
+``` r
+remotes::install_github("thomvolker/densityratio")
 ```
 
 ## Usage
