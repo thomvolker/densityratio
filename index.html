@@ -91,9 +91,12 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of <code>densityratio</code> from <a href="https://r-universe.dev/search" class="external-link">R-universe</a> with:</p>
+<p>You can install the stable release of <code>densityratio</code> from <a href="https://cran.rstudio.com/web/packages/densityratio/index.html" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'densityratio'</span>, repos <span class="op">=</span> <span class="st">'https://thomvolker.r-universe.dev'</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'densityratio'</span><span class="op">)</span></span></code></pre></div>
+<p>For the development version, use:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"thomvolker/densityratio"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -102,7 +105,7 @@
 <div class="section level3">
 <h3 id="minimal-example">Minimal example<a class="anchor" aria-label="anchor" href="#minimal-example"></a>
 </h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://thomvolker.github.io/densityratio/">densityratio</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">numerator_data</span><span class="op">)</span></span>
@@ -126,7 +129,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "ulsif"</span></span></code></pre></div>
 <p>We can ask for the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> of the estimated density ratio object, that contains the optimal kernel weights (optimized using cross-validation) and a measure of discrepancy between the numerator and denominator densities.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
@@ -143,7 +146,7 @@
 <span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.2801</span></span>
 <span><span class="co">#&gt; For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.</span></span></code></pre></div>
 <p>To formally evaluate whether the numerator and denominator densities differ significantly, you can perform a two-sample homogeneity test as follows.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span>, test <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Call:</span></span>
@@ -162,7 +165,7 @@
 <span><span class="co">#&gt; Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).</span></span></code></pre></div>
 <p>The probability that numerator and denominator samples share a common data generating mechanism is very small.</p>
 <p>The <code>ulsif</code>-object also contains the (hyper-)parameters used in estimating the density ratio, such as the centers used in constructing the Gaussian kernels (<code>fit$centers</code>), the different bandwidth parameters (<code>fit$sigma</code>) and the regularization parameters (<code>fit$lambda</code>). Using these variables, we can obtain the estimated density ratio using <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># obtain predictions for the numerator samples</span></span>
 <span></span>
 <span><span class="va">newx5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="op">-</span><span class="fl">3</span>, to <span class="op">=</span> <span class="fl">6</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
@@ -195,7 +198,7 @@
 <h3 id="categorical-data">Categorical data<a class="anchor" aria-label="anchor" href="#categorical-data"></a>
 </h3>
 <p>All of the functions in the <code>densityratio</code> package accept categorical variables types. However, note that internally, these variables are one-hot encoded, which can lead to a high-dimensional feature-space.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">numerator_data</span><span class="op">$</span><span class="va">x1</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   A   B   C </span></span>
 <span><span class="co">#&gt; 351 339 310</span></span>
@@ -228,7 +231,7 @@
 <h3 id="full-data-example">Full data example<a class="anchor" aria-label="anchor" href="#full-data-example"></a>
 </h3>
 <p>After transforming all variables to numeric variables, it is possible to calculate the density ratio over the entire multivariate space of the data.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ulsif.html">ulsif</a></span><span class="op">(</span></span>
 <span>  df_numerator <span class="op">=</span> <span class="va">numerator_data</span>,</span>
 <span>  df_denominator <span class="op">=</span> <span class="va">denominator_data</span></span>
@@ -257,7 +260,7 @@
 <p>Besides <code><a href="reference/ulsif.html">ulsif()</a></code>, the package contains several other functions to estimate a density ratio.</p>
 <ul>
 <li>
-<code><a href="reference/naive.html">naive()</a></code> estimates the numerator and denominator densities separately, and subsequently takes their ratio.</li>
+<code><a href="reference/naive.html">naive()</a></code> estimates the numerator and denominator densities separately, and subsequently takes there ratio.</li>
 <li>
 <code><a href="reference/kliep.html">kliep()</a></code> estimates the density ratio directly through the Kullback-Leibler importance estimation procedure.</li>
 <li>
@@ -267,8 +270,8 @@
 <li>
 <code><a href="reference/spectral.html">spectral()</a></code> estimates the density ratio using a spectral series approach.</li>
 </ul>
-<p>We display <code><a href="reference/kliep.html">kliep()</a></code> and <code><a href="reference/naive.html">naive()</a></code> as examples here. The other functions are displayed in the <a href="https://thomvolker.github.io/densityratio/articles/densityratio.html">Get Started vignette</a>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>We display <code><a href="reference/kliep.html">kliep()</a></code> and <code><a href="reference/naive.html">naive()</a></code> as examples here. The other functions are discussed in the <a href="https://thomvolker.github.io/densityratio/articles/densityratio.html">Get Started vignette</a>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_naive</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/naive.html">naive</a></span><span class="op">(</span></span>
 <span>  df_numerator <span class="op">=</span> <span class="va">numerator_data</span><span class="op">$</span><span class="va">x5</span>,</span>
 <span>  df_denominator <span class="op">=</span> <span class="va">denominator_data</span><span class="op">$</span><span class="va">x5</span></span>
@@ -334,6 +337,7 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=densityratio" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/thomvolker/densityratio/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/thomvolker/densityratio/issues" class="external-link">Report a bug</a></li>
 </ul>
