@@ -174,7 +174,7 @@ ggplot() +
 
 ## Installation
 
-You can install the stable release of `densityratio` from [CRAN](https://cran.rstudio.com/web/packages/densityratio/index.html) with:
+You can install the stable release of `densityratio` from [CRAN](https://CRAN.R-project.org/package=densityratio) with:
 
 ``` r
 install.packages('densityratio')

@@ -29,7 +29,7 @@ test_that("multidimensional kmm estimation, prediction and plotting works", {
   expect_s3_class(dr, "kmm")
 
   expect_true(
-    ggplot2::ggplot2::is_ggplot(
+    ggplot2::is_ggplot(
       suppressWarnings(plot(dr))
     )
   )

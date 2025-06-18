@@ -50,8 +50,7 @@ the two distributions in a discrepancy measure.
 ## Installation
 
 You can install the stable release of `densityratio` from
-[CRAN](https://cran.rstudio.com/web/packages/densityratio/index.html)
-with:
+[CRAN](https://CRAN.R-project.org/package=densityratio) with:
 
 ``` r
 install.packages('densityratio')

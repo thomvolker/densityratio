@@ -1,11 +1,11 @@
-pandoc: '3.2'
-pkgdown: 2.0.7
+pandoc: '3.4'
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   covariate-shift: covariate-shift.html
   densityratio: densityratio.html
-last_built: 2025-04-17T13:45Z
+  high-dim-testing: high-dim-testing.html
+last_built: 2025-06-18T13:25Z
 urls:
   reference: https://thomvolker.github.io/densityratio/reference
   article: https://thomvolker.github.io/densityratio/articles
-
