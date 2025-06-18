@@ -152,5 +152,5 @@ test_that("ULSIF estimation functions work", {
 
 test_that("set_threads works", {
   expect_equal(set_threads(1), 1)
-  expect_warning(set_threads(50))
+  expect_warning(set_threads(999999999))
 })
