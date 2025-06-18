@@ -21,7 +21,12 @@ test_that("1-dimensional naive estimation and prediction works", {
 test_that("multidimensional naive estimation and prediction works", {
   dr <- naive(numerator_small, denominator_small)
   expect_s3_class(dr, "naivedensityratio")
-  expect_type(plot(dr) |> suppressWarnings(), "list")
+
+  expect_true(
+    ggplot2::is_ggplot(
+      suppressWarnings(plot(dr))
+    )
+  )
 
   expect_gt(mean(log(pmax(1e-3, predict(dr)))), 0)
   expect_lt(mean(log(pmax(1e-3, predict(dr, denominator_small)))), 0)

@@ -28,7 +28,11 @@ test_that("multidimensional kmm estimation, prediction and plotting works", {
   dr <- kmm(numerator_small, denominator_small, progressbar = FALSE)
   expect_s3_class(dr, "kmm")
 
-  expect_type(plot(dr) |> suppressWarnings(), "list")
+  expect_true(
+    ggplot2::ggplot2::is_ggplot(
+      suppressWarnings(plot(dr))
+    )
+  )
 
   expect_gt(mean(log(pmax(1e-3, predict(dr)))), 0)
   expect_lt(mean(log(pmax(1e-3, predict(dr, denominator_small)[,1]))), 0)

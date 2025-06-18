@@ -50,53 +50,63 @@ test_that("multidimensional ULSIF estimation, prediction works", {
               lambda = 0.1, sigma = 2, centers = numerator_small,
               scale = NULL)
 
-  expect_type(
-    plot(dr),
-    "list"
-  ) |> suppressWarnings()
-  expect_type(
-    plot(dr, samples = "numerator"),
-    "list"
-  ) |> suppressWarnings()
-  expect_type(
-    plot(dr, binwidth = 0.5),
-    "list"
-  ) |> suppressWarnings()
-  expect_type(
-    plot(dr, bins = 30),
-    "list"
-  ) |> suppressWarnings()
+  expect_true(
+    ggplot2::is_ggplot(
+      suppressWarnings(plot(dr))
+    )
+  )
+  expect_true(
+    ggplot2::is_ggplot(
+      suppressWarnings(plot(dr, samples = "numerator"))
+    )
+  )
+  expect_true(
+    ggplot2::is_ggplot(
+      suppressWarnings(plot(dr, binwidth = 0.5))
+    )
+  )
+  expect_true(
+    ggplot2::is_ggplot(
+      suppressWarnings(plot(dr, bins = 30))
+    )
+  )
   expect_no_warning(
     plot(dr, logscale = FALSE)
   )
 
   expect_type(
-    plot_univariate(dr),
+    suppressWarnings(plot_univariate(dr)),
     "list"
-  ) |> suppressWarnings()
+  )
 
-  expect_type(
-    plot_univariate(dr, vars = c("x1", "x2"), samples = "denominator",
-                    logscale = FALSE, grid = TRUE),
-    "list"
+  expect_true(
+    ggplot2::is_ggplot(
+      plot_univariate(dr, vars = c("x1", "x2"), samples = "denominator",
+                      logscale = FALSE, grid = TRUE)
+    )
   )
-  expect_type(
-    plot_univariate(dr, grid = TRUE, sample.facet = TRUE,
-                    logscale = FALSE, nrow.panel = 3),
-    "list"
+
+  expect_true(
+    ggplot2::is_ggplot(
+      plot_univariate(dr, grid = TRUE, sample.facet = TRUE,
+                      logscale = FALSE, nrow.panel = 3)
+    )
   )
+
   expect_error(
     plot_univariate(dr, vars = c("a", "b"))
   )
   expect_type(
-    plot_bivariate(dr),
+    suppressWarnings(plot_bivariate(dr)),
     "list"
-  ) |> suppressWarnings()
+  )
+
   expect_type(
     plot_bivariate(dr, vars = c("x1", "x2", "x3"), samples = "numerator",
                    logscale = FALSE, grid = TRUE),
     "list"
   )
+
   expect_error(
     plot_bivariate(dr, vars = c("x1", "b"))
   )
