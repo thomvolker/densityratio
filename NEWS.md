@@ -1,4 +1,6 @@
-# densityratio (development version)
+# densityratio 0.2.1
+
+* patch test files to work with the new upcoming ggplot release
 
 # densityratio 0.2.0
 
