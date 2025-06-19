@@ -1,17 +1,19 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# densityratio <img src="man/figures/logo.png" align="right" alt="densratio logo" width="130"/>
+# densityratio <img src="man/figures/logo.png" align="right" alt="densityratio logo" width="140"/>
 
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![densityratio status
 badge](https://thomvolker.r-universe.dev/badges/densityratio)](https://thomvolker.r-universe.dev/densityratio)
 [![DOI](https://zenodo.org/badge/613441108.svg)](https://zenodo.org/badge/latestdoi/613441108)
-
+[![CRAN
+status](https://www.r-pkg.org/badges/version/densityratio)](https://CRAN.R-project.org/package=densityratio)
+[![codecov](https://codecov.io/gh/thomvolker/densityratio/branch/main/graph/badge.svg)](https://codecov.io/gh/thomvolker/densityratio)
 <!-- badges: end -->
 
 ## Overview
