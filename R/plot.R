@@ -556,7 +556,7 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
 
     ## Create name of empty panels in the upper diagonal
     empty_panels <- expand.grid(seq(1:length(vars)), seq(1:length(vars)))
-    empty_panels <- empty_panels[empty_panels$Var2 > empty_panels$Var1, , drop = FALSE]
+    empty_panels <- empty_panels[empty_panels$Var1 > empty_panels$Var2, , drop = FALSE]
 
     empty_panels$panel <- paste0("panel-", empty_panels$Var1, "-", empty_panels$Var2)
 
