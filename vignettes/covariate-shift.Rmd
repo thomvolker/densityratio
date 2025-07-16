@@ -202,7 +202,7 @@ Moreover, the distribution of the density ratio values should be very similar fo
 
 ``` r
 plot(dr_rs)
-#> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+#> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 ```
 
 ![Distribution of density ratio values under random sampling.](covariate-shift-plot-dr-rs-1.png)
@@ -215,7 +215,7 @@ This is exactly what we see in the figure below: numerator samples (i.e., the te
 
 ``` r
 plot(dr_cs)
-#> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+#> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 ```
 
 ![Distribution of density ratio values under covariate shift.](covariate-shift-plot-dr-cs-1.png)

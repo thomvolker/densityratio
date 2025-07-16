@@ -523,7 +523,7 @@ The `plot()` function summarizes the model output by displaying the estimated de
 
 ``` r
 plot(dr)
-#> `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+#> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 ```
 
 ![Density ratio values for the high school and no high school samples.](densityratio-plot-dr-1.png)
