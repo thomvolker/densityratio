@@ -101,10 +101,14 @@ test_that("multidimensional ULSIF estimation, prediction works", {
     "list"
   )
 
-  expect_type(
-    plot_bivariate(dr, vars = c("x1", "x2", "x3"), samples = "numerator",
-                   logscale = FALSE, grid = TRUE),
-    "list"
+  expect_true(
+    ggplot2::is_ggplot(
+      plot_bivariate(
+        dr,
+        vars = c("x1", "x2", "x3"),
+        samples = "numerator",
+        logscale = FALSE, grid = TRUE)
+    )
   )
 
   expect_error(
