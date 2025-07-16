@@ -447,10 +447,7 @@ create_bivariate_plot <- function(data, ext, vars, logscale, show.sample) {
 #' @importFrom ggplot2 theme
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 scale_shape_manual
-#' @importFrom ggplot2 ggplotGrob
-#' @importFrom grid grid.draw
-#' @importFrom grid grid.newpage
-#' @importFrom grid nullGrob
+#' @importFrom ggh4x   facet_grid2
 #' @example inst/examples/ulsif-example.R
 
 
@@ -498,7 +495,6 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
 
   if (!grid) {
     out <- lapply(unname(var_combinations), function(var) create_bivariate_plot(data, ext, var, logscale, show.sample))
-    return(out)
   } else {
     # Make all variables numeric to include them in a single grid-plot
     numvars <- sapply(data, is.numeric)
@@ -520,15 +516,18 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
     dr_max <- max(1, ext$dr)
     dr_min <- min(-1, ext$dr)
 
-    plot <-
+    out <-
       ggplot2::ggplot(plot_data, mapping = ggplot2::aes(
         x = !!quote(values.x), y = !!quote(values.y),
         shape = if (show.sample) sample else NULL
       )) +
       ggplot2::geom_point(ggplot2::aes(colour = !!quote(dr))) +
-      ggplot2::facet_grid(
-        rows = ggplot2::vars(!!quote(yvar)), cols = ggplot2::vars(!!quote(xvar)), scales = "free",
-        switch = "both"
+      ggh4x::facet_grid2(
+        rows = ggplot2::vars(!!quote(yvar)),
+        cols = ggplot2::vars(!!quote(xvar)),
+        scales = "free",
+        switch = "both",
+        render_empty = FALSE
       ) +
       ggplot2::scale_colour_gradient2(
         low = "#00204DFF",
@@ -549,25 +548,6 @@ plot_bivariate <- function(x, vars = NULL, samples = "both", grid = FALSE,
         shape = if (show.sample) "Sample" else NULL
       ) +
       ggplot2::scale_shape_manual(values = c(16, 17))
-
-    # Erase upper diagonal
-    ## Create plot into a grob
-    grob <- ggplot2::ggplotGrob(plot)
-
-    ## Create name of empty panels in the upper diagonal
-    empty_panels <- expand.grid(seq(1:length(vars)), seq(1:length(vars)))
-    empty_panels <- empty_panels[empty_panels$Var1 > empty_panels$Var2, , drop = FALSE]
-
-    empty_panels$panel <- paste0("panel-", empty_panels$Var1, "-", empty_panels$Var2)
-
-    # Delete panels in upper diagonal, based in their index
-    idx <- which(grob$layout$name %in% empty_panels$panel)
-    for (i in idx) grob$grobs[[i]] <- grid::nullGrob()
-
-    out <- grob
-
-    grid::grid.newpage()
-    grid::grid.draw(out)
   }
-  invisible(out)
+  out
 }

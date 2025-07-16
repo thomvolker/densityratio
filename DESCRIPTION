@@ -29,7 +29,8 @@ Imports:
     osqp,
     Rcpp,
     pbapply,
-    ggplot2
+    ggplot2,
+    ggh4x
 LinkingTo: 
     Rcpp,
     RcppArmadillo,

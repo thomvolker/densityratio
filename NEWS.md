@@ -1,5 +1,8 @@
 # densityratio (development version)
 
+* update `plot_bivariate()` to depend on `ggh4x` to remove empty panels, instead
+of a grob (such that it remains a ggplot) object
+
 # densityratio 0.2.1
 
 * patch test files to work with the new upcoming ggplot release
