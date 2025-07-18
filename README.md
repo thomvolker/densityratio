@@ -13,7 +13,7 @@ badge](https://thomvolker.r-universe.dev/badges/densityratio)](https://thomvolke
 [![DOI](https://zenodo.org/badge/613441108.svg)](https://zenodo.org/badge/latestdoi/613441108)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/densityratio)](https://CRAN.R-project.org/package=densityratio)
-[![codecov](https://codecov.io/gh/thomvolker/densityratio/branch/main/graph/badge.svg)](https://codecov.io/gh/thomvolker/densityratio)
+[![codecov](https://codecov.io/gh/thomvolker/densityratio/branch/main/graph/badge.svg)](https://app.codecov.io/gh/thomvolker/densityratio)
 <!-- badges: end -->
 
 ## Overview
