@@ -58,7 +58,7 @@ double compute_ulsif_loocv(arma::mat Hhat, arma::mat hhat, double lambda, const 
   B1 += B02.t() * diagmat(B12);
 
   arma::mat B2  = (nnu * B0 - B1) * (nde - 1) / (nde * (nnu - 1));
-  B2.elem(find(B2 < 0)).zeros();
+  // B2.elem(find(B2 < 0)).zeros();
 
   arma::vec wde = sum(Kde_nmin % B2.t(), 1);
   arma::vec wnu = sum(Knu_nmin % B2.t(), 1);
