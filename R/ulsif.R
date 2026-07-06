@@ -25,9 +25,9 @@
 #' \code{10^seq(3, -3, length.out = nlambda)}.
 #' @param lambda \code{NULL} or numeric vector indicating the lambda values to
 #' use in cross-validation
-#' @param ncenters Maximum number of Gaussian centers in the kernel gram
-#' matrix. Defaults to all numerator samples.
-#' @param centers \code{NULL} or numeric matrix with the same dimensions as the
+#' @param ncenters \code{integer} Maximum number of Gaussian centers in the kernel 
+#' gram matrix.
+#' @param centers \code{NULL} or \code{data.frame} with the same dimensions as the
 #' data, indicating the centers for the Gaussian kernel gram matrix.
 #' @param parallel logical indicating whether to use parallel processing in the
 #' cross-validation scheme.
