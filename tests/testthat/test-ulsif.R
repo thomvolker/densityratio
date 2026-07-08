@@ -142,6 +142,7 @@ test_that("ULSIF estimation functions work", {
   ulsif_out <- compute_ulsif(
     Dnu,
     Dde,
+    intercept = FALSE,
     sigma = 2,
     lambda = 0.1,
     parallel = FALSE,

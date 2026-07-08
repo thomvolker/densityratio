@@ -81,19 +81,19 @@ spectral_dre <- function(dist_nu, dist_de, m, sigma, cv_ind_nu, cv_ind_de, paral
     .Call(`_densityratio_spectral_dre`, dist_nu, dist_de, m, sigma, cv_ind_nu, cv_ind_de, parallel, nthreads, progressbar)
 }
 
-ulsif_compute_alpha <- function(Hhat, hhat, lambda) {
-    .Call(`_densityratio_ulsif_compute_alpha`, Hhat, hhat, lambda)
+ulsif_compute_alpha <- function(Hhat, hhat, lambda, intercept) {
+    .Call(`_densityratio_ulsif_compute_alpha`, Hhat, hhat, lambda, intercept)
 }
 
 set_threads <- function(nthreads) {
     .Call(`_densityratio_set_threads`, nthreads)
 }
 
-compute_ulsif_loocv <- function(Hhat, hhat, lambda, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin) {
-    .Call(`_densityratio_compute_ulsif_loocv`, Hhat, hhat, lambda, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin)
+compute_ulsif_loocv <- function(Hhat, hhat, lambda, intercept, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin) {
+    .Call(`_densityratio_compute_ulsif_loocv`, Hhat, hhat, lambda, intercept, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin)
 }
 
-compute_ulsif <- function(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar) {
-    .Call(`_densityratio_compute_ulsif`, dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar)
+compute_ulsif <- function(dist_nu, dist_de, intercept, sigma, lambda, parallel, nthreads, progressbar) {
+    .Call(`_densityratio_compute_ulsif`, dist_nu, dist_de, intercept, sigma, lambda, parallel, nthreads, progressbar)
 }
 

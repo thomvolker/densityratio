@@ -117,11 +117,11 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
         hhat = arma::mean(Knu, 0).t();
 
         // compute starting lambda
-        current_alpha = ulsif_compute_alpha(Hhat, hhat, lambda(lam));
+        current_alpha = ulsif_compute_alpha(Hhat, hhat, lambda(lam), intercept);
         // set negative elements to zero
         current_alpha.elem(find(current_alpha < 0)).zeros();
         // calculate pearson divergence
-        PD_opt = dot(hhat, current_alpha) - 1/2;
+        PD_opt = dot(hhat, current_alpha) - 0.5;
 
         Umat.slice(lam * nsigma + sig) = UV.cols(0, m-1);
         alpha.slice(lam).col(sig) = current_alpha;
@@ -191,10 +191,10 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
           hhat = mean(Knu, 0).t();
 
 
-          current_alpha = ulsif_compute_alpha(Hhat, hhat, lambda(lam));
+          current_alpha = ulsif_compute_alpha(Hhat, hhat, lambda(lam), intercept);
           current_alpha.elem(find(current_alpha < 0)).zeros();
           // } end update alpha given U
-          PD = dot(hhat, current_alpha) - 1/2;
+          PD = dot(hhat, current_alpha) - 0.5;
 
           // check whether we're heading in the right direction
           if (PD <= PD_opt) {
@@ -214,7 +214,7 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
             conv = true;
           }
         }
-        loocv(sig, lam) = compute_ulsif_loocv(Hhat_opt, hhat_opt, lambda(lam), n_nu, n_de, nmin, nbasis, Knu_nmin, Kde_nmin);
+        loocv(sig, lam) = compute_ulsif_loocv(Hhat_opt, hhat_opt, lambda(lam), intercept, n_nu, n_de, nmin, nbasis, Knu_nmin, Kde_nmin);
       }
     }
     if (stopped) {

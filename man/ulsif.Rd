@@ -7,7 +7,7 @@
 ulsif(
   df_numerator,
   df_denominator,
-  intercept = TRUE,
+  intercept = FALSE,
   scale = "numerator",
   nsigma = 10,
   sigma_quantile = NULL,
@@ -30,7 +30,7 @@ with the denominator samples (must have the same variables as
 \code{df_denominator})}
 
 \item{intercept}{\code{logical} Indicating whether to include an intercept
-term in the model. Defaults to \code{TRUE}.}
+term in the model. Defaults to \code{FALSE}.}
 
 \item{scale}{\code{"numerator"}, \code{"denominator"}, or \code{NULL},
 indicating whether to standardize each numeric variable according to the
@@ -56,10 +56,10 @@ Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
 \item{lambda}{\code{NULL} or numeric vector indicating the lambda values to
 use in cross-validation}
 
-\item{ncenters}{Maximum number of Gaussian centers in the kernel gram
-matrix. Defaults to all numerator samples.}
+\item{ncenters}{\code{integer} Maximum number of Gaussian centers in the kernel
+gram matrix.}
 
-\item{centers}{\code{NULL} or numeric matrix with the same dimensions as the
+\item{centers}{\code{NULL} or \code{data.frame} with the same dimensions as the
 data, indicating the centers for the Gaussian kernel gram matrix.}
 
 \item{parallel}{logical indicating whether to use parallel processing in the
