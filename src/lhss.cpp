@@ -23,7 +23,7 @@ double get_sigma_lhss(arma::mat dist, arma::vec sigma, bool quantiles) {
   if (quantiles) {
     arma::vec nonzero_dist = nonzeros(dist);
     arma::vec temp_s = quantile(nonzero_dist, sigma);
-    s = as_scalar(temp_s);
+    s = sqrt(as_scalar(temp_s)*0.5);
   } else {
     s = as_scalar(sigma);
   }
@@ -119,7 +119,7 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
         // compute starting lambda
         current_alpha = ulsif_compute_alpha(Hhat, hhat, lambda(lam), intercept);
         // set negative elements to zero
-        current_alpha.elem(find(current_alpha < 0)).zeros();
+        // current_alpha.elem(find(current_alpha < 0)).zeros();
         // calculate pearson divergence
         PD_opt = dot(hhat, current_alpha) - 0.5;
 
@@ -157,16 +157,17 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
           Knu = kernel_gaussian(dist_nu_u, s);
           Kde = kernel_gaussian(dist_de_u, s);
 
-          for (int i = intercept ? 1 : 0; i < n_ce; i++) {
-            temp11 = -(nu_u - repmat(ce_u.row(i), n_nu, 1)) % repmat(Knu.col(i), 1, m);
+          for (int i = 0; i < n_ce; i++) {
+            int k = intercept ? i + 1 : i;
+            temp11 = -(nu_u - repmat(ce_u.row(i), n_nu, 1)) % repmat(Knu.col(k), 1, m);
             temp12 = nu - repmat(ce.row(i), n_nu, 1);
-            dPd1 += temp12.t() * temp11 * current_alpha(i);
+            dPd1 += temp12.t() * temp11 * current_alpha(k);
 
-            temp21 = (de_u - repmat(ce_u.row(i), n_de, 1)) % repmat(Kde.col(i), 1, m);
+            temp21 = (de_u - repmat(ce_u.row(i), n_de, 1)) % repmat(Kde.col(k), 1, m);
             temp22 = de - repmat(ce.row(i), n_de, 1);
 
             for (int j = 0; j < m; j++) {
-              dPd2.col(j) -= temp22.t() * (repmat(temp21.col(j), 1, nbasis) % Kde) * current_alpha * current_alpha(i) * 2;
+              dPd2.col(j) -= temp22.t() * (repmat(temp21.col(j), 1, nbasis) % Kde) * current_alpha * current_alpha(k) * 2;
             }
           }
           dPd = (dPd1 / n_nu / s - dPd2 / n_de / s / 2).t();
@@ -192,7 +193,7 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
 
 
           current_alpha = ulsif_compute_alpha(Hhat, hhat, lambda(lam), intercept);
-          current_alpha.elem(find(current_alpha < 0)).zeros();
+          // current_alpha.elem(find(current_alpha < 0)).zeros();
           // } end update alpha given U
           PD = dot(hhat, current_alpha) - 0.5;
 
