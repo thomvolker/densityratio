@@ -215,8 +215,8 @@ This is exactly what we see in the figure below: numerator samples (i.e., the te
 
 ``` r
 plot(dr_cs)
-#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before
-#> applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying
+#> logarithmic transformation
 #> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 ```
 
@@ -234,8 +234,8 @@ This results in a higher density ratio for lower `bmi` values, and a lower densi
 
 ``` r
 plot_univariate(dr_cs, vars = c("age", "bmi"), grid = TRUE)
-#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before
-#> applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying
+#> logarithmic transformation
 ```
 
 ![Univariate plots of `age` and `bmi` against the estimated density ratio values for the two groups of samples under covariate shift.](covariate-shift-plot-dr-univariate-1.png)
@@ -247,8 +247,8 @@ Again, we solely observe a pattern for `bmi`, with higher values corresponding t
 
 ``` r
 plot_bivariate(dr_cs, vars = c("age", "bmi", "children"), grid = TRUE)
-#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before
-#> applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying
+#> logarithmic transformation
 ```
 
 ![Bivariate scatter plots for `age`, `bmi` and `children` for two groups of samples under covariate shift, with density ratio values mapped to the color scale.](covariate-shift-plot-dr-bivariate-1.png)

@@ -523,8 +523,8 @@ The `plot()` function summarizes the model output by displaying the estimated de
 
 ``` r
 plot(dr)
-#> Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before
-#> applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before applying
+#> logarithmic transformation
 #> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 ```
 
@@ -541,8 +541,8 @@ For example, below we plot the density ratio values against `kid_score` and `mom
 
 ``` r
 plot_univariate(dr, c("kid_score", "mom_iq"), grid = TRUE)
-#> Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before
-#> applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before applying
+#> logarithmic transformation
 ```
 
 ![Univariate plots of `kid_score` and `mom_iq` against the estimated density ratio values for the two groups of samples.](densityratio-plot-univariate-1.png)
@@ -557,8 +557,8 @@ Now, the density ratio values are mapped to the color scale.
 
 ``` r
 plot_bivariate(dr, c("kid_score", "mom_iq", "mom_age"), grid = TRUE)
-#> Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before
-#> applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before applying
+#> logarithmic transformation
 ```
 
 ![Bivariate scatter plots for `kid_score`, `mom_iq` and `mom_age`, with density ratio values mapped to the color scale.](densityratio-plot-bivariate-1.png)

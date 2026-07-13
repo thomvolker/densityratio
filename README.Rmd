@@ -86,7 +86,7 @@ without estimating the numerator and denominator density separately. Density rat
 
 ```{r, densities, echo=FALSE,message=FALSE,warning=FALSE,fig.height=6,fig.width=10,out.width="80%", fig.dpi=500,fig.format="png",fig.align="center"}
 
-set.seed(as.numeric(as.Date("2026-007-10")))
+set.seed(11)
 
 library(ggplot2)
 library(patchwork)
@@ -102,6 +102,8 @@ dratio <- function(x, p, dif, mu, sd) {
 fit <- densityratio::ulsif(
   df_numerator = densityratio::numerator_data$x5,
   df_denominator = densityratio::denominator_data$x5,
+  nsigma = 5,
+  nlambda = 5,
   parallel = TRUE,
   nthreads = 18
 )
@@ -197,6 +199,8 @@ The package contains several functions to estimate the density ratio between the
 
 ```{r, example-univ}
 library(densityratio)
+
+set.seed(11)
 
 head(numerator_data)
 
@@ -338,11 +342,11 @@ ggplot(data = NULL, aes(x = newx5)) +
     legend.position = "inside",
     legend.position.inside = c(0.8, 0.9),
     text = element_text(size = 50),
-    legend.text = element_text(size = 50),
+    legend.text = element_text(size = 50)
   )
 ```
 
-The figure directly shows that `ulsif()` and `kliep()` come rather close to the true density ratio function in this example, and outperform the `naive()` solution. 
+The figure directly shows that `ulsif()` and `kliep()` are quite stable and come rather close to the true density ratio function in this example. The `naive()` solution is slightly more wiggly and less accurate than the other methods. 
 
 ## Contributions
 
