@@ -342,9 +342,9 @@ Issues](https://github.com/thomvolker/densityratio/issues).
 **Papers**
 
 - Density ratio estimation for the evaluation of the utility of
-  synthetic data: Volker, De Wolf and Van Kesteren (2023). [Assessing
-  the utility of synthetic data: A density ratio
-  perspective](https://unece.org/statistics/documents/2023/08/working-documents/assessing-utility-synthetic-data-density-ratio)
+  synthetic data: Volker, De Wolf and Van Kesteren (2024). [A density
+  ratio framework for evaluating the utility of synthetic
+  data](https://arxiv.org/pdf/2408.13167)
 
 - Density ratio estimation for covariate shift: Huang, Smola, Gretton,
   Borgwardt and Schölkopf (2007). [Correcting sample selection bias by

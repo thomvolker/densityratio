@@ -7,13 +7,13 @@
 \format{
 A data frame with 50 rows and 3 columns:
 \describe{
-\item{x1}{Continuous variable (normally distributed given x1 and x2)}
-\item{x2}{Continuous variable (normally distributed given x3)}
-\item{x3}{Continuous variable (mixture of two normally distributed variables)}
+\item{x1}{Continuous variable (mixture of normals with different means)}
+\item{x2}{Continuous variable (normally distributed given x1)}
+\item{x3}{Continuous variable (mixture of normals with different means)}
 }
 }
 \description{
-Subset of the \link{numerator_data} with three variables and 50 observations
+Subset of the \code{\link{numerator_data}} with three variables and 50 observations
 }
 \keyword{data}
 \keyword{datasets}

@@ -11,8 +11,13 @@ gene expressions).
 \description{
 Colon cancer data set from princeton, containing 2000 gene expressions from
 22 colon tumor tissues and 40 non-tumor tissues. The data is collected by
-Alon et al. (1999) and can be obtained from
-\href{http://genomics-pubs.princeton.edu/oncology/affydata/}{here}.
+Alon et al. (1999).
+}
+\references{
+Alon et al. (1999). Broad patterns of gene expression revealed by
+clustering analysis of tumor and normal colon tissues probed by oligonucleotide
+arrays.
+\doi{10.1073/pnas.96.12.6745}
 }
 \keyword{colon}
 \keyword{data}

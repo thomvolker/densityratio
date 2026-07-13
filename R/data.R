@@ -38,15 +38,15 @@ NULL
 
 #' numerator_small
 #'
-#' Subset of the [numerator_data] with three variables and 50 observations
+#' Subset of the \code{\link{numerator_data}} with three variables and 50 observations
 #'
 #' @name numerator_small
 #' @docType data
 #' @format A data frame with 50 rows and 3 columns:
 #' \describe{
-#'    \item{x1}{Continuous variable (normally distributed given x1 and x2)}
-#'    \item{x2}{Continuous variable (normally distributed given x3)}
-#'    \item{x3}{Continuous variable (mixture of two normally distributed variables)}
+#'    \item{x1}{Continuous variable (mixture of normals with different means)}
+#'    \item{x2}{Continuous variable (normally distributed given x1)}
+#'    \item{x3}{Continuous variable (mixture of normals with different means)}
 #' }
 #' @keywords data datasets
 
@@ -54,13 +54,13 @@ NULL
 
 #' denominator_small
 #'
-#' Subset of the [denominator_data] with three variables and 50 observations
+#' Subset of the \code{\link{denominator_data}} with three variables and 100 observations
 #'
 #' @name denominator_small
 #' @docType data
 #' @format A data frame with 100 rows and 3 columns:
 #' \describe{
-#'    \item{x1}{Continuous variable (normally distributed given x1 and x2)}
+#'    \item{x1}{Continuous variable (mixture of normals with different means)}
 #'    \item{x2}{Continuous variable (normally distributed)}
 #'    \item{x3}{Continuous variable (normally distributed)}
 #' }
@@ -71,7 +71,7 @@ NULL
 #' insurance
 #'
 #' Insurance data that is openly available (e.g., on
-#' \href{https://www.kaggle.com/datasets/mirichoi0218/insurance}{Kaggle}).
+#' \url{https://www.kaggle.com/datasets/mirichoi0218/insurance}).
 #'
 #' @name insurance
 #' @docType data
@@ -93,13 +93,16 @@ NULL
 #'
 #' Colon cancer data set from princeton, containing 2000 gene expressions from
 #' 22 colon tumor tissues and 40 non-tumor tissues. The data is collected by
-#' Alon et al. (1999) and can be obtained from
-#' \href{http://genomics-pubs.princeton.edu/oncology/affydata/}{here}.
+#' Alon et al. (1999).
 #'
 #' @name colon
 #' @docType data
 #' @format A data.frame with 62 rows and 2001 columns (class variable and 2000
 #' gene expressions).
+#' @references Alon et al. (1999). Broad patterns of gene expression revealed by
+#' clustering analysis of tumor and normal colon tissues probed by oligonucleotide
+#' arrays.
+#' \doi{10.1073/pnas.96.12.6745}
 #' @keywords  data datasets colon
 
 NULL
@@ -109,7 +112,7 @@ NULL
 #' The kidiq data stems from the National Longitudinal Survey of Youth and is used
 #' in Gelman and Hill (2007). The data set contains 434 observations measured on
 #' five variables, and is obtained from
-#' \href{https://github.com/jknowles/BDAexampleR}{https://github.com/jknowles/BDAexampleR}.
+#' \url{https://github.com/avehtari/ROS-Examples/blob/master/KidIQ/data/kidiq.csv}.
 #'
 #' @name kidiq
 #' @docType data
