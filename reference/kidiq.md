@@ -3,7 +3,7 @@
 The kidiq data stems from the National Longitudinal Survey of Youth and
 is used in Gelman and Hill (2007). The data set contains 434
 observations measured on five variables, and is obtained from
-<https://github.com/jknowles/BDAexampleR>.
+<https://github.com/avehtari/ROS-Examples/blob/master/KidIQ/data/kidiq.csv>.
 
 ## Format
 

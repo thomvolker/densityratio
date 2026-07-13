@@ -1,7 +1,7 @@
 # insurance
 
 Insurance data that is openly available (e.g., on
-[Kaggle](https://www.kaggle.com/datasets/mirichoi0218/insurance)).
+<https://www.kaggle.com/datasets/mirichoi0218/insurance>).
 
 ## Format
 
