@@ -1,5 +1,7 @@
 # Changelog
 
+## densityratio 0.2.4
+
 ## densityratio 0.2.3
 
 - update loocv procedure in ulsif to work with unconstrained kernel
