@@ -58,12 +58,11 @@ Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
 \item{lambda}{\code{NULL} or numeric vector indicating the lambda values to
 use in cross-validation}
 
-\item{ncenters}{Maximum number of Gaussian centers in the kernel gram
-matrix. Defaults to all numerator samples.}
+\item{ncenters}{\code{integer} Maximum number of Gaussian centers in the kernel
+gram matrix.}
 
-\item{centers}{Numeric matrix with the same variables as \code{nu} and
-\code{de} that are used as Gaussian centers in the kernel Gram matrix. By
-default, the matrix \code{nu} is used as the matrix with Gaussian centers.}
+\item{centers}{\code{NULL} or \code{data.frame} with the same dimensions as the
+data, indicating the centers for the Gaussian kernel gram matrix.}
 
 \item{maxit}{Maximum number of iterations in the updating scheme.}
 

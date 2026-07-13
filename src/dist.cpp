@@ -18,7 +18,7 @@ arma::mat distance(const arma::mat& X, const arma::mat& Y, const bool& intercept
   int ny = intercept ? Y.n_rows : Y.n_rows - 1;
   int colstart = intercept ? 1 : 0;
 
-  arma::mat XY(nx, ny + 1);
+  arma::mat XY(nx, ny + 1, arma::fill::zeros);
   XY.cols(colstart, ny) -= 2 * X * Y.t();
   XY.cols(colstart, ny).each_col() += sum(X % X, 1);
   XY.cols(colstart, ny).each_row() += sum(Y % Y, 1).t();

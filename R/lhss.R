@@ -26,11 +26,10 @@
 #' \code{10^seq(3, -3, length.out = nlambda)}.
 #' @param lambda \code{NULL} or numeric vector indicating the lambda values to
 #' use in cross-validation
-#' @param ncenters Maximum number of Gaussian centers in the kernel gram
-#' matrix. Defaults to all numerator samples.
-#' @param centers Numeric matrix with the same variables as \code{nu} and
-#' \code{de} that are used as Gaussian centers in the kernel Gram matrix. By
-#' default, the matrix \code{nu} is used as the matrix with Gaussian centers.
+#' @param ncenters \code{integer} Maximum number of Gaussian centers in the kernel 
+#' gram matrix.
+#' @param centers \code{NULL} or \code{data.frame} with the same dimensions as the
+#' data, indicating the centers for the Gaussian kernel gram matrix.
 #' @param maxit Maximum number of iterations in the updating scheme.
 #' @param progressbar Logical indicating whether or not to display a progressbar.
 #' @export

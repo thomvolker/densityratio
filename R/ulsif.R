@@ -6,7 +6,7 @@
 #' with the denominator samples (must have the same variables as
 #' \code{df_denominator})
 #' @param intercept \code{logical} Indicating whether to include an intercept
-#' term in the model. Defaults to \code{TRUE}.
+#' term in the model. Defaults to \code{FALSE}.
 #' @param scale \code{"numerator"}, \code{"denominator"}, or \code{NULL},
 #' indicating whether to standardize each numeric variable according to the
 #' numerator means and standard deviations, the denominator means and standard
@@ -25,9 +25,9 @@
 #' \code{10^seq(3, -3, length.out = nlambda)}.
 #' @param lambda \code{NULL} or numeric vector indicating the lambda values to
 #' use in cross-validation
-#' @param ncenters Maximum number of Gaussian centers in the kernel gram
-#' matrix. Defaults to all numerator samples.
-#' @param centers \code{NULL} or numeric matrix with the same dimensions as the
+#' @param ncenters \code{integer} Maximum number of Gaussian centers in the kernel 
+#' gram matrix.
+#' @param centers \code{NULL} or \code{data.frame} with the same dimensions as the
 #' data, indicating the centers for the Gaussian kernel gram matrix.
 #' @param parallel logical indicating whether to use parallel processing in the
 #' cross-validation scheme.
@@ -46,11 +46,13 @@
 #'
 #' @example inst/examples/ulsif-example.R
 
-ulsif <- function(df_numerator, df_denominator, intercept = TRUE, scale = "numerator",
+ulsif <- function(df_numerator, df_denominator, intercept = FALSE, scale = "numerator",
                   nsigma = 10, sigma_quantile = NULL, sigma = NULL, nlambda = 20,
-                  lambda = NULL, ncenters = 200, centers = NULL,
-                  parallel = FALSE, nthreads = NULL, progressbar = TRUE) {
+                  lambda = NULL, ncenters = 200, centers = NULL, parallel = FALSE, 
+                  nthreads = NULL, progressbar = TRUE) {
+ 
   cl <- match.call()
+
   nu <- check.datatype(df_numerator)
   de <- check.datatype(df_denominator)
 
@@ -70,7 +72,7 @@ ulsif <- function(df_numerator, df_denominator, intercept = TRUE, scale = "numer
   parallel <- check.parallel(parallel, nthreads, lambda)
   nthreads <- check.threads(parallel, nthreads)
 
-  res <- compute_ulsif(dist_nu, dist_de, sigma, lambda, parallel, nthreads, progressbar)
+  res <- compute_ulsif(dist_nu, dist_de, intercept, sigma, lambda, parallel, nthreads, progressbar)
   loocv_scores <- res$loocv_score
   colnames(loocv_scores) <- names(lambda) <- paste0("lambda", 1:length(lambda))
   rownames(loocv_scores) <- names(sigma) <- paste0("sigma", 1:length(sigma))
@@ -92,6 +94,7 @@ ulsif <- function(df_numerator, df_denominator, intercept = TRUE, scale = "numer
     sigma_opt = sigma[min_score[1]],
     call = cl
   )
+
   class(out) <- "ulsif"
   out
 }

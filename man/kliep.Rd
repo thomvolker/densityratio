@@ -45,10 +45,11 @@ used.}
 Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
 \code{0.25} and \code{0.75} are used.}
 
-\item{ncenters}{Maximum number of Gaussian centers in the kernel gram
-matrix. Defaults to all numerator samples.}
+\item{ncenters}{\code{integer} Maximum number of Gaussian centers in the kernel
+gram matrix.}
 
-\item{centers}{Option to specify the Gaussian samples manually.}
+\item{centers}{\code{NULL} or \code{data.frame} with the same dimensions as the
+data, indicating the centers for the Gaussian kernel gram matrix.}
 
 \item{cv}{Logical indicating whether or not to do cross-validation}
 

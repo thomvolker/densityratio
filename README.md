@@ -30,7 +30,7 @@ over the entire multivariate space of the data. Subsequently, the
 density ratio values can be used to summarize the dissimilarity between
 the two distributions in a discrepancy measure.
 
-<img src="man/figures/README-densities-1.png" width="80%" style="display: block; margin: auto;" />
+<img src="man/figures/README-densities-1.png" alt="" width="80%" style="display: block; margin: auto;" />
 
 ### Features
 
@@ -77,6 +77,8 @@ five variables.
 ``` r
 library(densityratio)
 
+set.seed(11)
+
 head(numerator_data)
 #> # A tibble: 6 × 5
 #>   x1    x2         x3     x4     x5
@@ -114,11 +116,11 @@ summary(fit)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.3726142
+#> Optimal sigma: 0.7157604
 #> Optimal lambda: 0.03162278
-#> Optimal kernel weights: num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
+#> Optimal kernel weights: num [1:200] -0.02582 0.00116 -0.01221 0.01429 -0.03272 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.2801
+#> Pearson divergence between P(nu) and P(de): 0.2905
 #> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.
 ```
 
@@ -136,11 +138,11 @@ summary(fit, test = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.3726142
+#> Optimal sigma: 0.7157604
 #> Optimal lambda: 0.03162278
-#> Optimal kernel weights: num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
+#> Optimal kernel weights: num [1:200] -0.02582 0.00116 -0.01221 0.01429 -0.03272 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.2801
+#> Pearson divergence between P(nu) and P(de): 0.2905
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
@@ -179,7 +181,7 @@ ggplot() +
   )
 ```
 
-<img src="man/figures/README-plot-univ-1.png" width="80%" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot-univ-1.png" alt="" width="80%" style="display: block; margin: auto;" />
 
 ### Scaling
 
@@ -216,9 +218,9 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.3005360
-#> 2                 B        1.3574809
-#> 3                 C        0.6379142
+#> 1                 A        1.3679015
+#> 2                 B        1.4331335
+#> 3                 C        0.6111301
 
 table(numerator_data$x1) / table(denominator_data$x1)
 #> 
@@ -252,11 +254,11 @@ summary(fit_all, test = TRUE, parallel = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 1.065369
-#> Optimal lambda: 0.1623777
-#> Optimal kernel weights: num [1:201] 0.5691 0.1511 0.0959 0.0118 0.0149 ...
+#> Optimal sigma: 2.206548
+#> Optimal lambda: 0.001
+#> Optimal kernel weights: num [1:200] 0.976 -1.336 -0.232 0.348 -0.528 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.4629
+#> Pearson divergence between P(nu) and P(de): 1.025
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
@@ -311,15 +313,16 @@ ggplot(data = NULL, aes(x = newx5)) +
     legend.position = "inside",
     legend.position.inside = c(0.8, 0.9),
     text = element_text(size = 50),
-    legend.text = element_text(size = 50),
+    legend.text = element_text(size = 50)
   )
 ```
 
-<img src="man/figures/README-plot-methods-1.png" width="80%" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot-methods-1.png" alt="" width="80%" style="display: block; margin: auto;" />
 
-The figure directly shows that `ulsif()` and `kliep()` come rather close
-to the true density ratio function in this example, and outperform the
-`naive()` solution.
+The figure directly shows that `ulsif()` and `kliep()` are quite stable
+and come rather close to the true density ratio function in this
+example. The `naive()` solution is slightly more wiggly and less
+accurate than the other methods.
 
 ## Contributions
 

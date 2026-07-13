@@ -85,7 +85,9 @@ $$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$
 without estimating the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.
 
 ```{r, densities, echo=FALSE,message=FALSE,warning=FALSE,fig.height=6,fig.width=10,out.width="80%", fig.dpi=500,fig.format="png",fig.align="center"}
-set.seed(1)
+
+set.seed(11)
+
 library(ggplot2)
 library(patchwork)
 
@@ -100,7 +102,8 @@ dratio <- function(x, p, dif, mu, sd) {
 fit <- densityratio::ulsif(
   df_numerator = densityratio::numerator_data$x5,
   df_denominator = densityratio::denominator_data$x5,
-  centers = c(densityratio::numerator_data$x5, densityratio::denominator_data$x5),
+  nsigma = 5,
+  nlambda = 5,
   parallel = TRUE,
   nthreads = 18
 )
@@ -196,6 +199,8 @@ The package contains several functions to estimate the density ratio between the
 
 ```{r, example-univ}
 library(densityratio)
+
+set.seed(11)
 
 head(numerator_data)
 
@@ -337,11 +342,11 @@ ggplot(data = NULL, aes(x = newx5)) +
     legend.position = "inside",
     legend.position.inside = c(0.8, 0.9),
     text = element_text(size = 50),
-    legend.text = element_text(size = 50),
+    legend.text = element_text(size = 50)
   )
 ```
 
-The figure directly shows that `ulsif()` and `kliep()` come rather close to the true density ratio function in this example, and outperform the `naive()` solution. 
+The figure directly shows that `ulsif()` and `kliep()` are quite stable and come rather close to the true density ratio function in this example. The `naive()` solution is slightly more wiggly and less accurate than the other methods. 
 
 ## Contributions
 

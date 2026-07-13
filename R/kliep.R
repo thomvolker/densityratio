@@ -18,9 +18,10 @@
 #' @param sigma \code{NULL} or a scalar value to determine the bandwidth of the
 #' Gaussian kernel gram matrix. If \code{NULL}, \code{nsigma} values between
 #' \code{0.25} and \code{0.75} are used.
-#' @param ncenters Maximum number of Gaussian centers in the kernel gram
-#' matrix. Defaults to all numerator samples.
-#' @param centers Option to specify the Gaussian samples manually.
+#' @param ncenters \code{integer} Maximum number of Gaussian centers in the kernel 
+#' gram matrix.
+#' @param centers \code{NULL} or \code{data.frame} with the same dimensions as the
+#' data, indicating the centers for the Gaussian kernel gram matrix.
 #' @param cv Logical indicating whether or not to do cross-validation
 #' @param nfold Number of cross-validation folds used in order to calculate the
 #' optimal \code{sigma} value (default is 5-fold cv).

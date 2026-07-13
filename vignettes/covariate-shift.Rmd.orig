@@ -275,10 +275,11 @@ c(
 )
 ```
 Now, the performance of the prediction model decreases substantially on the test data, as is expected under covariate shift. Hopefully, we can account for this by reweighing the training data.
+Note that some estimated density ratio weights were estimated slightly below zero due to the unconstrained estimation procedure. We cap these to 0.01.
 
 ```{r model-eval-cs-w}
 weights_cs <- predict(dr_cs, newdata = train_cs |> subset(select = -charges))
-fit_cs_w <- lm(formula, data = train_cs, weights = weights_cs)
+fit_cs_w <- lm(formula, data = train_cs, weights = pmax(0.01, weights_cs))
 
 pred_train_cs_w <- predict(fit_cs_w, newdata = train_cs)
 pred_test_cs_w <- predict(fit_cs_w, newdata = test_cs)

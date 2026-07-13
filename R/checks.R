@@ -186,12 +186,20 @@ check.lambda <- function(nlambda, lambda) {
   if (!is.null(lambda)) {
     if (!is.numeric(lambda) | !is.null(dim(lambda))) {
       stop("'lambda' must be either NULL, a numeric scalar or a numeric vector.")
+    } else if (any(lambda < 0)) {
+      stop("'lambda' is a positive regularization parameters that cannot take negative values")
     }
   } else {
     if (!is.numeric(nlambda) | length(nlambda) != 1) {
-      stop("'nlambda' must be a scalar")
+      stop("'nlambda' must be a positive integer")
+    } else if (nlambda < 1) {
+      stop("'nlambda' must be a positive integer")
     }
-    lambda <- 10^seq(3, -3, length.out = nlambda)
+    if (nlambda < 3) {
+      lambda <- 10^{nlambda - seq_len(nlambda)}
+    } else {
+      lambda <- 10^seq(3, -3, length.out = nlambda)
+    }
   }
   lambda
 }

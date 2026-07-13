@@ -315,6 +315,16 @@ test_that("check.lambda works", {
   expect_error(
     check.lambda(c(1,2), NULL)
   )
+  expect_error(
+    check.lambda(10, c(-1, 2))
+  )
+  expect_error(
+    check.lambda(-2, NULL)
+  )
+  expect_equal(
+    check.lambda(2, NULL),
+    c(10, 1)
+  )
 })
 
 test_that("check.centers works", {

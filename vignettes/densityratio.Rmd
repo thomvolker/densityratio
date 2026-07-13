@@ -133,9 +133,9 @@ dr
 #> 
 #> Regularization parameter (lambda): num [1:20] 1000 483.3 233.6 112.9 54.6 ...
 #> 
-#> Optimal sigma (loocv): 1.216132
-#> Optimal lambda (loocv): 0.3359818
-#> Optimal kernel weights (loocv): num [1:201] 0.3256 -0.054 0.0098 0.1639 0.2047 ...
+#> Optimal sigma (loocv): 3.006715
+#> Optimal lambda (loocv): 0.008858668
+#> Optimal kernel weights (loocv): num [1:200] -0.503 -0.132 0.614 1.563 0.182 ...
 #> 
 ```
 The output shows the number of kernels, the candidate values for the bandwidth parameter `sigma`, the candidates for the regularization parameter `lambda` and the optimal values of these parameters, including the weights that can be used to compute the density ratio for new samples.
@@ -183,9 +183,9 @@ dr
 #> 
 #> Regularization parameter (lambda): num [1:50] 1000 754 569 429 324 ...
 #> 
-#> Optimal sigma (loocv): 1.345547
-#> Optimal lambda (loocv): 0.4941713
-#> Optimal kernel weights (loocv): num [1:201] 0.2213 -0.0349 -0.0107 0.0222 -0.0175 ...
+#> Optimal sigma (loocv): 2.979149
+#> Optimal lambda (loocv): 0.009540955
+#> Optimal kernel weights (loocv): num [1:200] -0.4431 -0.2511 0.0852 0.1242 0.3134 ...
 #> 
 ```
 
@@ -350,14 +350,14 @@ dr_lhss
 #> Kernel Information:
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
-#>   sigma: num [1:10, 1:10] 0.00514 0.04845 0.13661 0.27564 0.4775 ...
+#>   sigma: num [1:10, 1:10] 0.0517 0.1521 0.24 0.3108 0.3768 ...
 #> 
 #> Regularization parameter (lambda): num [1:10] 1000 215.44 46.42 10 2.15 ...
 #> 
 #> Subspace dimension (m): 1
-#> Optimal sigma: 0.1366127
-#> Optimal lambda: 0.1
-#> Optimal kernel weights (loocv): num [1:201] 1.3467 0 0.1011 0.0874 0 ...
+#> Optimal sigma: 0.759155
+#> Optimal lambda: 0.001
+#> Optimal kernel weights (loocv): num [1:201] 36.2 -1.42 -2.08 1.79 1.07 ...
 #> 
 ```
 
@@ -448,11 +448,11 @@ summary(dr)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 1.387557
-#> Optimal lambda: 0.6951928
-#> Optimal kernel weights: num [1:201] 0.16916 0.00301 0.05082 -0.00791 0.03594 ...
+#> Optimal sigma: 2.97199
+#> Optimal lambda: 0.008858668
+#> Optimal kernel weights: num [1:200] 0.6308 -0.3587 0.2476 -0.212 -0.0367 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.4149
+#> Pearson divergence between P(nu) and P(de): 0.9376
 #> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.
 ```
 
@@ -476,11 +476,11 @@ summary(dr, test = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 1.387557
-#> Optimal lambda: 0.6951928
-#> Optimal kernel weights: num [1:201] 0.16916 0.00301 0.05082 -0.00791 0.03594 ...
+#> Optimal sigma: 2.97199
+#> Optimal lambda: 0.008858668
+#> Optimal kernel weights: num [1:200] 0.6308 -0.3587 0.2476 -0.212 -0.0367 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.4149
+#> Pearson divergence between P(nu) and P(de): 0.9376
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
@@ -505,11 +505,11 @@ summary(dr, test = TRUE, parallel = TRUE, cluster = 12)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 1.387557
-#> Optimal lambda: 0.6951928
-#> Optimal kernel weights: num [1:201] 0.16916 0.00301 0.05082 -0.00791 0.03594 ...
+#> Optimal sigma: 2.97199
+#> Optimal lambda: 0.008858668
+#> Optimal kernel weights: num [1:200] 0.6308 -0.3587 0.2476 -0.212 -0.0367 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.4149
+#> Pearson divergence between P(nu) and P(de): 0.9376
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
@@ -523,6 +523,8 @@ The `plot()` function summarizes the model output by displaying the estimated de
 
 ``` r
 plot(dr)
+#> Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before applying
+#> logarithmic transformation
 #> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 ```
 
@@ -539,6 +541,8 @@ For example, below we plot the density ratio values against `kid_score` and `mom
 
 ``` r
 plot_univariate(dr, c("kid_score", "mom_iq"), grid = TRUE)
+#> Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before applying
+#> logarithmic transformation
 ```
 
 ![Univariate plots of `kid_score` and `mom_iq` against the estimated density ratio values for the two groups of samples.](densityratio-plot-univariate-1.png)
@@ -553,6 +557,8 @@ Now, the density ratio values are mapped to the color scale.
 
 ``` r
 plot_bivariate(dr, c("kid_score", "mom_iq", "mom_age"), grid = TRUE)
+#> Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before applying
+#> logarithmic transformation
 ```
 
 ![Bivariate scatter plots for `kid_score`, `mom_iq` and `mom_age`, with density ratio values mapped to the color scale.](densityratio-plot-bivariate-1.png)
@@ -569,13 +575,13 @@ By default, the `predict()` function predicts the density ratio values for the n
 predict(dr) |> head()
 #> , , 1
 #> 
-#>           [,1]
-#> [1,] 1.4928033
-#> [2,] 2.2715889
-#> [3,] 2.5855672
-#> [4,] 1.9345356
-#> [5,] 1.9679638
-#> [6,] 0.7939163
+#>          [,1]
+#> [1,] 5.815370
+#> [2,] 3.085314
+#> [3,] 6.858045
+#> [4,] 2.441549
+#> [5,] 4.599869
+#> [6,] 3.447904
 ```
 
 By default, the `predict()` function uses the optimal hyperparameter values as determined by cross-validation (if cross-validation is performed, otherwise it returns the predicted density ratio values for all parameters).

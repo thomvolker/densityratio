@@ -13,8 +13,14 @@ using namespace arma;
 
 
 //[[Rcpp::export]]
-arma::vec ulsif_compute_alpha(arma::mat Hhat, arma::vec hhat, double lambda) {
-  Hhat.diag() += lambda;
+arma::vec ulsif_compute_alpha(arma::mat Hhat, arma::vec hhat, double lambda, bool intercept) {
+  if (intercept) {
+    for (arma::uword i = 1; i < Hhat.n_cols; ++i) {
+      Hhat(i, i) += lambda;
+    }
+  } else {
+    Hhat.diag() += lambda;
+  }
   arma::vec alpha = arma::solve(Hhat, hhat);
   return alpha;
 }
@@ -42,11 +48,14 @@ int set_threads(int nthreads) {
 }
 
 //[[Rcpp::export]]
-double compute_ulsif_loocv(arma::mat Hhat, arma::mat hhat, double lambda, const int& nnu, const int& nde, const int& nmin, const int& ncol, arma::mat Knu_nmin, arma::mat Kde_nmin) {
+double compute_ulsif_loocv(arma::mat Hhat, arma::mat hhat, double lambda, bool intercept, const int& nnu, const int& nde, const int& nmin, const int& ncol, arma::mat Knu_nmin, arma::mat Kde_nmin) {
   double la = lambda * (nde - 1) / nde;
 
   // arma::vec onen = arma::ones<arma::vec>(nmin);
   arma::vec oneb = arma::ones<arma::vec>(ncol);
+  if (intercept) {
+    oneb(0) = 0;
+  }
 
   arma::mat Binv = arma::inv(Hhat + arma::diagmat(oneb * la));
   arma::mat B0   = repmat(Binv * hhat, 1, nmin);
@@ -58,7 +67,6 @@ double compute_ulsif_loocv(arma::mat Hhat, arma::mat hhat, double lambda, const 
   B1 += B02.t() * diagmat(B12);
 
   arma::mat B2  = (nnu * B0 - B1) * (nde - 1) / (nde * (nnu - 1));
-  B2.elem(find(B2 < 0)).zeros();
 
   arma::vec wde = sum(Kde_nmin % B2.t(), 1);
   arma::vec wnu = sum(Knu_nmin % B2.t(), 1);
@@ -67,7 +75,7 @@ double compute_ulsif_loocv(arma::mat Hhat, arma::mat hhat, double lambda, const 
 }
 
 //[[Rcpp::export]]
-List compute_ulsif(const arma::mat& dist_nu, const arma::mat& dist_de, const arma::vec& sigma, const arma::vec& lambda, const bool& parallel, int nthreads, const bool& progressbar) {
+List compute_ulsif(const arma::mat& dist_nu, const arma::mat& dist_de, const bool& intercept, const arma::vec& sigma, const arma::vec& lambda, const bool& parallel, int nthreads, const bool& progressbar) {
 
   double si, la;
   bool stopped = false;
@@ -110,13 +118,16 @@ List compute_ulsif(const arma::mat& dist_nu, const arma::mat& dist_de, const arm
   #endif
     for(int l = 0; l < nlambda; l++) {
       if(Progress::check_abort()) {
-        stopped = true;
+        #pragma omp critical
+        { 
+          stopped = true; 
+        }
       } else {
         la = lambda[l];
         p.increment();
-        current_alpha = ulsif_compute_alpha(Hhat, hhat, la);
+        current_alpha = ulsif_compute_alpha(Hhat, hhat, la, intercept);
         alpha.slice(l).col(sig) = current_alpha;
-        loocv(sig, l) = compute_ulsif_loocv(Hhat, hhat, la, nnu, nde, nmin, ncol, Knu.rows(0, nmin-1), Kde.rows(0,nmin-1));
+        loocv(sig, l) = compute_ulsif_loocv(Hhat, hhat, la, intercept, nnu, nde, nmin, ncol, Knu.rows(0, nmin-1), Kde.rows(0,nmin-1));
       }
     }
     if (stopped) {
