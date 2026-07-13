@@ -18,7 +18,7 @@ A data.frame with 1338 rows and 7 columns:
 }
 \description{
 Insurance data that is openly available (e.g., on
-\href{https://www.kaggle.com/datasets/mirichoi0218/insurance}{Kaggle}).
+\url{https://www.kaggle.com/datasets/mirichoi0218/insurance}).
 }
 \keyword{data}
 \keyword{datasets}

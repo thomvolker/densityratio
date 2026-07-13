@@ -20,7 +20,7 @@ year; 3: parttime in the first year; 4: fulltime in the first year)}
 The kidiq data stems from the National Longitudinal Survey of Youth and is used
 in Gelman and Hill (2007). The data set contains 434 observations measured on
 five variables, and is obtained from
-\href{https://github.com/jknowles/BDAexampleR}{https://github.com/jknowles/BDAexampleR}.
+\url{https://github.com/avehtari/ROS-Examples/blob/master/KidIQ/data/kidiq.csv}.
 }
 \keyword{data}
 \keyword{datasets}
