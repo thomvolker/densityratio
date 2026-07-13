@@ -1,5 +1,9 @@
 # densityratio (development version)
 
+* update loocv procedure in ulsif to work with unconstrained kernel weights
+* update lhss to perform unconstrained optimization (aligned with loocv procedure of ulsif)
+* small formal check to stop when negative regularization parameters are supplied
+
 # densityratio 0.2.2
 
 * update `plot_bivariate()` to depend on `ggh4x` to remove empty panels, instead

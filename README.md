@@ -1,58 +1,49 @@
+---
+output: 
+  github_document:
+    html_preview: true
+---
+
+
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
 
 # densityratio <img src="man/figures/logo.png" align="right" alt="densityratio logo" width="140"/>
 
 <!-- badges: start -->
-
 [![R-CMD-check](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomvolker/densityratio/actions/workflows/R-CMD-check.yaml)
-[![Lifecycle:
-stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![densityratio status
-badge](https://thomvolker.r-universe.dev/badges/densityratio)](https://thomvolker.r-universe.dev/densityratio)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![densityratio status badge](https://thomvolker.r-universe.dev/badges/densityratio)](https://thomvolker.r-universe.dev/densityratio)
 [![DOI](https://zenodo.org/badge/613441108.svg)](https://zenodo.org/badge/latestdoi/613441108)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/densityratio)](https://CRAN.R-project.org/package=densityratio)
+[![CRAN status](https://www.r-pkg.org/badges/version/densityratio)](https://CRAN.R-project.org/package=densityratio)
 [![codecov](https://codecov.io/gh/thomvolker/densityratio/branch/main/graph/badge.svg)](https://app.codecov.io/gh/thomvolker/densityratio)
 <!-- badges: end -->
 
 ## Overview
 
 This package provides functionality to directly estimate a density ratio
-$$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$ without estimating
-the numerator and denominator density separately. Density ratio
-estimation serves many purposes, for example, prediction, outlier
-detection, change-point detection in time-series, importance weighting
-under domain adaptation (i.e., sample selection bias) and evaluation of
-synthetic data utility. The key idea is that differences between data
-distributions can be captured in their density ratio, which is estimated
-over the entire multivariate space of the data. Subsequently, the
-density ratio values can be used to summarize the dissimilarity between
-the two distributions in a discrepancy measure.
+$$r(x) = \frac{p_\text{nu}(x)}{p_{\text{de}}(x)},$$
+without estimating the numerator and denominator density separately. Density ratio estimation serves many purposes, for example, prediction, outlier detection, change-point detection in time-series, importance weighting under domain adaptation (i.e., sample selection bias) and evaluation of synthetic data utility. The key idea is that differences between data distributions can be captured in their density ratio, which is estimated over the entire multivariate space of the data. Subsequently, the density ratio values can be used to summarize the dissimilarity between the two distributions in a discrepancy measure.
 
-<img src="man/figures/README-densities-1.png" width="80%" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="man/figures/README-densities-1.png" alt="plot of chunk densities" width="80%" />
+<p class="caption">plot of chunk densities</p>
+</div>
+
 
 ### Features
 
-- **Fast**: Computationally intensive code is executed in `C++` using
-  `Rcpp` and `RcppArmadillo`.
-- **Automatic**: Good default hyperparameters that can be optimized in
-  cross-validation (we do recommend understanding those parameters
-  before using `densityratio` in practice).
-- **Complete**: Several density ratio estimation methods, such as
-  unconstrained least-squares importance fitting (`ulsif()`),
-  Kullback-Leibler importance estimation procedure (`kliep()`), kernel
-  mean matching (`kmm()`), ratio of estimated densities (`naive()`),
-  spectral density ratio estimation (`spectral()` and least-squares
-  heterodistributional subspace search (`lhss()`).
-- **User-friendly**: Simple user interface, default `predict()`,
-  `print()` and `summary()` functions for all density ratio estimation
-  methods; built-in data sets for quick testing.
+* __Fast__: Computationally intensive code is executed in `C++` using `Rcpp` and `RcppArmadillo`.
+* __Automatic__: Good default hyperparameters that can be optimized in cross-validation (we do recommend understanding those parameters before using `densityratio` in practice).
+* __Complete__: Several density ratio estimation methods, such as unconstrained least-squares importance fitting (`ulsif()`), Kullback-Leibler importance estimation procedure (`kliep()`), kernel mean matching (`kmm()`), ratio of estimated densities (`naive()`), spectral density ratio estimation (`spectral()` and least-squares heterodistributional subspace search (`lhss()`).
+* __User-friendly__: Simple user interface, default `predict()`, `print()` and `summary()` functions for all density ratio estimation methods; built-in data sets for quick testing.
+
 
 ## Installation
 
-You can install the stable release of `densityratio` from
-[CRAN](https://CRAN.R-project.org/package=densityratio) with:
+You can install the stable release of `densityratio` from [CRAN](https://CRAN.R-project.org/package=densityratio) with:
 
 ``` r
 install.packages('densityratio')
@@ -66,13 +57,10 @@ remotes::install_github("thomvolker/densityratio")
 
 ## Usage
 
-The package contains several functions to estimate the density ratio
-between the numerator data and the denominator data. To illustrate the
-functionality, we make use of the in-built simulated data sets
-`numerator_data` and `denominator_data`, that both consist of the same
-five variables.
+The package contains several functions to estimate the density ratio between the numerator data and the denominator data. To illustrate the functionality, we make use of the in-built simulated data sets `numerator_data` and `denominator_data`, that both consist of the same five variables.
 
 ### Minimal example
+
 
 ``` r
 library(densityratio)
@@ -99,10 +87,8 @@ class(fit)
 #> [1] "ulsif"
 ```
 
-We can ask for the `summary()` of the estimated density ratio object,
-that contains the optimal kernel weights (optimized using
-cross-validation) and a measure of discrepancy between the numerator and
-denominator densities.
+We can ask for the `summary()` of the estimated density ratio object, that contains the optimal kernel weights (optimized using cross-validation) and a measure of discrepancy between the numerator and denominator densities.
+
 
 ``` r
 summary(fit)
@@ -114,17 +100,16 @@ summary(fit)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.3726142
+#> Optimal sigma: 0.7591631
 #> Optimal lambda: 0.03162278
-#> Optimal kernel weights: num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
+#> Optimal kernel weights: num [1:200] 0.0407 0.0412 -0.0318 0.0413 0.1964 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.2801
+#> Pearson divergence between P(nu) and P(de): 0.2898
 #> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.
 ```
 
-To formally evaluate whether the numerator and denominator densities
-differ significantly, you can perform a two-sample homogeneity test as
-follows.
+To formally evaluate whether the numerator and denominator densities differ significantly, you can perform a two-sample homogeneity test as follows.
+
 
 ``` r
 summary(fit, test = TRUE)
@@ -136,24 +121,21 @@ summary(fit, test = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.3726142
+#> Optimal sigma: 0.7591631
 #> Optimal lambda: 0.03162278
-#> Optimal kernel weights: num [1:201] 0.43926 0.01016 0.00407 0.01563 0.01503 ...
+#> Optimal kernel weights: num [1:200] 0.0407 0.0412 -0.0318 0.0413 0.1964 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.2801
+#> Pearson divergence between P(nu) and P(de): 0.2898
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
 
-The probability that numerator and denominator samples share a common
-data generating mechanism is very small.
+The probability that numerator and denominator samples share a common data generating mechanism is very small.
 
-The `ulsif`-object also contains the (hyper-)parameters used in
-estimating the density ratio, such as the centers used in constructing
-the Gaussian kernels (`fit$centers`), the different bandwidth parameters
-(`fit$sigma`) and the regularization parameters (`fit$lambda`). Using
-these variables, we can obtain the estimated density ratio using
-`predict()`.
+The `ulsif`-object also contains the (hyper-)parameters used in estimating the density ratio, such as the centers used in constructing the Gaussian kernels (`fit$centers`), the different bandwidth parameters (`fit$sigma`) and the regularization parameters (`fit$lambda`). 
+Using these variables, we can obtain the estimated density ratio using `predict()`.
+
+
 
 ``` r
 # obtain predictions for the numerator samples
@@ -179,23 +161,21 @@ ggplot() +
   )
 ```
 
-<img src="man/figures/README-plot-univ-1.png" width="80%" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="man/figures/README-plot-univ-1.png" alt="plot of chunk plot-univ" width="80%" />
+<p class="caption">plot of chunk plot-univ</p>
+</div>
 
 ### Scaling
 
-By default, all functions in the `densityratio` package standardize the
-data to the numerator means and standard deviations. This is done to
-ensure that the importance of each variable in the kernel estimates is
-not dependent on the scale of the data. By setting
-`scale = "denominator"` one can scale the data to the means and standard
-deviations of the denominator data, and by setting `scale = FALSE` the
-data remains on the original scale.
+By default, all functions in the `densityratio` package standardize the data to the numerator means and standard deviations. This is done to ensure that the importance of each variable in the kernel estimates is not dependent on the scale of the data. By setting `scale = "denominator"` one can scale the data to the means and standard deviations of the denominator data, and by setting `scale = FALSE` the data remains on the original scale.
+
 
 ### Categorical data
 
-All of the functions in the `densityratio` package accept categorical
-variables types. However, note that internally, these variables are
-one-hot encoded, which can lead to a high-dimensional feature-space.
+All of the functions in the `densityratio` package accept categorical variables types. However, note that internally, these variables are one-hot encoded, which can lead to a high-dimensional feature-space. 
+
+
 
 ``` r
 summary(numerator_data$x1)
@@ -216,9 +196,9 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.3005360
-#> 2                 B        1.3574809
-#> 3                 C        0.6379142
+#> 1                 A        1.3671836
+#> 2                 B        1.4286769
+#> 3                 C        0.6118615
 
 table(numerator_data$x1) / table(denominator_data$x1)
 #> 
@@ -226,16 +206,13 @@ table(numerator_data$x1) / table(denominator_data$x1)
 #> 1.3928571 1.4612069 0.6007752
 ```
 
-This transformation can give a reasonable estimate of the ratio of
-proportions in the different data sets (although there is some
-regularization applied such that the estimated odds are closer to one
-than seen in the real data).
+This transformation can give a reasonable estimate of the ratio of proportions in the different data sets (although there is some regularization applied such that the estimated odds are closer to one than seen in the real data).
+
 
 ### Full data example
 
-After transforming all variables to numeric variables, it is possible to
-calculate the density ratio over the entire multivariate space of the
-data.
+After transforming all variables to numeric variables, it is possible to calculate the density ratio over the entire multivariate space of the data.
+
 
 ``` r
 fit_all <- ulsif(
@@ -252,34 +229,28 @@ summary(fit_all, test = TRUE, parallel = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 1.065369
-#> Optimal lambda: 0.1623777
-#> Optimal kernel weights: num [1:201] 0.5691 0.1511 0.0959 0.0118 0.0149 ...
+#> Optimal sigma: 2.017754
+#> Optimal lambda: 0.001
+#> Optimal kernel weights: num [1:200] 2.481 -0.457 -0.899 -0.444 -0.735 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.4629
+#> Pearson divergence between P(nu) and P(de): 1.122
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
 
+
 ### Other density ratio estimation functions
 
-Besides `ulsif()`, the package contains several other functions to
-estimate a density ratio.
+Besides `ulsif()`, the package contains several other functions to estimate a density ratio. 
 
-- `naive()` estimates the numerator and denominator densities
-  separately, and subsequently takes there ratio.
-- `kliep()` estimates the density ratio directly through the
-  Kullback-Leibler importance estimation procedure.
-- `kmm()` estimates the density ratio through kernel mean matching.
-- `lhss()` estimates the density ratio in a subspace where the two
-  distributions are most different using least-squares
-  heterodistributional subspace search.
-- `spectral()` estimates the density ratio using a spectral series
-  approach.
+* `naive()` estimates the numerator and denominator densities separately, and subsequently takes there ratio. 
+* `kliep()` estimates the density ratio directly through the Kullback-Leibler importance estimation procedure.
+* `kmm()` estimates the density ratio through kernel mean matching.
+* `lhss()` estimates the density ratio in a subspace where the two distributions are most different using least-squares heterodistributional subspace search.
+* `spectral()` estimates the density ratio using a spectral series approach.
 
-We display `kliep()` and `naive()` as examples here. The other functions
-are discussed in the [Get Started
-vignette](https://thomvolker.github.io/densityratio/articles/densityratio.html).
+We display `kliep()` and `naive()` as examples here. The other functions are discussed in the [Get Started vignette](https://thomvolker.github.io/densityratio/articles/densityratio.html). 
+
 
 ``` r
 fit_naive <- naive(
@@ -315,50 +286,40 @@ ggplot(data = NULL, aes(x = newx5)) +
   )
 ```
 
-<img src="man/figures/README-plot-methods-1.png" width="80%" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="man/figures/README-plot-methods-1.png" alt="plot of chunk plot-methods" width="80%" />
+<p class="caption">plot of chunk plot-methods</p>
+</div>
 
-The figure directly shows that `ulsif()` and `kliep()` come rather close
-to the true density ratio function in this example, and outperform the
-`naive()` solution.
+The figure directly shows that `ulsif()` and `kliep()` come rather close to the true density ratio function in this example, and outperform the `naive()` solution. 
 
 ## Contributions
 
-This package is still in development, and I’ll be happy to take feedback
-and suggestions. Please submit these through [GitHub
-Issues](https://github.com/thomvolker/densityratio/issues).
+This package is still in development, and I'll be happy to take feedback and suggestions. Please submit these through [GitHub Issues](https://github.com/thomvolker/densityratio/issues). 
 
 ## Resources
 
-**Books**
 
-- General information about the density ratio estimation framework:
-  Sugiyama, Suzuki and Kanamori (2012). [Density Ratio Estimation in
-  Machine
-  Learning](https://www.cambridge.org/core/books/density-ratio-estimation-in-machine-learning/BCBEA6AEAADD66569B1E85DDDEAA7648)
+__Books__
 
-**Papers**
+* General information about the density ratio estimation framework: Sugiyama, Suzuki and Kanamori (2012). [Density Ratio Estimation in Machine Learning](https://www.cambridge.org/core/books/density-ratio-estimation-in-machine-learning/BCBEA6AEAADD66569B1E85DDDEAA7648)
 
-- Density ratio estimation for the evaluation of the utility of
-  synthetic data: Volker, De Wolf and Van Kesteren (2023). [Assessing
-  the utility of synthetic data: A density ratio
-  perspective](https://unece.org/statistics/documents/2023/08/working-documents/assessing-utility-synthetic-data-density-ratio)
 
-- Density ratio estimation for covariate shift: Huang, Smola, Gretton,
-  Borgwardt and Schölkopf (2007). [Correcting sample selection bias by
-  unlabeled
-  data](https://proceedings.neurips.cc/paper/2006/file/a2186aa7c086b46ad4e8bf81e2a3a19b-Paper.pdf)
+__Papers__
 
-- High-dimensional density ratio estimation through a spectral series
-  approach: Izbicki, Lee and Schafer (2014). [High-dimensional density
-  ratio estimation with extensions to approximate likelihood
-  computation](https://proceedings.mlr.press/v33/izbicki14.pdf)
+* Density ratio estimation for the evaluation of the utility of synthetic data: Volker, De Wolf and Van Kesteren (2023). [Assessing the utility of synthetic data: A density ratio perspective](https://unece.org/statistics/documents/2023/08/working-documents/assessing-utility-synthetic-data-density-ratio)
 
-- Least-squares density ratio estimation: Sugiyama, Hido and Kanamori
-  (2009). [A least-squares approach to direct importance
-  estimation](https://www.jmlr.org/papers/volume10/kanamori09a/kanamori09a.pdf)
+* Density ratio estimation for covariate shift: Huang, Smola, Gretton, Borgwardt and Schölkopf (2007). [Correcting sample selection bias by unlabeled data](https://proceedings.neurips.cc/paper/2006/file/a2186aa7c086b46ad4e8bf81e2a3a19b-Paper.pdf)
+
+* High-dimensional density ratio estimation through a spectral series approach: Izbicki, Lee and Schafer (2014). [High-dimensional density ratio estimation with extensions to approximate likelihood computation](https://proceedings.mlr.press/v33/izbicki14.pdf)
+
+* Least-squares density ratio estimation: Sugiyama, Hido and Kanamori (2009). [A least-squares approach to direct importance estimation](https://www.jmlr.org/papers/volume10/kanamori09a/kanamori09a.pdf)
 
 ## How to cite
 
-Volker, T.B., Poses, C. & Van Kesteren, E.J. (2023). densityratio:
-Distribution comparison through density ratio estimation.
-<https://doi.org/10.5281/zenodo.8307818>
+Volker, T.B., Poses, C. & Van Kesteren, E.J. (2023). densityratio: Distribution comparison through density ratio estimation. <https://doi.org/10.5281/zenodo.8307818>
+
+
+
+
+
