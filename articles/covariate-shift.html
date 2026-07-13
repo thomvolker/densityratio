@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Covariate shift adjustment">
 </head>
@@ -97,7 +97,7 @@ distribution shift (i.e., sample selection bias) adaptation.</p>
 </h2>
 <p>The goal of density ratio estimation is to estimate the ratio of two
 probability density functions,
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><msub><mi>p</mi><mtext mathvariant="normal">nu</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><msub><mi>p</mi><mtext mathvariant="normal">de</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><msub><mi>p</mi><mtext mathvariant="normal">nu</mtext></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><msub><mi>p</mi><mtext mathvariant="normal">de</mtext></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
 r(x) = \frac{p_\text{nu}(x)}{p_\text{de}(x)},
 </annotation></semantics></math> based on samples from the numerator
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mtext mathvariant="normal">nu</mtext></msub><annotation encoding="application/x-tex">p_\text{nu}</annotation></semantics></math>)
@@ -233,7 +233,7 @@ predict the density ratio for new data.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Optimal sigma (loocv): 2.802938</span></span>
 <span><span class="co">#&gt; Optimal lambda (loocv): 2.976351</span></span>
-<span><span class="co">#&gt; Optimal kernel weights (loocv): num [1:201] 0.01462 0.01017 0.00757 0.00554 0.00745 ...</span></span>
+<span><span class="co">#&gt; Optimal kernel weights (loocv): num [1:200] 0.01028 0.00768 0.00566 0.00757 0.00538 ...</span></span>
 <span><span class="co">#&gt; </span></span></code></pre></div>
 <p>The output shows the number of inducing points used in the estimation
 (number of kernels), and the grid of bandwidth (sigma) and
@@ -254,9 +254,9 @@ optimized through leave-one-out cross-validation.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Regularization parameter (lambda): num [1:20] 1000 483.3 233.6 112.9 54.6 ...</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Optimal sigma (loocv): 1.224742</span></span>
-<span><span class="co">#&gt; Optimal lambda (loocv): 0.3359818</span></span>
-<span><span class="co">#&gt; Optimal kernel weights (loocv): num [1:201] 0.27465 0.0706 0.03061 -0.00883 0.01246 ...</span></span>
+<span><span class="co">#&gt; Optimal sigma (loocv): 2.957458</span></span>
+<span><span class="co">#&gt; Optimal lambda (loocv): 0.078476</span></span>
+<span><span class="co">#&gt; Optimal kernel weights (loocv): num [1:200] 0.04499 0.01201 -0.01432 -0.01903 -0.00957 ...</span></span>
 <span><span class="co">#&gt; </span></span></code></pre></div>
 <p>Comparing the two density ratio objects shows that under covariate
 shift, the optimal bandwidth parameter and regularization parameter are
@@ -285,10 +285,10 @@ function.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Optimal sigma: 2.802938</span></span>
 <span><span class="co">#&gt; Optimal lambda: 2.976351</span></span>
-<span><span class="co">#&gt; Optimal kernel weights: num [1:201] 0.01462 0.01017 0.00757 0.00554 0.00745 ...</span></span>
+<span><span class="co">#&gt; Optimal kernel weights: num [1:200] 0.01028 0.00768 0.00566 0.00757 0.00538 ...</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.02298</span></span>
-<span><span class="co">#&gt; Pr(P(nu)=P(de)) =  0.28</span></span>
+<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.02331</span></span>
+<span><span class="co">#&gt; Pr(P(nu)=P(de)) =  0.38</span></span>
 <span><span class="co">#&gt; Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dr_cs</span>, test <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -299,11 +299,11 @@ function.</p>
 <span><span class="co">#&gt;   Kernel type: Gaussian with L2 norm distances</span></span>
 <span><span class="co">#&gt;   Number of kernels: 200</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Optimal sigma: 1.224742</span></span>
-<span><span class="co">#&gt; Optimal lambda: 0.3359818</span></span>
-<span><span class="co">#&gt; Optimal kernel weights: num [1:201] 0.27465 0.0706 0.03061 -0.00883 0.01246 ...</span></span>
+<span><span class="co">#&gt; Optimal sigma: 2.957458</span></span>
+<span><span class="co">#&gt; Optimal lambda: 0.078476</span></span>
+<span><span class="co">#&gt; Optimal kernel weights: num [1:200] 0.04499 0.01201 -0.01432 -0.01903 -0.00957 ...</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.1221</span></span>
+<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.1068</span></span>
 <span><span class="co">#&gt; Pr(P(nu)=P(de)) &lt; .001</span></span>
 <span><span class="co">#&gt; Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).</span></span></code></pre></div>
 <p>These summaries indeed show that the two distributions are not
@@ -353,6 +353,8 @@ is not that large here (but note the different scale of the x-axis
 compared to the previous plot). ´</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dr_cs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying</span></span>
+<span><span class="co">#&gt; logarithmic transformation</span></span>
 <span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span></span></code></pre></div>
 <div class="float">
 <img src="covariate-shift-plot-dr-cs-1.png" alt="Distribution of density ratio values under covariate shift."><div class="figcaption">Distribution of density ratio values under
@@ -374,7 +376,9 @@ often for the denominator (training) samples. This results in a higher
 density ratio for lower <code>bmi</code> values, and a lower density
 ratio for higher <code>bmi</code> values.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_univariate.html">plot_univariate</a></span><span class="op">(</span><span class="va">dr_cs</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"bmi"</span><span class="op">)</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_univariate.html">plot_univariate</a></span><span class="op">(</span><span class="va">dr_cs</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"bmi"</span><span class="op">)</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying</span></span>
+<span><span class="co">#&gt; logarithmic transformation</span></span></code></pre></div>
 <div class="float">
 <img src="covariate-shift-plot-dr-univariate-1.png" alt="Univariate plots of age and bmi against the estimated density ratio values for the two groups of samples under covariate shift."><div class="figcaption">Univariate plots of <code>age</code> and
 <code>bmi</code> against the estimated density ratio values for the two
@@ -388,7 +392,9 @@ the function will create a scatterplot for each pair of variables.
 Again, we solely observe a pattern for <code>bmi</code>, with higher
 values corresponding to lower density ratio values.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_bivariate.html">plot_bivariate</a></span><span class="op">(</span><span class="va">dr_cs</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"bmi"</span>, <span class="st">"children"</span><span class="op">)</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_bivariate.html">plot_bivariate</a></span><span class="op">(</span><span class="va">dr_cs</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"bmi"</span>, <span class="st">"children"</span><span class="op">)</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying</span></span>
+<span><span class="co">#&gt; logarithmic transformation</span></span></code></pre></div>
 <div class="float">
 <img src="covariate-shift-plot-dr-bivariate-1.png" alt="Bivariate scatter plots for age, bmi and children for two groups of samples under covariate shift, with density ratio values mapped to the color scale."><div class="figcaption">Bivariate scatter plots for <code>age</code>,
 <code>bmi</code> and <code>children</code> for two groups of samples
@@ -412,7 +418,7 @@ of the model parameters, in the sense that the estimates converge to the
 <em>optimal</em> model parameters as the sample size increases. We can
 obtain estimates of the model parameters by solving the least-squares
 problem
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo>=</mo><mo>arg</mo><munder><mo>min</mo><mi>β</mi></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow></msub><mo>−</mo><msubsup><mi>x</mi><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow><mi>T</mi></msubsup><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>X</mi><mtext mathvariant="normal">tr</mtext><mi>T</mi></msubsup><msub><mi>X</mi><mtext mathvariant="normal">tr</mtext></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>X</mi><mtext mathvariant="normal">tr</mtext><mi>T</mi></msubsup><msub><mi>y</mi><mtext mathvariant="normal">tr</mtext></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo>=</mo><mrow><mi mathvariant="normal">arg</mi><mo>⁡</mo></mrow><munder><mi mathvariant="normal">min</mi><mi>β</mi></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow></msub><mo>−</mo><msubsup><mi>x</mi><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow><mi>T</mi></msubsup><mi>β</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msubsup><mi>X</mi><mtext mathvariant="normal">tr</mtext><mi>T</mi></msubsup><msub><mi>X</mi><mtext mathvariant="normal">tr</mtext></msub><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><msubsup><mi>X</mi><mtext mathvariant="normal">tr</mtext><mi>T</mi></msubsup><msub><mi>y</mi><mtext mathvariant="normal">tr</mtext></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
 \hat{\beta} = \arg\min_{\beta} \sum_{i=1}^{n} (y_{\text{tr}, i} - x_{\text{tr}, i}^T \beta)^2 = (X_\text{tr}^TX_\text{tr})^{-1}X_\text{tr}^Ty_\text{tr},
 </annotation></semantics></math> where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mtext mathvariant="normal">tr</mtext></msub><annotation encoding="application/x-tex">X_\text{tr}</annotation></semantics></math>
@@ -426,12 +432,12 @@ In fact, it only is consistent if the analysis model is correctly
 specified. This problem can be compensated by reweighing the training
 samples using the estimated density ratio, which yields a consistent
 estimator under the true density ratio model
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><msub><mi>p</mi><mtext mathvariant="normal">test</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><msub><mi>p</mi><mtext mathvariant="normal">train</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><msub><mi>p</mi><mtext mathvariant="normal">test</mtext></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><msub><mi>p</mi><mtext mathvariant="normal">train</mtext></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
 r(x) = \frac{p_\text{test}(x)}{p_\text{train}(x)}.
 </annotation></semantics></math> Since the true density ratio model is
 not known, all we can do is to estimate it from the training and test
 data. Consequently, we have
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>β</mi><mo accent="true">̂</mo></mover><mtext mathvariant="normal">R</mtext></msub><mo>=</mo><mo>arg</mo><munder><mo>min</mo><mi>β</mi></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mover><mi>r</mi><mo accent="true">̂</mo></mover><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow></msub><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow></msub><mo>−</mo><msubsup><mi>x</mi><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow><mi>T</mi></msubsup><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>X</mi><mtext mathvariant="normal">tr</mtext><mi>T</mi></msubsup><mover><mi>R</mi><mo accent="true">̂</mo></mover><msub><mi>X</mi><mtext mathvariant="normal">tr</mtext></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>X</mi><mtext mathvariant="normal">tr</mtext><mi>T</mi></msubsup><mover><mi>R</mi><mo accent="true">̂</mo></mover><msub><mi>y</mi><mtext mathvariant="normal">tr</mtext></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>β</mi><mo accent="true">̂</mo></mover><mtext mathvariant="normal">R</mtext></msub><mo>=</mo><mrow><mi mathvariant="normal">arg</mi><mo>⁡</mo></mrow><munder><mi mathvariant="normal">min</mi><mi>β</mi></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mover><mi>r</mi><mo accent="true">̂</mo></mover><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow></msub><mo>−</mo><msubsup><mi>x</mi><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow><mi>T</mi></msubsup><mi>β</mi><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msubsup><mi>X</mi><mtext mathvariant="normal">tr</mtext><mi>T</mi></msubsup><mover><mi>R</mi><mo accent="true">̂</mo></mover><msub><mi>X</mi><mtext mathvariant="normal">tr</mtext></msub><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><msubsup><mi>X</mi><mtext mathvariant="normal">tr</mtext><mi>T</mi></msubsup><mover><mi>R</mi><mo accent="true">̂</mo></mover><msub><mi>y</mi><mtext mathvariant="normal">tr</mtext></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
 \hat\beta_\text{R} = \arg\min_{\beta} \sum_{i=1}^{n} \hat{r}_{\text{tr},i} (y_{\text{tr}, i} - x_{\text{tr}, i}^T \beta)^2 = (X_\text{tr}^T \hat{R} X_\text{tr})^{-1}X_\text{tr}^T \hat{R} y_\text{tr},
 </annotation></semantics></math> where the density ratio weights
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>r</mi><mo accent="true">̂</mo></mover><mrow><mtext mathvariant="normal">tr</mtext><mo>,</mo><mi>i</mi></mrow></msub><annotation encoding="application/x-tex">\hat{r}_{\text{tr},i}</annotation></semantics></math>
@@ -492,7 +498,7 @@ function.</p>
 <span>  R2_te <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y_test_rs</span> <span class="op">-</span> <span class="va">pred_test_rs_w</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y_test_rs</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   RMSE_train    RMSE_test        R2_tr        R2_te </span></span>
-<span><span class="co">#&gt; 6143.7668763 5995.5513712    0.7503211    0.7451020</span></span></code></pre></div>
+<span><span class="co">#&gt; 6143.7998589 5995.7028329    0.7503185    0.7450888</span></span></code></pre></div>
 <p>We see that training and test performance is almost identical to the
 unweighted solution, which makes sense as the weights are generally very
 close to 1.</p>
@@ -524,10 +530,12 @@ and evaluate the RMSE and
 <span><span class="co">#&gt; 5860.0592523 6434.1388040    0.7944538    0.6722150</span></span></code></pre></div>
 <p>Now, the performance of the prediction model decreases substantially
 on the test data, as is expected under covariate shift. Hopefully, we
-can account for this by reweighing the training data.</p>
+can account for this by reweighing the training data. Note that some
+estimated density ratio weights were estimated slightly below zero due
+to the unconstrained estimation procedure. We cap these to 0.01.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">weights_cs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">dr_cs</span>, newdata <span class="op">=</span> <span class="va">train_cs</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span>select <span class="op">=</span> <span class="op">-</span><span class="va">charges</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">fit_cs_w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">train_cs</span>, weights <span class="op">=</span> <span class="va">weights_cs</span><span class="op">)</span></span>
+<span><span class="va">fit_cs_w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">train_cs</span>, weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="va">weights_cs</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pred_train_cs_w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit_cs_w</span>, newdata <span class="op">=</span> <span class="va">train_cs</span><span class="op">)</span></span>
 <span><span class="va">pred_test_cs_w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit_cs_w</span>, newdata <span class="op">=</span> <span class="va">test_cs</span><span class="op">)</span></span>
@@ -539,7 +547,7 @@ can account for this by reweighing the training data.</p>
 <span>  R2_te <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y_test_cs</span> <span class="op">-</span> <span class="va">pred_test_cs_w</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">y_test_cs</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   RMSE_train    RMSE_test        R2_tr        R2_te </span></span>
-<span><span class="co">#&gt; 6005.6703347 6191.6472513    0.7841192    0.6971867</span></span></code></pre></div>
+<span><span class="co">#&gt; 6107.4497835 6150.2863722    0.7767767    0.7006405</span></span></code></pre></div>
 <p>We see that we get a modest improvement in the RMSE and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>R</mi><mn>2</mn></msup><annotation encoding="application/x-tex">R^2</annotation></semantics></math>
 values for the test data, compared to the unweighted solution. The fact
@@ -604,7 +612,7 @@ regression model under covariate shift.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="densityratio">
 </head>
@@ -162,12 +162,12 @@ differ.</p>
 the distributions of the two groups differ using the density ratio. That
 is, we express differences between the two groups in terms of the ratio
 of their densities:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><msub><mi>p</mi><mtext mathvariant="normal">hs</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><msub><mi>p</mi><mtext mathvariant="normal">nhs</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><msub><mi>p</mi><mtext mathvariant="normal">hs</mtext></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><msub><mi>p</mi><mtext mathvariant="normal">nhs</mtext></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
 r(\mathbf{x}) = \frac{p_{\text{hs}}(\mathbf{x})}{p_{\text{nhs}}(\mathbf{x})},
 </annotation></semantics></math> where the subscript refers to the
 sample of observations from mothers with a high school degree (hs) or
 without (nhs). The density ratio
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">r(\mathbf{x})</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">r(\mathbf{x})</annotation></semantics></math>
 directly shows how the two distributions differ at each point
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐱</mi><annotation encoding="application/x-tex">\mathbf{x}</annotation></semantics></math>
 in the support of the data. If the density ratio is larger than 1, there
@@ -175,13 +175,13 @@ are relatively more observations in the high school group than in the no
 high school group at that region, and vice versa if the density ratio is
 smaller than one. Key to almost all estimation methods in the
 <code>densityratio</code> package, is that we estimate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">r(\mathbf{x})</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">r(\mathbf{x})</annotation></semantics></math>
 directly as
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>r</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat r(\mathbf{x})</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>r</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat r(\mathbf{x})</annotation></semantics></math>,
 without estimating the densities
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext mathvariant="normal">hs</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_{\text{hs}}(\mathbf{x})</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext mathvariant="normal">hs</mtext></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p_{\text{hs}}(\mathbf{x})</annotation></semantics></math>
 and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext mathvariant="normal">nhs</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p_{\text{nhs}}(\mathbf{x})</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext mathvariant="normal">nhs</mtext></msub><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p_{\text{nhs}}(\mathbf{x})</annotation></semantics></math>
 separately.</p>
 <p>To estimate the density ratio, several estimation functions are
 included.</p>
@@ -227,10 +227,10 @@ ratio, but they differ in the divergence that is minimized and the
 constraints that are imposed on the estimated density ratio. These
 estimation functions are kernel-based and thereby non-parametric.
 Specifically, we use the following linear model for the density ratio:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>r</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo>,</mo><mrow><mi>𝐱</mi><mi mathvariant="bold">′</mi></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mover><mi>𝛉</mi><mo accent="true">̂</mo></mover><mo>,</mo></mrow><annotation encoding="application/x-tex">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>r</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>K</mi><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo>,</mo><msup><mi>𝐱</mi><mo mathvariant="bold">′</mo></msup><mo stretchy="false" form="postfix">)</mo><mover><mi>𝛉</mi><mo accent="true">̂</mo></mover><mo>,</mo></mrow><annotation encoding="application/x-tex">
 \hat{r}(\mathbf{x}) = K(\mathbf{x}, \mathbf{x'})\hat{\mathbf{\theta}},
 </annotation></semantics></math> with the kernel function defined as
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐱</mi><mo>,</mo><mrow><mi>𝐱</mi><mi mathvariant="bold">′</mi></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>exp</mo><mo minsize="3.0" maxsize="3.0" stretchy="false" form="prefix">(</mo><mo>−</mo><mfrac><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><mi>𝐱</mi><mo>−</mo><mrow><mi>𝐱</mi><mi mathvariant="bold">′</mi></mrow><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow></mrow><mrow><mn>2</mn><msup><mi>σ</mi><mn>2</mn></msup></mrow></mfrac><mo minsize="3.0" maxsize="3.0" stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo stretchy="false" form="prefix">(</mo><mi>𝐱</mi><mo>,</mo><msup><mi>𝐱</mi><mo mathvariant="bold">′</mo></msup><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo minsize="300%" maxsize="300%" stretchy="true" form="prefix">(</mo><mo>−</mo><mfrac><mrow><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="prefix">|</mo><mi>𝐱</mi><mo>−</mo><msup><mi>𝐱</mi><mo mathvariant="bold">′</mo></msup><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="prefix">|</mo></mrow><mrow><mn>2</mn><msup><mi>σ</mi><mn>2</mn></msup></mrow></mfrac><mo minsize="300%" maxsize="300%" stretchy="true" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
 K(\mathbf{x}, \mathbf{x'}) = \exp \Bigg(-\frac{||\mathbf{x}-\mathbf{x'}||}{2\sigma^2} \Bigg),
 </annotation></semantics></math> where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
@@ -280,9 +280,9 @@ of the fitted model:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Regularization parameter (lambda): num [1:20] 1000 483.3 233.6 112.9 54.6 ...</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Optimal sigma (loocv): 1.216132</span></span>
-<span><span class="co">#&gt; Optimal lambda (loocv): 0.3359818</span></span>
-<span><span class="co">#&gt; Optimal kernel weights (loocv): num [1:201] 0.3256 -0.054 0.0098 0.1639 0.2047 ...</span></span>
+<span><span class="co">#&gt; Optimal sigma (loocv): 3.006715</span></span>
+<span><span class="co">#&gt; Optimal lambda (loocv): 0.008858668</span></span>
+<span><span class="co">#&gt; Optimal kernel weights (loocv): num [1:200] -0.503 -0.132 0.614 1.563 0.182 ...</span></span>
 <span><span class="co">#&gt; </span></span></code></pre></div>
 <p>The output shows the number of kernels, the candidate values for the
 bandwidth parameter <code>sigma</code>, the candidates for the
@@ -347,9 +347,9 @@ precision.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Regularization parameter (lambda): num [1:50] 1000 754 569 429 324 ...</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Optimal sigma (loocv): 1.345547</span></span>
-<span><span class="co">#&gt; Optimal lambda (loocv): 0.4941713</span></span>
-<span><span class="co">#&gt; Optimal kernel weights (loocv): num [1:201] 0.2213 -0.0349 -0.0107 0.0222 -0.0175 ...</span></span>
+<span><span class="co">#&gt; Optimal sigma (loocv): 2.979149</span></span>
+<span><span class="co">#&gt; Optimal lambda (loocv): 0.009540955</span></span>
+<span><span class="co">#&gt; Optimal kernel weights (loocv): num [1:200] -0.4431 -0.2511 0.0852 0.1242 0.3134 ...</span></span>
 <span><span class="co">#&gt; </span></span></code></pre></div>
 <p>It is also possible to specify the candidate parameter values
 manually. For the bandwidth, this can be done by specifying the
@@ -595,14 +595,14 @@ defaults to <code>maxit = 200</code> but can be adapted by the user.</p>
 <span><span class="co">#&gt; Kernel Information:</span></span>
 <span><span class="co">#&gt;   Kernel type: Gaussian with L2 norm distances</span></span>
 <span><span class="co">#&gt;   Number of kernels: 200</span></span>
-<span><span class="co">#&gt;   sigma: num [1:10, 1:10] 0.00514 0.04845 0.13661 0.27564 0.4775 ...</span></span>
+<span><span class="co">#&gt;   sigma: num [1:10, 1:10] 0.0517 0.1521 0.24 0.3108 0.3768 ...</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Regularization parameter (lambda): num [1:10] 1000 215.44 46.42 10 2.15 ...</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Subspace dimension (m): 1</span></span>
-<span><span class="co">#&gt; Optimal sigma: 0.1366127</span></span>
-<span><span class="co">#&gt; Optimal lambda: 0.1</span></span>
-<span><span class="co">#&gt; Optimal kernel weights (loocv): num [1:201] 1.3467 0 0.1011 0.0874 0 ...</span></span>
+<span><span class="co">#&gt; Optimal sigma: 0.759155</span></span>
+<span><span class="co">#&gt; Optimal lambda: 0.001</span></span>
+<span><span class="co">#&gt; Optimal kernel weights (loocv): num [1:201] 36.2 -1.42 -2.08 1.79 1.07 ...</span></span>
 <span><span class="co">#&gt; </span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -715,11 +715,11 @@ denominator samples.</p>
 <span><span class="co">#&gt;   Kernel type: Gaussian with L2 norm distances</span></span>
 <span><span class="co">#&gt;   Number of kernels: 200</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Optimal sigma: 1.387557</span></span>
-<span><span class="co">#&gt; Optimal lambda: 0.6951928</span></span>
-<span><span class="co">#&gt; Optimal kernel weights: num [1:201] 0.16916 0.00301 0.05082 -0.00791 0.03594 ...</span></span>
+<span><span class="co">#&gt; Optimal sigma: 2.97199</span></span>
+<span><span class="co">#&gt; Optimal lambda: 0.008858668</span></span>
+<span><span class="co">#&gt; Optimal kernel weights: num [1:200] 0.6308 -0.3587 0.2476 -0.212 -0.0367 ...</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.4149</span></span>
+<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.9376</span></span>
 <span><span class="co">#&gt; For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.</span></span></code></pre></div>
 <p>Which divergence measure is reported depends on the method used. The
 <code><a href="../reference/ulsif.html">ulsif()</a></code>, <code><a href="../reference/kmm.html">kmm()</a></code>, <code><a href="../reference/lhss.html">lhss()</a></code> and
@@ -753,11 +753,11 @@ is reported.</p>
 <span><span class="co">#&gt;   Kernel type: Gaussian with L2 norm distances</span></span>
 <span><span class="co">#&gt;   Number of kernels: 200</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Optimal sigma: 1.387557</span></span>
-<span><span class="co">#&gt; Optimal lambda: 0.6951928</span></span>
-<span><span class="co">#&gt; Optimal kernel weights: num [1:201] 0.16916 0.00301 0.05082 -0.00791 0.03594 ...</span></span>
+<span><span class="co">#&gt; Optimal sigma: 2.97199</span></span>
+<span><span class="co">#&gt; Optimal lambda: 0.008858668</span></span>
+<span><span class="co">#&gt; Optimal kernel weights: num [1:200] 0.6308 -0.3587 0.2476 -0.212 -0.0367 ...</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.4149</span></span>
+<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.9376</span></span>
 <span><span class="co">#&gt; Pr(P(nu)=P(de)) &lt; .001</span></span>
 <span><span class="co">#&gt; Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).</span></span></code></pre></div>
 <p>This permutation test shows that it is highly unlikely that the high
@@ -782,11 +782,11 @@ cluster is created using the number of available cores minus one.</p>
 <span><span class="co">#&gt;   Kernel type: Gaussian with L2 norm distances</span></span>
 <span><span class="co">#&gt;   Number of kernels: 200</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Optimal sigma: 1.387557</span></span>
-<span><span class="co">#&gt; Optimal lambda: 0.6951928</span></span>
-<span><span class="co">#&gt; Optimal kernel weights: num [1:201] 0.16916 0.00301 0.05082 -0.00791 0.03594 ...</span></span>
+<span><span class="co">#&gt; Optimal sigma: 2.97199</span></span>
+<span><span class="co">#&gt; Optimal lambda: 0.008858668</span></span>
+<span><span class="co">#&gt; Optimal kernel weights: num [1:200] 0.6308 -0.3587 0.2476 -0.212 -0.0367 ...</span></span>
 <span><span class="co">#&gt;  </span></span>
-<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.4149</span></span>
+<span><span class="co">#&gt; Pearson divergence between P(nu) and P(de): 0.9376</span></span>
 <span><span class="co">#&gt; Pr(P(nu)=P(de)) &lt; .001</span></span>
 <span><span class="co">#&gt; Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).</span></span></code></pre></div>
 </div>
@@ -800,6 +800,8 @@ distributions. The <code><a href="https://rdrr.io/r/graphics/plot.default.html" 
 output by displaying the estimated density ratio values.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before applying</span></span>
+<span><span class="co">#&gt; logarithmic transformation</span></span>
 <span><span class="co">#&gt; `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span></span></code></pre></div>
 <div class="float">
 <img src="densityratio-plot-dr-1.png" alt="Density ratio values for the high school and no high school samples."><div class="figcaption">Density ratio values for the high school and no
@@ -823,7 +825,9 @@ specifying <code>grid = TRUE</code>, the default
 <code>grid = FALSE</code> produces a list with separate figures for each
 feature).</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_univariate.html">plot_univariate</a></span><span class="op">(</span><span class="va">dr</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kid_score"</span>, <span class="st">"mom_iq"</span><span class="op">)</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_univariate.html">plot_univariate</a></span><span class="op">(</span><span class="va">dr</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kid_score"</span>, <span class="st">"mom_iq"</span><span class="op">)</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before applying</span></span>
+<span><span class="co">#&gt; logarithmic transformation</span></span></code></pre></div>
 <div class="float">
 <img src="densityratio-plot-univariate-1.png" alt="Univariate plots of kid_score and mom_iq against the estimated density ratio values for the two groups of samples."><div class="figcaption">Univariate plots of <code>kid_score</code> and
 <code>mom_iq</code> against the estimated density ratio values for the
@@ -845,7 +849,9 @@ values.</p>
 density ratio values against two features at the same time. Now, the
 density ratio values are mapped to the color scale.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_bivariate.html">plot_bivariate</a></span><span class="op">(</span><span class="va">dr</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kid_score"</span>, <span class="st">"mom_iq"</span>, <span class="st">"mom_age"</span><span class="op">)</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_bivariate.html">plot_bivariate</a></span><span class="op">(</span><span class="va">dr</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kid_score"</span>, <span class="st">"mom_iq"</span>, <span class="st">"mom_age"</span><span class="op">)</span>, grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Negative estimated density ratios for 23 observation(s) converted to 0.01 before applying</span></span>
+<span><span class="co">#&gt; logarithmic transformation</span></span></code></pre></div>
 <div class="float">
 <img src="densityratio-plot-bivariate-1.png" alt="Bivariate scatter plots for kid_score, mom_iq and mom_age, with density ratio values mapped to the color scale."><div class="figcaption">Bivariate scatter plots for
 <code>kid_score</code>, <code>mom_iq</code> and <code>mom_age</code>,
@@ -870,13 +876,13 @@ but this can be changed by providing another data set in the
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; , , 1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;           [,1]</span></span>
-<span><span class="co">#&gt; [1,] 1.4928033</span></span>
-<span><span class="co">#&gt; [2,] 2.2715889</span></span>
-<span><span class="co">#&gt; [3,] 2.5855672</span></span>
-<span><span class="co">#&gt; [4,] 1.9345356</span></span>
-<span><span class="co">#&gt; [5,] 1.9679638</span></span>
-<span><span class="co">#&gt; [6,] 0.7939163</span></span></code></pre></div>
+<span><span class="co">#&gt;          [,1]</span></span>
+<span><span class="co">#&gt; [1,] 5.815370</span></span>
+<span><span class="co">#&gt; [2,] 3.085314</span></span>
+<span><span class="co">#&gt; [3,] 6.858045</span></span>
+<span><span class="co">#&gt; [4,] 2.441549</span></span>
+<span><span class="co">#&gt; [5,] 4.599869</span></span>
+<span><span class="co">#&gt; [6,] 3.447904</span></span></code></pre></div>
 <p>By default, the <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> function uses the optimal
 hyperparameter values as determined by cross-validation (if
 cross-validation is performed, otherwise it returns the predicted
@@ -930,7 +936,7 @@ subspace search. <em>Neural Networks, 24(2)</em>, 183-198.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
