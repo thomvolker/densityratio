@@ -1,0 +1,33 @@
+Version: 0.2.3
+Date: 2026-07-13 18:31:21 UTC
+SHA: fatal: detected dubious ownership in repository at
+        'C:/Users/5868777/Nextcloud/Documents/densityratio'
+
+Version: 0.2.3
+Date: 2026-07-13 18:31:21 UTC
+SHA: 'C:/Users/5868777/Nextcloud/Documents/densityratio' is owned by:
+
+Version: 0.2.3
+Date: 2026-07-13 18:31:21 UTC
+SHA: BUILTIN/Administrators (S-1-5-32-544)
+
+Version: 0.2.3
+Date: 2026-07-13 18:31:21 UTC
+SHA: but the current user is:
+
+Version: 0.2.3
+Date: 2026-07-13 18:31:21 UTC
+SHA: SOLISCOM/5868777 (S-1-5-21-2000478354-115176313-1801674531-670929)
+
+Version: 0.2.3
+Date: 2026-07-13 18:31:21 UTC
+SHA: To add an exception for this directory, call:
+
+Version: 0.2.3
+Date: 2026-07-13 18:31:21 UTC
+SHA:
+
+Version: 0.2.3
+Date: 2026-07-13 18:31:21 UTC
+SHA: git config --global --add safe.directory
+        C:/Users/5868777/Nextcloud/Documents/densityratio
