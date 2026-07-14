@@ -75,6 +75,8 @@ Scatter plot of density ratios and individual variables.
 ## Examples
 
 ``` r
+
+
 set.seed(123)
 # Fit model
 dr <- ulsif(numerator_small, denominator_small)

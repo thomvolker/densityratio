@@ -59,6 +59,8 @@ Summary of the fitted density ratio model
 ## Examples
 
 ``` r
+
+
 set.seed(123)
 # Fit model
 dr <- kmm(numerator_small, denominator_small)
@@ -134,19 +136,19 @@ head(predict(dr))
 #> [6,] 1.5225886
 # Fit model with custom parameters
 kmm(numerator_small, denominator_small,
-    nsigma = 5, ncenters = 100, nfold = 10,
+    nsigma = 4, ncenters = 50, nfold = 4,
     constrained = TRUE)
 #> 
 #> Call:
-#> kmm(df_numerator = numerator_small, df_denominator = denominator_small,     constrained = TRUE, nsigma = 5, ncenters = 100, nfold = 10)
+#> kmm(df_numerator = numerator_small, df_denominator = denominator_small,     constrained = TRUE, nsigma = 4, ncenters = 50, nfold = 4)
 #> 
 #> Kernel Information:
 #>   Kernel type: Gaussian with L2 norm distances
-#>   Number of kernels: 100
-#>   sigma: num [1:5] 0.811 1.577 2.094 2.66 3.706
+#>   Number of kernels: 50
+#>   sigma: num [1:4] 0.822 1.795 2.475 3.711
 #> 
-#> Optimal sigma (10-fold cv): 2.094
-#> Optimal kernel weights (10-fold cv):  num [1:100, 1] -0.000498 -0.000999 -0.001187 -0.001022 -0.000275 ...
+#> Optimal sigma (4-fold cv): 1.795
+#> Optimal kernel weights (4-fold cv):  num [1:50, 1] -0.000659 -0.000376 -0.001281 -0.000815 -0.001291 ...
 #> 
 #> Optimization parameters:
 #>   Optimization method:  Constrained 

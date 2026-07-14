@@ -114,47 +114,56 @@ reduction via least-squares hetero-distributional subspace search.
 ## Examples
 
 ``` r
+
+
 set.seed(123)
-# Fit model
-dr <- naive(numerator_small, denominator_small)
+# Fit model (minimal example to limit computation time)
+dr <- lhss(numerator_small, denominator_small,
+           nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)
 # Inspect model object
 dr
 #> 
 #> Call:
-#> naive(df_numerator = numerator_small, df_denominator = denominator_small)
+#> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)
 #> 
-#> Naive density ratio
-#>   Number of variables: 3
-#>   Number of numerator samples: 50
-#>   Number of denominator samples: 100
-#>   Numerator density: num [1:50] 1.41 5.74 1.87 4.13 1.67 ...
-#>   Denominator density: num [1:100] 2.93 0.071 1.065 1.59 2.115 ...
+#> Kernel Information:
+#>   Kernel type: Gaussian with L2 norm distances
+#>   Number of kernels: 50
+#>   sigma: num [1:3, 1:2] 0.0793 0.9371 2.677 0.0693 0.9633 ...
+#> 
+#> Regularization parameter (lambda): num [1:2] 0.1 1
+#> 
+#> Subspace dimension (m): 1
+#> Optimal sigma: 2.677003
+#> Optimal lambda: 0.1
+#> Optimal kernel weights (loocv): num [1:51] 6.666 -0.3081 -0.0385 -0.0353 0.0108 ...
 #>  
 # Obtain summary of model object
 summary(dr)
 #> 
 #> Call:
-#> naive(df_numerator = numerator_small, df_denominator = denominator_small)
+#> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)
 #> 
-#> Naive density ratio estimate:
-#>   Number of variables: 
-#>   Number of numerator samples: 50
-#>   Number of denominator samples: 100
-#>   Density ratio for numerator samples: num [1:50] 0.344 1.747 0.628 1.419 0.511 ...
-#>   Density ratio for denominator samples: num [1:100] 1.0751 -2.6454 0.0626 0.464 0.7493 ...
+#> Kernel Information:
+#>   Kernel type: Gaussian with L2 norm distances
+#>   Number of kernels: 50
+#> 
+#> Subspace dimension (m): 1
+#> Optimal sigma: 2.677003
+#> Optimal lambda: 0.1
+#> Optimal kernel weights (loocv): num [1:51] 6.666 -0.3081 -0.0385 -0.0353 0.0108 ...
 #>  
-#> 
-#> Squared average log density ratio difference for numerator and denominator samples (SALDRD): 13.56
+#> Pearson divergence between P(nu) and P(de): 0.6358
 #> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.
 #> 
 # Plot model object
 plot(dr)
-#> Warning: Negative estimated density ratios for 25 observation(s) converted to 0.01 before applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation
 #> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 
 # Plot density ratio for each variable individually
 plot_univariate(dr)
-#> Warning: Negative estimated density ratios for 25 observation(s) converted to 0.01 before applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation
 #> [[1]]
 
 #> 
@@ -166,7 +175,7 @@ plot_univariate(dr)
 #> 
 # Plot density ratio for each pair of variables
 plot_bivariate(dr)
-#> Warning: Negative estimated density ratios for 25 observation(s) converted to 0.01 before applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation
 #> [[1]]
 
 #> 
@@ -178,18 +187,14 @@ plot_bivariate(dr)
 #> 
 # Predict density ratio and inspect first 6 predictions
 head(predict(dr))
-#> [1] 1.410607 5.739287 1.874031 4.131255 1.666760 4.095855
-# Fit model with custom parameters
-naive(numerator_small, denominator_small, m=2, kernel="epanechnikov")
+#> , , 1
 #> 
-#> Call:
-#> naive(df_numerator = numerator_small, df_denominator = denominator_small,     m = 2, kernel = "epanechnikov")
+#>           [,1]
+#> [1,] 2.1625009
+#> [2,] 3.6694722
+#> [3,] 2.7969688
+#> [4,] 4.1387638
+#> [5,] 0.1585054
+#> [6,] 1.2616673
 #> 
-#> Naive density ratio
-#>   Number of variables: 3
-#>   Number of numerator samples: 50
-#>   Number of denominator samples: 100
-#>   Numerator density: num [1:50] 0.572 1.421 0.945 1.058 0.936 ...
-#>   Denominator density: num [1:100] 1.391 1.459 0.572 0.943 1.314 ...
-#>  
 ```

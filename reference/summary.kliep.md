@@ -59,6 +59,8 @@ Summary of the fitted density ratio model
 ## Examples
 
 ``` r
+
+
 set.seed(123)
 # Fit model
 dr <- kliep(numerator_small, denominator_small)

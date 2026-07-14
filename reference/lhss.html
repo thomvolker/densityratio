@@ -156,47 +156,56 @@ Networks</i>, 24, 183-198. <a href="https://doi.org/10.1016/j.neunet.2010.10.005
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Fit model</span></span></span>
-<span class="r-in"><span><span class="va">dr</span> <span class="op">&lt;-</span> <span class="fu"><a href="naive.html">naive</a></span><span class="op">(</span><span class="va">numerator_small</span>, <span class="va">denominator_small</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Fit model (minimal example to limit computation time)</span></span></span>
+<span class="r-in"><span><span class="va">dr</span> <span class="op">&lt;-</span> <span class="fu">lhss</span><span class="op">(</span><span class="va">numerator_small</span>, <span class="va">denominator_small</span>,</span></span>
+<span class="r-in"><span>           nsigma <span class="op">=</span> <span class="fl">3</span>, lambda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1</span><span class="op">)</span>, ncenters <span class="op">=</span> <span class="fl">50</span>, maxit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Inspect model object</span></span></span>
 <span class="r-in"><span><span class="va">dr</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> naive(df_numerator = numerator_small, df_denominator = denominator_small)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Naive density ratio</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of variables: 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of numerator samples: 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of denominator samples: 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Numerator density: num [1:50] 1.41 5.74 1.87 4.13 1.67 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Denominator density: num [1:100] 2.93 0.071 1.065 1.59 2.115 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Kernel Information:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Kernel type: Gaussian with L2 norm distances</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of kernels: 50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma: num [1:3, 1:2] 0.0793 0.9371 2.677 0.0693 0.9633 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Regularization parameter (lambda): num [1:2] 0.1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Subspace dimension (m): 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal sigma: 2.677003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal lambda: 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal kernel weights (loocv): num [1:51] 6.666 -0.3081 -0.0385 -0.0353 0.0108 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span><span class="co"># Obtain summary of model object</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> naive(df_numerator = numerator_small, df_denominator = denominator_small)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Naive density ratio estimate:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of variables: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of numerator samples: 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of denominator samples: 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Density ratio for numerator samples: num [1:50] 0.344 1.747 0.628 1.419 0.511 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Density ratio for denominator samples: num [1:100] 1.0751 -2.6454 0.0626 0.464 0.7493 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Kernel Information:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Kernel type: Gaussian with L2 norm distances</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of kernels: 50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Subspace dimension (m): 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal sigma: 2.677003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal lambda: 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal kernel weights (loocv): num [1:51] 6.666 -0.3081 -0.0385 -0.0353 0.0108 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Squared average log density ratio difference for numerator and denominator samples (SALDRD): 13.56</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Pearson divergence between P(nu) and P(de): 0.6358</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># Plot model object</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Negative estimated density ratios for 25 observation(s) converted to 0.01 before applying logarithmic transformation</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span>
 <span class="r-plt img"><img src="lhss-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># Plot density ratio for each variable individually</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot_univariate.html">plot_univariate</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Negative estimated density ratios for 25 observation(s) converted to 0.01 before applying logarithmic transformation</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-plt img"><img src="lhss-2.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -208,7 +217,7 @@ Networks</i>, 24, 183-198. <a href="https://doi.org/10.1016/j.neunet.2010.10.005
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># Plot density ratio for each pair of variables</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot_bivariate.html">plot_bivariate</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Negative estimated density ratios for 25 observation(s) converted to 0.01 before applying logarithmic transformation</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-plt img"><img src="lhss-5.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -220,20 +229,17 @@ Networks</i>, 24, 183-198. <a href="https://doi.org/10.1016/j.neunet.2010.10.005
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># Predict density ratio and inspect first 6 predictions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.410607 5.739287 1.874031 4.131255 1.666760 4.095855</span>
-<span class="r-in"><span><span class="co"># Fit model with custom parameters</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="naive.html">naive</a></span><span class="op">(</span><span class="va">numerator_small</span>, <span class="va">denominator_small</span>, m<span class="op">=</span><span class="fl">2</span>, kernel<span class="op">=</span><span class="st">"epanechnikov"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> , , 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> naive(df_numerator = numerator_small, df_denominator = denominator_small,     m = 2, kernel = "epanechnikov")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 2.1625009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 3.6694722</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 2.7969688</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 4.1387638</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.1585054</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 1.2616673</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Naive density ratio</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of variables: 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of numerator samples: 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Number of denominator samples: 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Numerator density: num [1:50] 0.572 1.421 0.945 1.058 0.936 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Denominator density: num [1:100] 1.391 1.459 0.572 0.943 1.314 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

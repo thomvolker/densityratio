@@ -106,6 +106,8 @@ adaptation. *Annals of the Institute of Statistical Mathematics* 60,
 ## Examples
 
 ``` r
+
+
 set.seed(123)
 # Fit model
 dr <- kliep(numerator_small, denominator_small)

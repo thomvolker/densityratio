@@ -90,52 +90,56 @@ but otherwise the numerator samples.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Fit model (minimal example to limit computation time)</span></span></span>
 <span class="r-in"><span><span class="va">dr</span> <span class="op">&lt;-</span> <span class="fu"><a href="lhss.html">lhss</a></span><span class="op">(</span><span class="va">numerator_small</span>, <span class="va">denominator_small</span>,</span></span>
-<span class="r-in"><span>           nsigma <span class="op">=</span> <span class="fl">5</span>, nlambda <span class="op">=</span> <span class="fl">3</span>, ncenters <span class="op">=</span> <span class="fl">50</span>, maxit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span>           nsigma <span class="op">=</span> <span class="fl">3</span>, lambda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1</span><span class="op">)</span>, ncenters <span class="op">=</span> <span class="fl">50</span>, maxit <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Inspect model object</span></span></span>
 <span class="r-in"><span><span class="va">dr</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 5, nlambda = 3, ncenters = 50, maxit = 100)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Kernel Information:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Kernel type: Gaussian with L2 norm distances</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Number of kernels: 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma: num [1:5, 1:3] 0.0682 0.4267 0.8044 1.3056 2.2871 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma: num [1:3, 1:2] 0.0793 0.9371 2.677 0.0693 0.9633 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Regularization parameter (lambda): num [1:3] 1e+03 1e+00 1e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Regularization parameter (lambda): num [1:2] 0.1 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Subspace dimension (m): 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal sigma: 1.497984</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal lambda: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal kernel weights (loocv): num [1:51] 1.8373 -0.09066 0.07367 -0.00528 0.06262 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal sigma: 2.677003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal lambda: 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal kernel weights (loocv): num [1:51] 6.666 -0.3081 -0.0385 -0.0353 0.0108 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
 <span class="r-in"><span><span class="co"># Obtain summary of model object</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 5, nlambda = 3, ncenters = 50, maxit = 100)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Kernel Information:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Kernel type: Gaussian with L2 norm distances</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Number of kernels: 50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Subspace dimension (m): 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal sigma: 1.497984</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal lambda: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal kernel weights (loocv): num [1:51] 1.8373 -0.09066 0.07367 -0.00528 0.06262 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal sigma: 2.677003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal lambda: 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimal kernel weights (loocv): num [1:51] 6.666 -0.3081 -0.0385 -0.0353 0.0108 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Pearson divergence between P(nu) and P(de): 0.4685</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Pearson divergence between P(nu) and P(de): 0.6358</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># Plot model object</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.</span>
 <span class="r-plt img"><img src="predict.lhss-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># Plot density ratio for each variable individually</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot_univariate.html">plot_univariate</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-plt img"><img src="predict.lhss-2.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -147,6 +151,7 @@ but otherwise the numerator samples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># Plot density ratio for each pair of variables</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="plot_bivariate.html">plot_bivariate</a></span><span class="op">(</span><span class="va">dr</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-plt img"><img src="predict.lhss-5.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -161,13 +166,14 @@ but otherwise the numerator samples.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> , , 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.8470376</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 2.7363298</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 2.5131903</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 2.7363216</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.5834822</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 1.8982260</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 2.1625009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 3.6694722</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 2.7969688</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 4.1387638</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 0.1585054</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6,] 1.2616673</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

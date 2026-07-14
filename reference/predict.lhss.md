@@ -50,52 +50,56 @@ otherwise the numerator samples.
 ## Examples
 
 ``` r
+
+
 set.seed(123)
 # Fit model (minimal example to limit computation time)
 dr <- lhss(numerator_small, denominator_small,
-           nsigma = 5, nlambda = 3, ncenters = 50, maxit = 100)
+           nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)
 # Inspect model object
 dr
 #> 
 #> Call:
-#> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 5, nlambda = 3, ncenters = 50, maxit = 100)
+#> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)
 #> 
 #> Kernel Information:
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 50
-#>   sigma: num [1:5, 1:3] 0.0682 0.4267 0.8044 1.3056 2.2871 ...
+#>   sigma: num [1:3, 1:2] 0.0793 0.9371 2.677 0.0693 0.9633 ...
 #> 
-#> Regularization parameter (lambda): num [1:3] 1e+03 1e+00 1e-03
+#> Regularization parameter (lambda): num [1:2] 0.1 1
 #> 
 #> Subspace dimension (m): 1
-#> Optimal sigma: 1.497984
-#> Optimal lambda: 1
-#> Optimal kernel weights (loocv): num [1:51] 1.8373 -0.09066 0.07367 -0.00528 0.06262 ...
+#> Optimal sigma: 2.677003
+#> Optimal lambda: 0.1
+#> Optimal kernel weights (loocv): num [1:51] 6.666 -0.3081 -0.0385 -0.0353 0.0108 ...
 #>  
 # Obtain summary of model object
 summary(dr)
 #> 
 #> Call:
-#> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 5, nlambda = 3, ncenters = 50, maxit = 100)
+#> lhss(df_numerator = numerator_small, df_denominator = denominator_small,     nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)
 #> 
 #> Kernel Information:
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 50
 #> 
 #> Subspace dimension (m): 1
-#> Optimal sigma: 1.497984
-#> Optimal lambda: 1
-#> Optimal kernel weights (loocv): num [1:51] 1.8373 -0.09066 0.07367 -0.00528 0.06262 ...
+#> Optimal sigma: 2.677003
+#> Optimal lambda: 0.1
+#> Optimal kernel weights (loocv): num [1:51] 6.666 -0.3081 -0.0385 -0.0353 0.0108 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.4685
+#> Pearson divergence between P(nu) and P(de): 0.6358
 #> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.
 #> 
 # Plot model object
 plot(dr)
+#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation
 #> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 
 # Plot density ratio for each variable individually
 plot_univariate(dr)
+#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation
 #> [[1]]
 
 #> 
@@ -107,6 +111,7 @@ plot_univariate(dr)
 #> 
 # Plot density ratio for each pair of variables
 plot_bivariate(dr)
+#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation
 #> [[1]]
 
 #> 
@@ -121,11 +126,11 @@ head(predict(dr))
 #> , , 1
 #> 
 #>           [,1]
-#> [1,] 1.8470376
-#> [2,] 2.7363298
-#> [3,] 2.5131903
-#> [4,] 2.7363216
-#> [5,] 0.5834822
-#> [6,] 1.8982260
+#> [1,] 2.1625009
+#> [2,] 3.6694722
+#> [3,] 2.7969688
+#> [4,] 4.1387638
+#> [5,] 0.1585054
+#> [6,] 1.2616673
 #> 
 ```

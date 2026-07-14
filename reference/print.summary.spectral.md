@@ -36,6 +36,8 @@ print(x, digits = max(3L, getOption("digits") - 3L), ...)
 ## Examples
 
 ``` r
+
+
 set.seed(123)
 # Fit model
 dr <- spectral(numerator_small, denominator_small)

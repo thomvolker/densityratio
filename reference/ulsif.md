@@ -115,6 +115,8 @@ to direct importance estimation. Journal of Machine Learning Research,
 ## Examples
 
 ``` r
+
+
 set.seed(123)
 # Fit model
 dr <- ulsif(numerator_small, denominator_small)

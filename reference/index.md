@@ -17,12 +17,6 @@
 - [`denominator_small`](https://thomvolker.github.io/densityratio/reference/denominator_small.md)
   : denominator_small
 
-- [`distance`](https://thomvolker.github.io/densityratio/reference/distance.md)
-  :
-
-  Create a Gram matrix with squared Euclidean distances between
-  observations in the input matrix `X` and the input matrix `Y`
-
 - [`dr.histogram()`](https://thomvolker.github.io/densityratio/reference/dr.histogram.md)
   [`plot(`*`<ulsif>`*`)`](https://thomvolker.github.io/densityratio/reference/dr.histogram.md)
   [`plot(`*`<kliep>`*`)`](https://thomvolker.github.io/densityratio/reference/dr.histogram.md)
@@ -34,9 +28,6 @@
 
 - [`insurance`](https://thomvolker.github.io/densityratio/reference/insurance.md)
   : insurance
-
-- [`kernel_gaussian`](https://thomvolker.github.io/densityratio/reference/kernel_gaussian.md)
-  : Create gaussian kernel gram matrix from distance matrix
 
 - [`kidiq`](https://thomvolker.github.io/densityratio/reference/kidiq.md)
   : kidiq

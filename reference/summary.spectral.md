@@ -53,6 +53,8 @@ Summary of the fitted density ratio model
 ## Examples
 
 ``` r
+
+
 set.seed(123)
 # Fit model
 dr <- spectral(numerator_small, denominator_small)

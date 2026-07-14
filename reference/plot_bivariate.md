@@ -71,6 +71,8 @@ Bivariate scatter plots of all combinations of variables in vars.
 ## Examples
 
 ``` r
+
+
 set.seed(123)
 # Fit model
 dr <- ulsif(numerator_small, denominator_small)

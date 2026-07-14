@@ -113,6 +113,8 @@ Ratio Estimation with Extensions to Approximate Likelihood Computation.
 ## Examples
 
 ``` r
+
+
 set.seed(123)
 # Fit model
 dr <- spectral(numerator_small, denominator_small)
