@@ -44,19 +44,8 @@
 #' @return \code{ulsif}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal weights.
 #'
-#' @examples
-#' \dontshow{
-#' if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
-#' RcppArmadillo::armadillo_throttle_cores(1)
-#' }
-#' }
 #' @example inst/examples/ulsif-example.R
-#' @examples
-#' \dontshow{
-#' if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
-#' RcppArmadillo::armadillo_reset_cores()
-#' }
-#' }
+
 ulsif <- function(df_numerator, df_denominator, intercept = FALSE, scale = "numerator",
                   nsigma = 10, sigma_quantile = NULL, sigma = NULL, nlambda = 20,
                   lambda = NULL, ncenters = 200, centers = NULL, parallel = FALSE, 

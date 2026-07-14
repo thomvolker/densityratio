@@ -31,6 +31,13 @@ but otherwise the numerator samples.
 Obtain predicted density ratio values from a \code{lhss} object
 }
 \examples{
+
+\dontshow{
+if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
+  RcppArmadillo::armadillo_throttle_cores(1)
+}
+}
+
 set.seed(123)
 # Fit model (minimal example to limit computation time)
 dr <- lhss(numerator_small, denominator_small,
@@ -47,6 +54,12 @@ plot_univariate(dr)
 plot_bivariate(dr)
 # Predict density ratio and inspect first 6 predictions
 head(predict(dr))
+
+\dontshow{
+if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
+RcppArmadillo::armadillo_reset_cores()
+}
+}
 }
 \seealso{
 \code{\link{predict}}, \code{\link{lhss}}

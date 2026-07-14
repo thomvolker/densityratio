@@ -1,3 +1,10 @@
+
+\dontshow{
+if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
+  RcppArmadillo::armadillo_throttle_cores(1)
+}
+}
+
 set.seed(123)
 # Fit model
 dr <- spectral(numerator_small, denominator_small)
@@ -15,3 +22,9 @@ plot_bivariate(dr)
 head(predict(dr))
 # Fit model with custom parameters
 spectral(numerator_small, denominator_small, sigma = 2)
+
+\dontshow{
+if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
+RcppArmadillo::armadillo_reset_cores()
+}
+}

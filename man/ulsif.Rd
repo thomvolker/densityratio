@@ -79,11 +79,13 @@ density ratio using optimal sigma and optimal weights.
 Unconstrained least-squares importance fitting
 }
 \examples{
+
 \dontshow{
 if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
-RcppArmadillo::armadillo_throttle_cores(1)
+  RcppArmadillo::armadillo_throttle_cores(1)
 }
 }
+
 set.seed(123)
 # Fit model
 dr <- ulsif(numerator_small, denominator_small)
@@ -101,6 +103,7 @@ plot_bivariate(dr)
 head(predict(dr))
 # Fit model with custom parameters
 ulsif(numerator_small, denominator_small, sigma = 2, lambda = 2)
+
 \dontshow{
 if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
 RcppArmadillo::armadillo_reset_cores()

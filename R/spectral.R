@@ -46,19 +46,7 @@
 #' @return \code{spectral}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal spectral series expansion.
 #'
-#' @examples
-#' \dontshow{
-#' if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
-#' RcppArmadillo::armadillo_throttle_cores(1)
-#' }
-#' }
 #' @example inst/examples/spectral-example.R
-#' @examples
-#' \dontshow{
-#' if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
-#' RcppArmadillo::armadillo_reset_cores()
-#' }
-#' }
 
 
 spectral <- function(df_numerator, df_denominator, m = NULL, scale = "numerator",

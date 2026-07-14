@@ -51,20 +51,7 @@
 #'
 #' @return \code{kmm}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal weights.
-#'
-#' @examples
-#' \dontshow{
-#' if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
-#' RcppArmadillo::armadillo_throttle_cores(1)
-#' }
-#' }
 #' @example inst/examples/kmm-example.R
-#' @examples
-#' \dontshow{
-#' if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
-#' RcppArmadillo::armadillo_reset_cores()
-#' }
-#' }
 
 kmm <- function(df_numerator, df_denominator, scale = "numerator",
                 constrained = FALSE, nsigma = 10, sigma_quantile = NULL,

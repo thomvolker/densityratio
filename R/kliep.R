@@ -38,20 +38,7 @@
 #' & Kawanabe, M. (2008). Direct importance estimation for covariate shift
 #' adaptation. <i>Annals of the Institute of Statistical Mathematics</i>
 #' 60, 699-746. Doi: https://doi.org/10.1007/s10463-008-0197-x.
-#'
-#' @examples
-#' \dontshow{
-#' if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
-#' RcppArmadillo::armadillo_throttle_cores(1)
-#' }
-#' }
 #' @example inst/examples/kliep-example.R
-#' @examples
-#' \dontshow{
-#' if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
-#' RcppArmadillo::armadillo_reset_cores()
-#' }
-#' }
 
 
 kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10,

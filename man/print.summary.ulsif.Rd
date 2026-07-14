@@ -20,6 +20,13 @@
 Print a \code{summary.ulsif} object
 }
 \examples{
+
+\dontshow{
+if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
+  RcppArmadillo::armadillo_throttle_cores(1)
+}
+}
+
 set.seed(123)
 # Fit model
 dr <- ulsif(numerator_small, denominator_small)
@@ -37,6 +44,12 @@ plot_bivariate(dr)
 head(predict(dr))
 # Fit model with custom parameters
 ulsif(numerator_small, denominator_small, sigma = 2, lambda = 2)
+
+\dontshow{
+if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
+RcppArmadillo::armadillo_reset_cores()
+}
+}
 }
 \seealso{
 \code{\link{print}}, \code{\link{summary.ulsif}}, \code{\link{ulsif}}

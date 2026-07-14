@@ -7,12 +7,12 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(densityratio)
 
 Sys.setenv(OMP_THREAD_LIMIT = "1", OPENBLAS_NUM_THREADS = "1")
 if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
   RcppArmadillo::armadillo_throttle_cores()
 }
+library(densityratio)
 test_check("densityratio")
 if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
   RcppArmadillo::armadillo_reset_cores()
