@@ -9,7 +9,7 @@
 library(testthat)
 library(densityratio)
 
-Sys.setenv("OMP_THREAD_LIMIT" = 2)
+Sys.setenv(OMP_THREAD_LIMIT = "1", OPENBLAS_NUM_THREADS = "1")
 if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
   RcppArmadillo::armadillo_throttle_cores()
 }
@@ -17,4 +17,4 @@ test_check("densityratio")
 if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
   RcppArmadillo::armadillo_reset_cores()
 }
-Sys.unsetenv("OMP_THREAD_LIMIT")
+Sys.unsetenv(c("OMP_THREAD_LIMIT", "OPENBLAS_NUM_THREADS"))

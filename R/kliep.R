@@ -42,7 +42,7 @@
 #' @examples
 #' \dontshow{
 #' if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
-#' RcppArmadillo::armadillo_throttle_cores()
+#' RcppArmadillo::armadillo_throttle_cores(1)
 #' }
 #' }
 #' @example inst/examples/kliep-example.R

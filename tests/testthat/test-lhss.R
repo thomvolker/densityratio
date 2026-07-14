@@ -1,5 +1,6 @@
 
 test_that("1-dimensional lhss estimation and prediction works", {
+  testthat::skip_on_cran()
   set.seed(1)
   dr <- lhss(numerator_small$x3, denominator_small$x3)
   summdr <- summary(dr)
@@ -21,6 +22,7 @@ test_that("1-dimensional lhss estimation and prediction works", {
 })
 
 test_that("multidimensional lhss estimation, prediction and plotting works", {
+  testthat::skip_on_cran()
   set.seed(1)
   dr <- lhss(numerator_small, denominator_small, m = 2, sigma = c(0.1, 1, 2, 3),
              lambda = c(1, 0.1, 0.001),

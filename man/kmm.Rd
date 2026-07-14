@@ -88,7 +88,7 @@ Kernel mean matching approach to density ratio estimation
 \examples{
 \dontshow{
 if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
-RcppArmadillo::armadillo_throttle_cores()
+RcppArmadillo::armadillo_throttle_cores(1)
 }
 }
 set.seed(123)
