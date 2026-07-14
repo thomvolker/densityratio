@@ -103,7 +103,7 @@ plot_bivariate(dr)
 head(predict(dr))
 # Fit model with custom parameters
 kmm(numerator_small, denominator_small,
-    nsigma = 5, ncenters = 100, nfold = 10,
+    nsigma = 4, ncenters = 50, nfold = 4,
     constrained = TRUE)
 
 }

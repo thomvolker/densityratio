@@ -9,4 +9,8 @@
 library(testthat)
 library(densityratio)
 
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
+
 test_check("densityratio")
+
+Sys.unsetenv("OMP_THREAD_LIMIT")
