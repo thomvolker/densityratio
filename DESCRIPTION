@@ -36,6 +36,7 @@ LinkingTo:
     RcppArmadillo,
     RcppProgress
 Suggests: 
+    RcppArmadillo,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)

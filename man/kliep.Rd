@@ -72,6 +72,11 @@ density ratio using optimal sigma and optimal weights.
 Kullback-Leibler importance estimation procedure
 }
 \examples{
+\dontshow{
+if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
+RcppArmadillo::armadillo_throttle_cores()
+}
+}
 set.seed(123)
 # Fit model
 dr <- kliep(numerator_small, denominator_small)
@@ -91,6 +96,11 @@ head(predict(dr))
 kliep(numerator_small, denominator_small,
       nsigma = 1, ncenters = 100, nfold = 10,
       epsilon = 10^{2:-5}, maxit = 500)
+\dontshow{
+if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
+RcppArmadillo::armadillo_reset_cores()
+}
+}
 }
 \references{
 Sugiyama, M., Suzuki, T., Nakajima, S., Kashima, H., Von Bünau, P.,

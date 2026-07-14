@@ -40,7 +40,19 @@
 #' & Kawanabe, M. (2011). Direct density-ratio estimation with dimensionality
 #' reduction via least-squares hetero-distributional subspace search. <i> Neural
 #' Networks</i>, 24, 183-198. \doi{10.1016/j.neunet.2010.10.005}.
-#' @example inst/examples/naive-example.R
+#' @examples
+#' \dontshow{
+#' if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
+#' RcppArmadillo::armadillo_throttle_cores()
+#' }
+#' }
+#' @example inst/examples/lhss-example.R
+#' @examples
+#' \dontshow{
+#' if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
+#' RcppArmadillo::armadillo_reset_cores()
+#' }
+#' }
 
 
 

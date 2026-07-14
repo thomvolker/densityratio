@@ -76,9 +76,15 @@ density ratio using optimal sigma, optimal lambda and optimal weights.
 Least-squares heterodistributional subspace search
 }
 \examples{
+\dontshow{
+if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
+RcppArmadillo::armadillo_throttle_cores()
+}
+}
 set.seed(123)
-# Fit model
-dr <- naive(numerator_small, denominator_small)
+# Fit model (minimal example to limit computation time)
+dr <- lhss(numerator_small, denominator_small,
+           nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)
 # Inspect model object
 dr
 # Obtain summary of model object
@@ -91,8 +97,11 @@ plot_univariate(dr)
 plot_bivariate(dr)
 # Predict density ratio and inspect first 6 predictions
 head(predict(dr))
-# Fit model with custom parameters
-naive(numerator_small, denominator_small, m=2, kernel="epanechnikov")
+\dontshow{
+if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
+RcppArmadillo::armadillo_reset_cores()
+}
+}
 }
 \references{
 Sugiyama, M., Yamada, M., Von Bünau, P., Suzuki, T., Kanamori, T.
