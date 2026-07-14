@@ -48,6 +48,7 @@
 #'
 #' @example inst/examples/spectral-example.R
 
+
 spectral <- function(df_numerator, df_denominator, m = NULL, scale = "numerator",
                      nsigma = 10, sigma_quantile = NULL, sigma = NULL,
                      ncenters = NULL, cv = TRUE, nfold = 10, parallel = FALSE,

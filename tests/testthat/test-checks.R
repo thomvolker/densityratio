@@ -537,6 +537,7 @@ test_that("check.sigma.predict works", {
 })
 
 test_that("check.lambdasigma.predict works", {
+  testthat::skip_on_cran()
   dr <- lhss(numerator_small, denominator_small, nsigma = 5, nlambda = 5)
 
   expect_equal(

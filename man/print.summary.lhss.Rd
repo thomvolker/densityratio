@@ -20,10 +20,17 @@
 Print a \code{summary.lhss} object
 }
 \examples{
+
+\dontshow{
+if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
+  RcppArmadillo::armadillo_throttle_cores(1)
+}
+}
+
 set.seed(123)
 # Fit model (minimal example to limit computation time)
 dr <- lhss(numerator_small, denominator_small,
-           nsigma = 5, nlambda = 3, ncenters = 50, maxit = 100)
+           nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)
 # Inspect model object
 dr
 # Obtain summary of model object
@@ -36,6 +43,12 @@ plot_univariate(dr)
 plot_bivariate(dr)
 # Predict density ratio and inspect first 6 predictions
 head(predict(dr))
+
+\dontshow{
+if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
+RcppArmadillo::armadillo_reset_cores()
+}
+}
 }
 \seealso{
 \code{\link{print}}, \code{\link{summary.lhss}}, \code{\link{lhss}}

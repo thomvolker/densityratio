@@ -1,5 +1,6 @@
 
 test_that("1-dimensional kliep estimation and prediction works", {
+  testthat::skip_on_cran()
   set.seed(1)
   dr <- kliep(numerator_small$x3, denominator_small$x3)
   summdr <- summary(dr)

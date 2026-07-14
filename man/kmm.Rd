@@ -86,6 +86,13 @@ density ratio using optimal sigma and optimal weights.
 Kernel mean matching approach to density ratio estimation
 }
 \examples{
+
+\dontshow{
+if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
+  RcppArmadillo::armadillo_throttle_cores(1)
+}
+}
+
 set.seed(123)
 # Fit model
 dr <- kmm(numerator_small, denominator_small)
@@ -103,9 +110,14 @@ plot_bivariate(dr)
 head(predict(dr))
 # Fit model with custom parameters
 kmm(numerator_small, denominator_small,
-    nsigma = 5, ncenters = 100, nfold = 10,
+    nsigma = 4, ncenters = 50, nfold = 4,
     constrained = TRUE)
 
+\dontshow{
+if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
+RcppArmadillo::armadillo_reset_cores()
+}
+}
 }
 \references{
 Huang, J., Smola, A. J., Gretton, A., Borgwardt, K. M., &

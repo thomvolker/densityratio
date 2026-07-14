@@ -23,6 +23,13 @@ but otherwise the numerator samples.
 Obtain predicted density ratio values from a \code{kmm} object
 }
 \examples{
+
+\dontshow{
+if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
+  RcppArmadillo::armadillo_throttle_cores(1)
+}
+}
+
 set.seed(123)
 # Fit model
 dr <- kmm(numerator_small, denominator_small)
@@ -40,9 +47,14 @@ plot_bivariate(dr)
 head(predict(dr))
 # Fit model with custom parameters
 kmm(numerator_small, denominator_small,
-    nsigma = 5, ncenters = 100, nfold = 10,
+    nsigma = 4, ncenters = 50, nfold = 4,
     constrained = TRUE)
 
+\dontshow{
+if(requireNamespace("RcppArmadillo", quietly = TRUE)) {
+RcppArmadillo::armadillo_reset_cores()
+}
+}
 }
 \seealso{
 \code{\link{predict}}, \code{\link{kmm}}

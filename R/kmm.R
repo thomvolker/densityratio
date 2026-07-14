@@ -51,7 +51,6 @@
 #'
 #' @return \code{kmm}-object, containing all information to calculate the
 #' density ratio using optimal sigma and optimal weights.
-#'
 #' @example inst/examples/kmm-example.R
 
 kmm <- function(df_numerator, df_denominator, scale = "numerator",
