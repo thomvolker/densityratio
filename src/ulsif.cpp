@@ -29,11 +29,12 @@ arma::vec ulsif_compute_alpha(arma::mat Hhat, arma::vec hhat, double lambda, boo
 int set_threads(int nthreads) {
 
   #ifdef _OPENMP
-  int max_threads = omp_get_max_threads();
+  int max_threads = std::min(omp_get_max_threads(), omp_get_thread_limit());
+
   #else
   int max_threads = 1;
   #endif
-
+  
   if (nthreads > max_threads) {
     nthreads = max_threads;
     std::string warn = "'nthreads' exceeds the maximum number of threads to use for parallel processing; it is set to the maximum number of threads available (" + std::to_string(nthreads) + ")";
@@ -43,7 +44,6 @@ int set_threads(int nthreads) {
   if (nthreads == 0) {
     nthreads = max_threads;
   }
-
   return nthreads;
 }
 

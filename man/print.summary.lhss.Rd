@@ -23,7 +23,7 @@ Print a \code{summary.lhss} object
 set.seed(123)
 # Fit model (minimal example to limit computation time)
 dr <- lhss(numerator_small, denominator_small,
-           nsigma = 5, nlambda = 3, ncenters = 50, maxit = 100)
+           nsigma = 3, lambda = c(0.1, 1), ncenters = 50, maxit = 100)
 # Inspect model object
 dr
 # Obtain summary of model object
