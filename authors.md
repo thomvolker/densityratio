@@ -12,7 +12,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/thomvolker/densityratio/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/thomvolker/densityratio/blob/v0.2.3/inst/CITATION)
 
 Volker T, Gonzalez Poses C, van Kesteren E (2024). “densityratio:
 Distribution comparison through density ratio estimation.”

@@ -4,6 +4,8 @@
 
 ## densityratio 0.2.3
 
+CRAN release: 2026-07-14
+
 - update loocv procedure in ulsif to work with unconstrained kernel
   weights
 - update lhss to perform unconstrained optimization (aligned with loocv

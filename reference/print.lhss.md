@@ -50,14 +50,14 @@ dr
 #> Kernel Information:
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 50
-#>   sigma: num [1:3, 1:2] 0.0793 0.9371 2.677 0.0693 0.9633 ...
+#>   sigma: num [1:3, 1:2] 0.084 0.9371 2.6764 0.0703 0.9633 ...
 #> 
 #> Regularization parameter (lambda): num [1:2] 0.1 1
 #> 
 #> Subspace dimension (m): 1
-#> Optimal sigma: 2.677003
+#> Optimal sigma: 2.676351
 #> Optimal lambda: 0.1
-#> Optimal kernel weights (loocv): num [1:51] 6.666 -0.3081 -0.0385 -0.0353 0.0108 ...
+#> Optimal kernel weights (loocv): num [1:51] 6.6612 -0.308 -0.0378 -0.0356 0.0108 ...
 #>  
 # Obtain summary of model object
 summary(dr)
@@ -70,21 +70,21 @@ summary(dr)
 #>   Number of kernels: 50
 #> 
 #> Subspace dimension (m): 1
-#> Optimal sigma: 2.677003
+#> Optimal sigma: 2.676351
 #> Optimal lambda: 0.1
-#> Optimal kernel weights (loocv): num [1:51] 6.666 -0.3081 -0.0385 -0.0353 0.0108 ...
+#> Optimal kernel weights (loocv): num [1:51] 6.6612 -0.308 -0.0378 -0.0356 0.0108 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.6358
+#> Pearson divergence between P(nu) and P(de): 0.6365
 #> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.
 #> 
 # Plot model object
 plot(dr)
-#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 13 observation(s) converted to 0.01 before applying logarithmic transformation
 #> `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
 
 # Plot density ratio for each variable individually
 plot_univariate(dr)
-#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 13 observation(s) converted to 0.01 before applying logarithmic transformation
 #> [[1]]
 
 #> 
@@ -96,7 +96,7 @@ plot_univariate(dr)
 #> 
 # Plot density ratio for each pair of variables
 plot_bivariate(dr)
-#> Warning: Negative estimated density ratios for 12 observation(s) converted to 0.01 before applying logarithmic transformation
+#> Warning: Negative estimated density ratios for 13 observation(s) converted to 0.01 before applying logarithmic transformation
 #> [[1]]
 
 #> 
@@ -111,11 +111,11 @@ head(predict(dr))
 #> , , 1
 #> 
 #>           [,1]
-#> [1,] 2.1625009
-#> [2,] 3.6694722
-#> [3,] 2.7969688
-#> [4,] 4.1387638
-#> [5,] 0.1585054
-#> [6,] 1.2616673
+#> [1,] 2.1662109
+#> [2,] 3.6734863
+#> [3,] 2.8023392
+#> [4,] 4.1434823
+#> [5,] 0.1595074
+#> [6,] 1.2642885
 #> 
 ```
