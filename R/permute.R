@@ -34,7 +34,18 @@ permute.ulsif <- function(object, stacked, nnu, nde, ...) {
   pred_nu <- c(stats::predict(r, newdata = stacked[ind, , drop = FALSE]))
   pred_de <- c(stats::predict(r, newdata = stacked[!ind, , drop = FALSE]))
 
-  1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
+  a <- if (exists("a", object)) object$a else 0
+  pe_divergence(pred_nu, pred_de, a)
+}
+
+#' a-relative pearson divergence
+#' @keywords internal
+#' @param pred_nu predicted numerator density ratios
+#' @param pred_de predicted denominator density ratios
+#' @param a determines how much weight the numerator samples get in the denominator
+#' @return a-relative pearson divergence 
+pe_divergence <- function(pred_nu, pred_de, a = 0) {
+  (1/2 - a) * mean(pred_nu) - (1-a) * mean(pred_de) + 1/2
 }
 
 #' Single permutation statistic of \code{kliep} object

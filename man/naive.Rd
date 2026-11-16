@@ -39,7 +39,7 @@ information.}
 \item{n}{\code{integer} the number of equally spaced points at which the
 density is to be estimated. When n > 512, it is rounded up to a power of 2
 during the calculations (as fast Fourier transform is used) and the final
-result is interpolated by \link[stats:approxfun]{stats::approx}. So it makes sense to specify n as
+result is interpolated by \link[stats:approx]{stats::approx}. So it makes sense to specify n as
 a power' of two.}
 
 \item{...}{further arguments passed to \link[stats:density]{stats::density}}

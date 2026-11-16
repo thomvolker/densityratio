@@ -73,11 +73,11 @@ set_threads <- function(nthreads) {
     .Call(`_densityratio_set_threads`, nthreads)
 }
 
-compute_ulsif_loocv <- function(Hhat, hhat, lambda, intercept, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin) {
-    .Call(`_densityratio_compute_ulsif_loocv`, Hhat, hhat, lambda, intercept, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin)
+compute_ulsif_loocv <- function(Gnu, Gde, hhat, lambda, a, intercept, nnu, nde, Knu_nmin, Kde_nmin) {
+    .Call(`_densityratio_compute_ulsif_loocv`, Gnu, Gde, hhat, lambda, a, intercept, nnu, nde, Knu_nmin, Kde_nmin)
 }
 
-compute_ulsif <- function(dist_nu, dist_de, intercept, sigma, lambda, parallel, nthreads, progressbar) {
-    .Call(`_densityratio_compute_ulsif`, dist_nu, dist_de, intercept, sigma, lambda, parallel, nthreads, progressbar)
+compute_ulsif <- function(dist_nu, dist_de, intercept, sigma, lambda, parallel, nthreads, progressbar, a = 0) {
+    .Call(`_densityratio_compute_ulsif`, dist_nu, dist_de, intercept, sigma, lambda, parallel, nthreads, progressbar, a)
 }
 

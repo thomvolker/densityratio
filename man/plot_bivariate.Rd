@@ -55,10 +55,14 @@ if (requireNamespace("RcppArmadillo", quietly = TRUE)) {
 
 set.seed(123)
 # Fit model
-dr <- ulsif(numerator_small, denominator_small)
+dr <- rulsif(numerator_small, denominator_small)
 # Inspect model object
 dr
-# Obtain summary of model object
+# With identical Gaussian centers, the following models are identical
+rulsif(numerator_small, denominator_small, a = 0)
+ulsif(numerator_small, denominator_small)
+
+# Additional helper functions
 summary(dr)
 # Plot model object
 plot(dr)
@@ -69,7 +73,8 @@ plot_bivariate(dr)
 # Predict density ratio and inspect first 6 predictions
 head(predict(dr))
 # Fit model with custom parameters
-ulsif(numerator_small, denominator_small, sigma = 2, lambda = 2)
+rulsif(numerator_small, denominator_small, sigma = 2, lambda = 2)
+
 
 \dontshow{
 if(requireNamespace("RcppArmadillo", quietly = TRUE)) {

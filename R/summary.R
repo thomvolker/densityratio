@@ -35,10 +35,12 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
     on.exit(parallel::stopCluster(cluster))
   }
 
+  a <- if (exists("a", object)) object$a else 0
+
   pred_nu <- c(stats::predict(object, newdata = object$df_numerator))
   pred_de <- c(stats::predict(object, newdata = object$df_denominator))
 
-  obsPE <- 1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
+  obsPE <- pe_divergence(pred_nu, pred_de, a)
   if (test) {
     distPE <- pbapply::pbreplicate(
       n_perm,
@@ -47,8 +49,7 @@ summary.ulsif <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, 
       cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
-    recPE <- 1 / (2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
-      1 / nnu * sum(c(stats::predict(rec, newdata = nu))) + 1 / 2
+    recPE <- pe_divergence(stats::predict(rec, newdata = de), stats::predict(rec, newdata = nu), a)
   }
 
   out <- list(

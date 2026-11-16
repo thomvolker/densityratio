@@ -508,7 +508,7 @@ check.object.type <- function(object) {
     "naivesubspacedensityratio"
   )
 
-  if (!attr(object, "class") %in% models) {
+  if (!inherits(object, models)) {
     stop("Only densityratio objects can be plotted.")
   }
 }
@@ -539,4 +539,10 @@ check.logscale <- function(ext, logscale, tol) {
     ext$yintercept <- 1
   }
   return(ext)
+}
+
+check.a.rulsif <- function(a) {
+  if (0 > a | a > 1) {
+    stop("a must lie between 0 and 1")
+  }
 }

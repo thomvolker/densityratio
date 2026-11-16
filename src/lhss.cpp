@@ -68,6 +68,7 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
   arma::mat Kde_nmin(nmin, nbasis);
   arma::mat Hhat(nbasis, nbasis);
   arma::mat Hhat_opt(nbasis, nbasis);
+  arma::mat Gnu_zero(nbasis, nbasis, arma::fill::zeros);
   arma::mat dPd1(p, m);
   arma::mat dPd2(p, m);
   arma::mat dPd(m, p);
@@ -215,7 +216,7 @@ List lhss_compute_alpha(arma::mat nu, arma::mat de,
             conv = true;
           }
         }
-        loocv(sig, lam) = compute_ulsif_loocv(Hhat_opt, hhat_opt, lambda(lam), intercept, n_nu, n_de, nmin, nbasis, Knu_nmin, Kde_nmin);
+        loocv(sig, lam) = compute_ulsif_loocv(Gnu_zero, Hhat_opt * n_de, hhat_opt, lambda(lam), 0.0, intercept, n_nu, n_de, Knu_nmin, Kde_nmin);
       }
     }
     if (stopped) {

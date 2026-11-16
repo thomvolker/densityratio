@@ -290,28 +290,28 @@ BEGIN_RCPP
 END_RCPP
 }
 // compute_ulsif_loocv
-double compute_ulsif_loocv(arma::mat Hhat, arma::mat hhat, double lambda, bool intercept, const int& nnu, const int& nde, const int& nmin, const int& ncol, arma::mat Knu_nmin, arma::mat Kde_nmin);
-RcppExport SEXP _densityratio_compute_ulsif_loocv(SEXP HhatSEXP, SEXP hhatSEXP, SEXP lambdaSEXP, SEXP interceptSEXP, SEXP nnuSEXP, SEXP ndeSEXP, SEXP nminSEXP, SEXP ncolSEXP, SEXP Knu_nminSEXP, SEXP Kde_nminSEXP) {
+double compute_ulsif_loocv(const arma::mat& Gnu, const arma::mat& Gde, const arma::vec& hhat, double lambda, double a, bool intercept, const int& nnu, const int& nde, const arma::mat& Knu_nmin, const arma::mat& Kde_nmin);
+RcppExport SEXP _densityratio_compute_ulsif_loocv(SEXP GnuSEXP, SEXP GdeSEXP, SEXP hhatSEXP, SEXP lambdaSEXP, SEXP aSEXP, SEXP interceptSEXP, SEXP nnuSEXP, SEXP ndeSEXP, SEXP Knu_nminSEXP, SEXP Kde_nminSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type Hhat(HhatSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type hhat(hhatSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Gnu(GnuSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Gde(GdeSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type hhat(hhatSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< bool >::type intercept(interceptSEXP);
     Rcpp::traits::input_parameter< const int& >::type nnu(nnuSEXP);
     Rcpp::traits::input_parameter< const int& >::type nde(ndeSEXP);
-    Rcpp::traits::input_parameter< const int& >::type nmin(nminSEXP);
-    Rcpp::traits::input_parameter< const int& >::type ncol(ncolSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type Knu_nmin(Knu_nminSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type Kde_nmin(Kde_nminSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_ulsif_loocv(Hhat, hhat, lambda, intercept, nnu, nde, nmin, ncol, Knu_nmin, Kde_nmin));
+    Rcpp::traits::input_parameter< const arma::mat& >::type Knu_nmin(Knu_nminSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Kde_nmin(Kde_nminSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_ulsif_loocv(Gnu, Gde, hhat, lambda, a, intercept, nnu, nde, Knu_nmin, Kde_nmin));
     return rcpp_result_gen;
 END_RCPP
 }
 // compute_ulsif
-List compute_ulsif(const arma::mat& dist_nu, const arma::mat& dist_de, const bool& intercept, const arma::vec& sigma, const arma::vec& lambda, const bool& parallel, int nthreads, const bool& progressbar);
-RcppExport SEXP _densityratio_compute_ulsif(SEXP dist_nuSEXP, SEXP dist_deSEXP, SEXP interceptSEXP, SEXP sigmaSEXP, SEXP lambdaSEXP, SEXP parallelSEXP, SEXP nthreadsSEXP, SEXP progressbarSEXP) {
+List compute_ulsif(const arma::mat& dist_nu, const arma::mat& dist_de, const bool& intercept, const arma::vec& sigma, const arma::vec& lambda, const bool& parallel, int nthreads, const bool& progressbar, const double& a);
+RcppExport SEXP _densityratio_compute_ulsif(SEXP dist_nuSEXP, SEXP dist_deSEXP, SEXP interceptSEXP, SEXP sigmaSEXP, SEXP lambdaSEXP, SEXP parallelSEXP, SEXP nthreadsSEXP, SEXP progressbarSEXP, SEXP aSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -323,7 +323,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool& >::type parallel(parallelSEXP);
     Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
     Rcpp::traits::input_parameter< const bool& >::type progressbar(progressbarSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_ulsif(dist_nu, dist_de, intercept, sigma, lambda, parallel, nthreads, progressbar));
+    Rcpp::traits::input_parameter< const double& >::type a(aSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_ulsif(dist_nu, dist_de, intercept, sigma, lambda, parallel, nthreads, progressbar, a));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -348,7 +349,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_densityratio_ulsif_compute_alpha", (DL_FUNC) &_densityratio_ulsif_compute_alpha, 4},
     {"_densityratio_set_threads", (DL_FUNC) &_densityratio_set_threads, 1},
     {"_densityratio_compute_ulsif_loocv", (DL_FUNC) &_densityratio_compute_ulsif_loocv, 10},
-    {"_densityratio_compute_ulsif", (DL_FUNC) &_densityratio_compute_ulsif, 8},
+    {"_densityratio_compute_ulsif", (DL_FUNC) &_densityratio_compute_ulsif, 9},
     {NULL, NULL, 0}
 };
 
