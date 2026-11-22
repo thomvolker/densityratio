@@ -204,7 +204,7 @@ summary.kmm <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl
   pred_nu <- c(stats::predict(object, newdata = nu))
   pred_de <- c(stats::predict(object, newdata = de))
 
-  obsPE <- 1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
+  obsPE <- pe_divergence(pred_nu, pred_de)
   if (test) {
     distPE <- pbapply::pbreplicate(
       n_perm,
@@ -213,8 +213,7 @@ summary.kmm <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, cl
       cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
-    recPE <- 1 / (2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
-      1 / nnu * sum(c(stats::predict(rec, newdata = nu))) + 1 / 2
+    recPE <- pe_divergence(predict(rec, newdata = de), predict(rec, newdata = nu))
   }
 
   out <- list(
@@ -281,7 +280,7 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
   pred_nu <- c(stats::predict(object, newdata = nu))
   pred_de <- c(stats::predict(object, newdata = de))
 
-  obsPE <- 1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
+  obsPE <- pe_divergence(pred_nu, pred_de)
   if (test) {
     distPE <- pbapply::pbreplicate(
       n_perm,
@@ -290,8 +289,7 @@ summary.lhss <- function(object, test = FALSE, n_perm = 100, parallel = FALSE, c
       cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
-    recPE <- 1 / (2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
-      1 / nnu * sum(c(stats::predict(rec, newdata = nu))) + 1 / 2
+    recPE <- pe_divergence(predict(rec, newdata = de), predict(rec, newdata = nu))
   }
 
   out <- list(
@@ -360,7 +358,7 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
   pred_nu <- c(stats::predict(object, newdata = nu, min_pred = sqrt(.Machine$double.eps)))
   pred_de <- c(stats::predict(object, newdata = de, min_pred = sqrt(.Machine$double.eps)))
 
-  obsPE <- 1 / (2 * nnu) * sum(pred_nu) - 1 / nde * sum(pred_de) + 1 / 2
+  obsPE <- pe_divergence(pred_nu, pred_de)
   if (test) {
     distPE <- pbapply::pbreplicate(
       n_perm,
@@ -369,8 +367,7 @@ summary.spectral <- function(object, test = FALSE, n_perm = 100, parallel = FALS
       cl = cluster
     )
     rec <- update(object, df_numerator = de, df_denominator = nu, progressbar = FALSE)
-    recPE <- 1 / (2 * nde) * sum(c(stats::predict(rec, newdata = de))) -
-      1 / nnu * sum(c(stats::predict(rec, newdata = nu))) + 1 / 2
+    recPE <- pe_divergence(predict(rec, newdata = de), predict(rec, newdata = nu))
   }
 
   out <- list(
