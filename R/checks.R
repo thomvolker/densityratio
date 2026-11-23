@@ -53,15 +53,19 @@ check.dataform <- function(nu, de, centers = NULL, nullcenters, newdata = NULL, 
     }
   }
 
-  dat <- model.matrix(~ . - 1, alldat)
+  dat <- model.matrix(~ . - 1, alldat, contrasts.arg = lapply(
+    Filter(Negate(is.numeric), alldat), function(x) stats::contrasts(as.factor(x), contrasts = FALSE)
+  ))
 
   if (!is.null(newdata)) {
     newdata <- check.datatype(newdata)
     if (!is.null(scale)) {
       newdata[, numvars] <- as.data.frame(scale(newdata[, numvars], center = means, scale = sds))
     }
-    alldat <- rbind(alldat, newdata)
-    newdat <- model.matrix(~ . - 1, alldat)
+    alldat <- rbind(alldat, newdata[, names(alldat), drop = FALSE])
+    newdat <- model.matrix(~ . - 1, alldat, contrasts.arg = lapply(
+      Filter(Negate(is.numeric), alldat), function(x) stats::contrasts(as.factor(x), contrasts = FALSE)
+    ))
     newdat <- newdat[(nrow(dat) + 1):(nrow(dat) + nrow(newdata)), , drop = FALSE]
     dat <- newdat[, colnames(dat), drop = FALSE]
     return(dat)
