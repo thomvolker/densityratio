@@ -69,3 +69,4 @@ Single permutation statistic of \code{spectral} object
 
 Single permutation statistic of \code{naivedensityratio} object
 }
+\keyword{internal}

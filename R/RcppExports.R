@@ -17,12 +17,8 @@ make_phibar <- function(dist_de, sigma) {
     .Call(`_densityratio_make_phibar`, dist_de, sigma)
 }
 
-kliep_compute_alpha <- function(Phi, phibar, phibar_corr, epsilon, nepsilon, maxit, progressbar) {
-    .Call(`_densityratio_kliep_compute_alpha`, Phi, phibar, phibar_corr, epsilon, nepsilon, maxit, progressbar)
-}
-
-compute_kliep <- function(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar) {
-    .Call(`_densityratio_compute_kliep`, dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
+compute_kliep <- function(dist_nu, dist_de, sigma, tol, maxit, cv_ind, progressbar) {
+    .Call(`_densityratio_compute_kliep`, dist_nu, dist_de, sigma, tol, maxit, cv_ind, progressbar)
 }
 
 kmm_unconstrained_alpha <- function(Kdn, Kdd, Kd, nnu, nde) {

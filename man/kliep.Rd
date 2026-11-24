@@ -15,7 +15,7 @@ kliep(
   centers = NULL,
   cv = TRUE,
   nfold = 5,
-  epsilon = NULL,
+  tol = 0.001,
   maxit = 5000,
   progressbar = TRUE
 )
@@ -56,9 +56,9 @@ data, indicating the centers for the Gaussian kernel gram matrix.}
 \item{nfold}{Number of cross-validation folds used in order to calculate the
 optimal \code{sigma} value (default is 5-fold cv).}
 
-\item{epsilon}{Numeric scalar or vector with the learning rate for the
-gradient-ascent procedure. If a vector, all values are used as the learning
-rate. By default, \code{10^{1:-5}} is used.}
+\item{tol}{Numeric tolerance of the optimization procedure. Iterations stop
+once the average log density ratio of the numerator samples is within tol of
+its maximum. Defaults to \code{1e-3}.}
 
 \item{maxit}{Maximum number of iterations for the optimization scheme.}
 
@@ -97,7 +97,7 @@ head(predict(dr))
 # Fit model with custom parameters
 kliep(numerator_small, denominator_small,
       nsigma = 1, ncenters = 100, nfold = 10,
-      epsilon = 10^{2:-5}, maxit = 500)
+      tol = 1e-2)
 
 \dontshow{
 if(requireNamespace("RcppArmadillo", quietly = TRUE)) {

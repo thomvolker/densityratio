@@ -450,27 +450,22 @@ test_that("check.threads works", {
   )
 })
 
-test_that("check.epsilon works", {
+test_that("check.tol works", {
   expect_equal(
-    check.epsilon(0.1),
+    check.tol(0.1),
     0.1
   )
-  expect_equal(
-    check.epsilon(c(0.1, 0.2, 0.3)),
-    c(0.1, 0.2, 0.3)
+  expect_error(
+    check.tol(0)
   )
   expect_error(
-    check.epsilon(c(0.1, 0.2, -0.3))
+    check.tol(-0.03)
   )
   expect_error(
-    check.epsilon(c("a", "B"))
+    check.tol("a")
   )
   expect_error(
-    check.epsilon(matrix(1:10))
-  )
-  expect_equal(
-    check.epsilon(NULL),
-    10^{1:-5}
+    check.tol(c(0.1, 0.2))
   )
 })
 

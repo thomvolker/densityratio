@@ -259,6 +259,7 @@ extract_params <- function(object, ...) {
 #'
 #' @method extract_params kliep
 #' @keywords internal
+#' @export
 
 extract_params.kliep <- function(object, sigma, ...) {
   if (all(sigma %in% object$sigma)) {
@@ -274,6 +275,7 @@ extract_params.kliep <- function(object, sigma, ...) {
 #'
 #' @method extract_params kmm
 #' @keywords internal
+#' @export
 
 extract_params.kmm <- extract_params.kliep
 
@@ -281,6 +283,7 @@ extract_params.kmm <- extract_params.kliep
 #'
 #' @method extract_params ulsif
 #' @keywords internal
+#' @export
 
 extract_params.ulsif <- function(object, sigma, lambda, ...) {
   if (all(sigma %in% object$sigma) & all(lambda %in% object$lambda)) {
@@ -297,6 +300,7 @@ extract_params.ulsif <- function(object, sigma, lambda, ...) {
 #'
 #' @method extract_params lhss
 #' @keywords internal
+#' @export
 
 extract_params.lhss <- function(object, lambda, lambdasigma, ...) {
   alpha_old <- object$alpha
@@ -342,6 +346,7 @@ extract_params.lhss <- function(object, lambda, lambdasigma, ...) {
 #'
 #' @method extract_params spectral
 #' @keywords internal
+#' @export
 
 extract_params.spectral <- function(object, sigma, m, ...) {
   maxM <- max(m) # largest subspace dimension

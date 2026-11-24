@@ -279,17 +279,11 @@ check.threads <- function(parallel, nthreads) {
   nthreads
 }
 
-check.epsilon <- function(epsilon) {
-  if (!(is.null(epsilon))) {
-    if (!is.numeric(epsilon) | !is.vector(epsilon) | any(epsilon < 0)) {
-      stop("'eps' must be either NULL or a positive scalar or vector.")
-    }
-  } else {
-    epsilon <- 10^{
-      1:-5
-    }
+check.tol <- function(tol) {
+  if (!is.numeric(tol) | length(tol) != 1 | tol <= 0) {
+    stop("The tolerance 'tol' must be a positive constant")
   }
-  epsilon
+  tol
 }
 
 check.maxit <- function(maxit) {

@@ -25,9 +25,9 @@
 #' @param cv Logical indicating whether or not to do cross-validation
 #' @param nfold Number of cross-validation folds used in order to calculate the
 #' optimal \code{sigma} value (default is 5-fold cv).
-#' @param epsilon Numeric scalar or vector with the learning rate for the
-#' gradient-ascent procedure. If a vector, all values are used as the learning
-#' rate. By default, \code{10^{1:-5}} is used.
+#' @param tol Numeric tolerance of the optimization procedure. Iterations stop 
+#' once the average log density ratio of the numerator samples is within tol of
+#' its maximum. Defaults to \code{1e-3}.
 #' @param maxit Maximum number of iterations for the optimization scheme.
 #' @param progressbar Logical indicating whether or not to display a progressbar.
 #' @export
@@ -43,7 +43,7 @@
 
 kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10,
                   sigma_quantile = NULL, sigma = NULL, ncenters = 200,
-                  centers = NULL, cv = TRUE, nfold = 5, epsilon = NULL,
+                  centers = NULL, cv = TRUE, nfold = 5, tol = 1e-3,
                   maxit = 5000, progressbar = TRUE) {
   cl <- match.call()
   nu <- check.datatype(df_numerator)
@@ -59,12 +59,12 @@ kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10
   dist_nu <- distance(dat$nu, dat$ce)
   dist_de <- distance(dat$de, dat$ce)
 
+  tol <- check.tol(tol)
   sigma <- check.sigma(nsigma, sigma_quantile, sigma, dist_nu)
-  epsilon <- check.epsilon(epsilon)
   maxit <- check.maxit(maxit)
   cv_ind <- check.nfold(cv, nfold, nnu)
 
-  res <- compute_kliep(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar)
+  res <- compute_kliep(dist_nu, dist_de, sigma, tol, maxit, cv_ind, progressbar)
   rownames(res$cv_score) <- names(sigma) <- paste0("sigma", 1:length(sigma))
   dimnames(res$alpha) <- list(NULL, names(sigma))
 
@@ -85,7 +85,7 @@ kliep <- function(df_numerator, df_denominator, scale = "numerator", nsigma = 10
       max(cv_ind) + 1,
       NULL
     ),
-    epsilon = epsilon,
+    tol = tol,
     maxit = maxit,
     alpha_opt = switch(cv,
       res$alpha[, which.max(res$cv_score), drop = FALSE],

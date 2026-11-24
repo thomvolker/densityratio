@@ -304,7 +304,7 @@ dr_kmm
 
 The Kullback-Leibler importance fitting procedure optimizes a somewhat different loss compared to `ulsif()` (the Kullback-Leibler loss, rather than the Pearson loss), and does not include a regularization parameter.
 Whereas `ulsif()` can be estimated analytically, `kliep()` uses a gradient descent algorithm to estimate the parameters.
-The `kliep()` function has some additional arguments for the optimization routine, such as the maximum number of iterations `maxit` and the learning rate `epsilon`.
+The `kliep()` function has some additional arguments for the optimization routine, such as the maximum number of iterations `maxit` and the tolerance of the optimization method `tol`.
 Again, hyperparameter values and cross-validation scheme can be altered as described above.
 
 ```{r kliep}
@@ -313,7 +313,7 @@ dr_kliep <- kliep(
   no_high_school,
   nsigma = 20,
   maxit = 10000,
-  epsilon = 0.0001
+  tol = 0.0001
 )
 
 dr_kliep

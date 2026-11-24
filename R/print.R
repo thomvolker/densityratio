@@ -113,10 +113,6 @@ print.kliep <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
     cat("\nOptimal sigma: NULL (no cross-validation)\n", sep = "")
     cat("Optimal kernel weights: NULL (no cross-validation)\n", sep = "")
   }
-  cat("\nOptimization parameters:\n", sep = "")
-  cat("  Learning rate (epsilon): ", paste(format(x$epsilon, digits = digits, ...), collapse = "  "), "\n", sep = "")
-  cat("  Maximum number of iterations: ", paste(x$maxit, collapse = "  "))
-  cat("\n")
   invisible(x)
 }
 

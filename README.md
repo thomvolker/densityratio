@@ -77,8 +77,6 @@ five variables.
 ``` r
 library(densityratio)
 
-set.seed(11)
-
 head(numerator_data)
 #> # A tibble: 6 × 5
 #>   x1    x2         x3     x4     x5
@@ -116,11 +114,11 @@ summary(fit)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.7157604
+#> Optimal sigma: 0.7440586
 #> Optimal lambda: 0.03162278
-#> Optimal kernel weights: num [1:200] -0.02582 0.00116 -0.01221 0.01429 -0.03272 ...
+#> Optimal kernel weights: num [1:200] 0.01792 -0.00714 0.03477 0.03657 0.02035 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.2905
+#> Pearson divergence between P(nu) and P(de): 0.2983
 #> For a two-sample homogeneity test, use 'summary(x, test = TRUE)'.
 ```
 
@@ -138,11 +136,11 @@ summary(fit, test = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 0.7157604
+#> Optimal sigma: 0.7440586
 #> Optimal lambda: 0.03162278
-#> Optimal kernel weights: num [1:200] -0.02582 0.00116 -0.01221 0.01429 -0.03272 ...
+#> Optimal kernel weights: num [1:200] 0.01792 -0.00714 0.03477 0.03657 0.02035 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 0.2905
+#> Pearson divergence between P(nu) and P(de): 0.2983
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
@@ -218,9 +216,9 @@ aggregate(
   FUN = unique
 )
 #>   numerator_data$x1 predict(fit_cat)
-#> 1                 A        1.3679015
-#> 2                 B        1.4331335
-#> 3                 C        0.6111301
+#> 1                 A        1.3684857
+#> 2                 B        1.4351252
+#> 3                 C        0.6107889
 
 table(numerator_data$x1) / table(denominator_data$x1)
 #> 
@@ -254,11 +252,11 @@ summary(fit_all, test = TRUE, parallel = TRUE)
 #>   Kernel type: Gaussian with L2 norm distances
 #>   Number of kernels: 200
 #> 
-#> Optimal sigma: 2.206548
+#> Optimal sigma: 2.077615
 #> Optimal lambda: 0.001
-#> Optimal kernel weights: num [1:200] 0.976 -1.336 -0.232 0.348 -0.528 ...
+#> Optimal kernel weights: num [1:200] -0.67 0.223 1.562 -0.363 6.145 ...
 #>  
-#> Pearson divergence between P(nu) and P(de): 1.025
+#> Pearson divergence between P(nu) and P(de): 1.148
 #> Pr(P(nu)=P(de)) < .001
 #> Bonferroni-corrected for testing with r(x) = P(nu)/P(de) AND r*(x) = P(de)/P(nu).
 ```
@@ -284,6 +282,7 @@ are discussed in the [Get Started
 vignette](https://thomvolker.github.io/densityratio/articles/densityratio.html).
 
 ``` r
+
 fit_naive <- naive(
   df_numerator = numerator_data$x5,
   df_denominator = denominator_data$x5

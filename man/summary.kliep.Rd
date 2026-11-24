@@ -68,7 +68,7 @@ head(predict(dr))
 # Fit model with custom parameters
 kliep(numerator_small, denominator_small,
       nsigma = 1, ncenters = 100, nfold = 10,
-      epsilon = 10^{2:-5}, maxit = 500)
+      tol = 1e-2)
 
 \dontshow{
 if(requireNamespace("RcppArmadillo", quietly = TRUE)) {

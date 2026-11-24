@@ -60,37 +60,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// kliep_compute_alpha
-arma::vec kliep_compute_alpha(arma::mat Phi, arma::vec phibar, arma::vec phibar_corr, const arma::vec& epsilon, int nepsilon, int maxit, bool progressbar);
-RcppExport SEXP _densityratio_kliep_compute_alpha(SEXP PhiSEXP, SEXP phibarSEXP, SEXP phibar_corrSEXP, SEXP epsilonSEXP, SEXP nepsilonSEXP, SEXP maxitSEXP, SEXP progressbarSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type Phi(PhiSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type phibar(phibarSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type phibar_corr(phibar_corrSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< int >::type nepsilon(nepsilonSEXP);
-    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
-    Rcpp::traits::input_parameter< bool >::type progressbar(progressbarSEXP);
-    rcpp_result_gen = Rcpp::wrap(kliep_compute_alpha(Phi, phibar, phibar_corr, epsilon, nepsilon, maxit, progressbar));
-    return rcpp_result_gen;
-END_RCPP
-}
 // compute_kliep
-List compute_kliep(const arma::mat& dist_nu, const arma::mat& dist_de, const arma::vec& sigma, const arma::vec& epsilon, const int& maxit, arma::vec cv_ind, bool progressbar);
-RcppExport SEXP _densityratio_compute_kliep(SEXP dist_nuSEXP, SEXP dist_deSEXP, SEXP sigmaSEXP, SEXP epsilonSEXP, SEXP maxitSEXP, SEXP cv_indSEXP, SEXP progressbarSEXP) {
+List compute_kliep(const arma::mat& dist_nu, const arma::mat& dist_de, const arma::vec& sigma, const double& tol, const int& maxit, arma::vec cv_ind, bool progressbar);
+RcppExport SEXP _densityratio_compute_kliep(SEXP dist_nuSEXP, SEXP dist_deSEXP, SEXP sigmaSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP cv_indSEXP, SEXP progressbarSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type dist_nu(dist_nuSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type dist_de(dist_deSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type epsilon(epsilonSEXP);
+    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const int& >::type maxit(maxitSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type cv_ind(cv_indSEXP);
     Rcpp::traits::input_parameter< bool >::type progressbar(progressbarSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_kliep(dist_nu, dist_de, sigma, epsilon, maxit, cv_ind, progressbar));
+    rcpp_result_gen = Rcpp::wrap(compute_kliep(dist_nu, dist_de, sigma, tol, maxit, cv_ind, progressbar));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -334,7 +317,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_densityratio_kernel_gaussian", (DL_FUNC) &_densityratio_kernel_gaussian, 2},
     {"_densityratio_make_Phi", (DL_FUNC) &_densityratio_make_Phi, 2},
     {"_densityratio_make_phibar", (DL_FUNC) &_densityratio_make_phibar, 2},
-    {"_densityratio_kliep_compute_alpha", (DL_FUNC) &_densityratio_kliep_compute_alpha, 7},
     {"_densityratio_compute_kliep", (DL_FUNC) &_densityratio_compute_kliep, 7},
     {"_densityratio_kmm_unconstrained_alpha", (DL_FUNC) &_densityratio_kmm_unconstrained_alpha, 5},
     {"_densityratio_kmm_constrained_alpha", (DL_FUNC) &_densityratio_kmm_constrained_alpha, 6},

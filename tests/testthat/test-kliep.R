@@ -57,7 +57,7 @@ test_that("multidimensional kliep estimation and prediction works", {
     FALSE
   )
 
-  est <- compute_kliep(Dnu, Dde, 2, check.epsilon(NULL), 5000, rep(0, nrow(Dnu)), FALSE)
+  est <- compute_kliep(Dnu, Dde, 2, 1e-4, 5000, rep(0, nrow(Dnu)), FALSE)
   expect_equal(est$cv_score, 0, ignore_attr = TRUE)
   expect_type(est$alpha, "double")
 })

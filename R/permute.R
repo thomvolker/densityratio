@@ -21,6 +21,8 @@ permute <- function(object, ...) {
 #' @method permute ulsif
 #' @importFrom stats predict
 #' @importFrom stats update
+#' @keywords internal
+#' @export
 
 permute.ulsif <- function(object, stacked, nnu, nde, ...) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
@@ -60,6 +62,8 @@ pe_divergence <- function(pred_nu, pred_de, a = 0) {
 #' @method permute kliep
 #' @importFrom stats predict
 #' @importFrom stats update
+#' @keywords internal
+#' @export
 
 permute.kliep <- function(object, stacked, nnu, nde, min_pred = sqrt(.Machine$double.eps), ...) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
@@ -85,6 +89,8 @@ permute.kliep <- function(object, stacked, nnu, nde, min_pred = sqrt(.Machine$do
 #' @method permute kmm
 #' @importFrom stats predict
 #' @importFrom stats update
+#' @keywords internal
+#' @export
 
 permute.kmm <- function(object, stacked, nnu, nde, ...) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
@@ -111,6 +117,8 @@ permute.kmm <- function(object, stacked, nnu, nde, ...) {
 #' @method permute lhss
 #' @importFrom stats predict
 #' @importFrom stats update
+#' @keywords internal
+#' @export
 
 permute.lhss <- function(object, stacked, nnu, nde, ...) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
@@ -137,6 +145,8 @@ permute.lhss <- function(object, stacked, nnu, nde, ...) {
 #' @method permute spectral
 #' @importFrom stats predict
 #' @importFrom stats update
+#' @keywords internal
+#' @export
 
 permute.spectral <- function(object, stacked, nnu, nde, ...) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
@@ -165,6 +175,8 @@ permute.spectral <- function(object, stacked, nnu, nde, ...) {
 #' @method permute naivedensityratio
 #' @importFrom stats predict
 #' @importFrom stats update
+#' @keywords internal
+#' @export
 
 permute.naivedensityratio <- function(object, stacked, nnu, nde, min_pred, max_pred, ...) {
   ind <- sample(rep(c(TRUE, FALSE), times = c(nnu, nde)))
